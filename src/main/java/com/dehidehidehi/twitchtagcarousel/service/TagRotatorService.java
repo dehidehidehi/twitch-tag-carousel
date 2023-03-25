@@ -8,6 +8,7 @@ import jakarta.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -22,68 +23,68 @@ public class TagRotatorService {
     public static final long MAX_NB_TAGS_PER_CHANNEL = 10L;
     private final TwitchClient twitchClient;
 
-    private List<TwitchTagEnum> tagsToRotate = List.of(
-            action,
-            adhd,
-            ama,
-            anime,
-            anxiety,
-            arab,
-            asmr,
-            british,
-            casual,
-            chat,
-            chatting,
-            chatty,
-            chill,
-            chilled,
-            comfy,
-            community,
-            competitive,
-            cozy,
-            envtuber,
-            fr,
-            francais,
-            france,
-            friendly,
-            fun,
-            funny,
-            furry,
-            game,
-            gameplay,
-            gamer,
-            gamergirl,
-            gaming,
-            girl,
-            horror,
-            irl,
-            justchatting,
-            letsplay,
-            lgbt,
-            lgbtq,
-            lgbtqia,
-            lgbtqiaplus,
-            lol,
-            mentalhealth,
-            minecraft,
-            multiplayer,
-            music,
-            nobackseating,
-            pc,
-            playingwithviewers,
-            pngtuber,
-            retro,
-            roleplay,
-            rp,
-            rpg,
-            safespace,
-            solo,
-            speedrun,
-            uk,
-            usa,
-            variety,
-            vtuber,
-            woman
+    private List<String> tagsToRotate = List.of(
+            action.name(),
+            adhd.name(),
+            ama.name(),
+            anime.name(),
+            anxiety.name(),
+            arab.name(),
+            asmr.name(),
+            british.name(),
+            casual.name(),
+            chat.name(),
+            chatting.name(),
+            chatty.name(),
+            chill.name(),
+            chilled.name(),
+            comfy.name(),
+            community.name(),
+            competitive.name(),
+            cozy.name(),
+            envtuber.name(),
+            fr.name(),
+            francais.name(),
+            france.name(),
+            friendly.name(),
+            fun.name(),
+            funny.name(),
+            furry.name(),
+            game.name(),
+            gameplay.name(),
+            gamer.name(),
+            gamergirl.name(),
+            gaming.name(),
+            girl.name(),
+            horror.name(),
+            irl.name(),
+            justchatting.name(),
+            letsplay.name(),
+            lgbt.name(),
+            lgbtq.name(),
+            lgbtqia.name(),
+            lgbtqiaplus.name(),
+            lol.name(),
+            mentalhealth.name(),
+            minecraft.name(),
+            multiplayer.name(),
+            music.name(),
+            nobackseating.name(),
+            pc.name(),
+            playingwithviewers.name(),
+            pngtuber.name(),
+            retro.name(),
+            roleplay.name(),
+            rp.name(),
+            rpg.name(),
+            safespace.name(),
+            solo.name(),
+            speedrun.name(),
+            uk.name(),
+            usa.name(),
+            variety.name(),
+            vtuber.name(),
+            woman.name()
     );
 
     @Inject
@@ -99,28 +100,33 @@ public class TagRotatorService {
                 .stream()
                 .toList();
     }
-
-    public void updateTags(Set<TwitchTagEnum> tags) {
+    
+    public void updateTags(Set<String> tags) {
         LOGGER.debug("Entered in updating tags method.");
-        final Set<String> tagStringSet = tags.stream().map(TwitchTagEnum::name).collect(Collectors.toUnmodifiableSet());
-        twitchClient.updateTags(tagStringSet);
+        LOGGER.trace("With params {}: ", tags);
+        twitchClient.updateTags(tags);
         LOGGER.info("Updated stream tags with: {}", tags);
+    }
+    
+    public Set<String> selectTags() {
+        return selectTags(Collections.emptySet());
     }
 
     /**
      * Selects a new batch of tags, rotates tag selection at each invocation.
      */
-    public Set<TwitchTagEnum> selectTags() {
-        final Set<TwitchTagEnum> toReturn = tagsToRotate
+    public Set<String> selectTags(Set<String> mandatoryTags) {
+        final Set<String> toReturn = tagsToRotate
                 .stream()
-                .limit(MAX_NB_TAGS_PER_CHANNEL)
-                .collect(Collectors.toUnmodifiableSet());
-        LOGGER.info("Selected tags: {}", toReturn);
+                .limit(MAX_NB_TAGS_PER_CHANNEL - mandatoryTags.size())
+                .collect(Collectors.toSet());
         moveTagsToEndOfTheList(toReturn);
+        toReturn.addAll(mandatoryTags);
+        LOGGER.info("Selected tags: {}", toReturn);
         return toReturn;
     }
 
-    private void moveTagsToEndOfTheList(final Set<TwitchTagEnum> toReturn) {
+    private void moveTagsToEndOfTheList(final Set<String> toReturn) {
         tagsToRotate = tagsToRotate
                 .stream()
                 .filter(t -> !toReturn.contains(t))
@@ -130,7 +136,7 @@ public class TagRotatorService {
         LOGGER.trace("Current queue: {}", tagsToRotate);
     }
 
-    List<TwitchTagEnum> getTagsToRotate() {
+    List<String> getTagsToRotate() {
         return tagsToRotate;
     }
 }

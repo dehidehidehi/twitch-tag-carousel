@@ -46,7 +46,7 @@ public class TagRotatorApplication {
      */
     void start() {
         final Runnable runnable = () -> {
-            final Set<TwitchTagEnum> tags = tagRotatorService.selectTags();
+            final Set<String> tags = tagRotatorService.selectTags();
             tagRotatorService.updateTags(tags);
         };
         final ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
