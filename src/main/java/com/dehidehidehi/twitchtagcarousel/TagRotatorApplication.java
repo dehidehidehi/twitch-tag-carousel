@@ -6,7 +6,7 @@ import jakarta.enterprise.inject.se.SeContainer;
 import jakarta.enterprise.inject.se.SeContainerInitializer;
 import jakarta.inject.Inject;
 
-import java.util.List;
+import java.util.Set;
 
 @ApplicationScoped
 public class TagRotatorApplication {
@@ -19,7 +19,8 @@ public class TagRotatorApplication {
     }
 
     void start() {
-        tagRotatorService.updateTags(List.of("vtuber", "envtuber"));
+        final Set<String> tags = tagRotatorService.selectTags();
+        tagRotatorService.updateTags(tags);
     }
 
     public static void main(String[] args) {

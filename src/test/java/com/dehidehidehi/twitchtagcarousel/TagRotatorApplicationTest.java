@@ -24,7 +24,7 @@ class TagRotatorApplicationTest {
     @Test
     void shouldExecute() {
         tagRotatorApplication.start();
-        verify(tagRotatorService, times(1)).updateTags(anyList());
+        verify(tagRotatorService, times(1)).updateTags(anySet());
         verifyNoMoreInteractions(tagRotatorService);
     }
 }

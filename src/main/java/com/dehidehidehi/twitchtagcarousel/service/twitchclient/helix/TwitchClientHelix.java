@@ -9,6 +9,7 @@ import jakarta.enterprise.inject.Typed;
 import jakarta.inject.Inject;
 
 import java.util.List;
+import java.util.Set;
 
 @HelixClient
 @Typed(TwitchClient.class)
@@ -41,8 +42,8 @@ class TwitchClientHelix implements TwitchClient {
 	 * https://id.twitch.tv/oauth2/authorize?client_id=6k3qz1pdf1wko4xec9cjbfh3fbla24&redirect_uri=http://localhost&response_type=token&scope=channel%3Amanage%3Abroadcast
 	 */
 	@Override
-	public void updateTags(final List<String> tags) {
-		final ChannelInformation channelInformation = new ChannelInformation().withTags(tags);
+	public void updateTags(final Set<String> tags) {
+		final ChannelInformation channelInformation = new ChannelInformation().withTags(List.copyOf(tags));
 		twitchHelix
 				.updateChannelInformation(authToken, broadcasterId, channelInformation)
 				.execute();

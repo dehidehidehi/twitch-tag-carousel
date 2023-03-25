@@ -1,21 +1,21 @@
 package com.dehidehidehi.twitchtagcarousel.service;
 
-import com.dehidehidehi.twitchtagcarousel.service.twitchclient.TwitchClient;
 import com.dehidehidehi.twitchtagcarousel.domain.TwitchTagEnum;
+import com.dehidehidehi.twitchtagcarousel.service.twitchclient.TwitchClient;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
-import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.dehidehidehi.twitchtagcarousel.domain.TwitchTagEnum.*;
-import static com.dehidehidehi.twitchtagcarousel.domain.TwitchTagEnum.woman;
 
 @ApplicationScoped
 public class TagRotatorService {
 
     private final TwitchClient twitchClient;
 
-    private static List<TwitchTagEnum> tagsToRotate = List.of(
+    private static Set<TwitchTagEnum> tagsToRotate = Set.of(
             action,
             adhd,
             ama,
@@ -32,7 +32,6 @@ public class TagRotatorService {
             chilled,
             comfy,
             community,
-            competitive,
             competitive,
             cozy,
             envtuber,
@@ -85,7 +84,15 @@ public class TagRotatorService {
         this.twitchClient = twitchClient;
     }
 
-    public void updateTags(List<String> tags) {
+    public void updateTags(Set<String> tags) {
         twitchClient.updateTags(tags);
+    }
+
+    public Set<String> selectTags() {
+        return tagsToRotate
+                  .stream()
+                  .map(TwitchTagEnum::name)
+                  .limit(10L)
+                  .collect(Collectors.toUnmodifiableSet());
     }
 }
