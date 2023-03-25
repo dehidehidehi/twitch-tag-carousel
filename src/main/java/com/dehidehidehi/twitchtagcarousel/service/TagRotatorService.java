@@ -5,6 +5,8 @@ import com.dehidehidehi.twitchtagcarousel.service.twitchclient.TwitchClient;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Set;
@@ -14,6 +16,8 @@ import static com.dehidehidehi.twitchtagcarousel.domain.TwitchTagEnum.*;
 
 @ApplicationScoped
 public class TagRotatorService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(TagRotatorService.class);
 
     public static final long MAX_NB_TAGS_PER_CHANNEL = 10L;
     private final TwitchClient twitchClient;
@@ -97,8 +101,10 @@ public class TagRotatorService {
     }
 
     public void updateTags(Set<TwitchTagEnum> tags) {
+        LOGGER.debug("Entered in updating tags method.");
         final Set<String> tagStringSet = tags.stream().map(TwitchTagEnum::name).collect(Collectors.toUnmodifiableSet());
         twitchClient.updateTags(tagStringSet);
+        LOGGER.info("Updated stream tags with: {}", tags);
     }
 
     /**
@@ -109,6 +115,7 @@ public class TagRotatorService {
                 .stream()
                 .limit(MAX_NB_TAGS_PER_CHANNEL)
                 .collect(Collectors.toUnmodifiableSet());
+        LOGGER.info("Selected tags: {}", toReturn);
         moveTagsToEndOfTheList(toReturn);
         return toReturn;
     }
@@ -119,6 +126,8 @@ public class TagRotatorService {
                 .filter(t -> !toReturn.contains(t))
                 .collect(Collectors.toList());
         tagsToRotate.addAll(toReturn);
+        LOGGER.debug("Moved {} to the end of tag queue.", toReturn);
+        LOGGER.trace("Current queue: {}", tagsToRotate);
     }
 
     List<TwitchTagEnum> getTagsToRotate() {

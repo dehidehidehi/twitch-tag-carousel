@@ -7,6 +7,8 @@ import com.github.twitch4j.helix.domain.ChannelInformation;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Typed;
 import jakarta.inject.Inject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Set;
@@ -16,6 +18,8 @@ import java.util.Set;
 @ApplicationScoped
 class TwitchClientHelix implements TwitchClient {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(TwitchClientHelix.class);
+	
 	private final TwitchHelix twitchHelix;
 	
 	@Inject
@@ -43,6 +47,7 @@ class TwitchClientHelix implements TwitchClient {
 	 */
 	@Override
 	public void updateTags(final Set<String> tags) {
+		LOGGER.debug("{} entered update tags method.", TwitchClientHelix.class.getSimpleName());
 		final ChannelInformation channelInformation = new ChannelInformation().withTags(List.copyOf(tags));
 		twitchHelix
 				.updateChannelInformation(authToken, broadcasterId, channelInformation)
