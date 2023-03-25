@@ -1,6 +1,6 @@
 package com.dehidehidehi.twitchtagcarousel;
 
-import com.dehidehidehi.twitchtagcarousel.domain.TwitchTagEnum;
+import com.dehidehidehi.twitchtagcarousel.domain.TwitchTagBatch;
 import com.dehidehidehi.twitchtagcarousel.service.TagRotatorService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.se.SeContainer;
@@ -9,7 +9,6 @@ import jakarta.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -46,7 +45,7 @@ public class TagRotatorApplication {
      */
     void start() {
         final Runnable runnable = () -> {
-            final Set<String> tags = tagRotatorService.selectTags();
+            final TwitchTagBatch tags = tagRotatorService.selectTags();
             tagRotatorService.updateTags(tags);
         };
         final ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();

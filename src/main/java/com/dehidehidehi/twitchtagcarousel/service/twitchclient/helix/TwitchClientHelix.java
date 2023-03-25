@@ -1,5 +1,6 @@
 package com.dehidehidehi.twitchtagcarousel.service.twitchclient.helix;
 import com.dehidehidehi.twitchtagcarousel.annotation.Property;
+import com.dehidehidehi.twitchtagcarousel.domain.TwitchTagBatch;
 import com.dehidehidehi.twitchtagcarousel.service.twitchclient.TwitchClient;
 import com.github.twitch4j.helix.TwitchHelix;
 import com.github.twitch4j.helix.TwitchHelixBuilder;
@@ -46,9 +47,10 @@ class TwitchClientHelix implements TwitchClient {
 	 * https://id.twitch.tv/oauth2/authorize?client_id=6k3qz1pdf1wko4xec9cjbfh3fbla24&redirect_uri=http://localhost&response_type=token&scope=channel%3Amanage%3Abroadcast
 	 */
 	@Override
-	public void updateTags(final Set<String> tags) {
+	public void updateTags(final TwitchTagBatch tags) {
 		LOGGER.debug("{} entered update tags method.", TwitchClientHelix.class.getSimpleName());
-		final ChannelInformation channelInformation = new ChannelInformation().withTags(List.copyOf(tags));
+		final List<String> tagsAsList = List.copyOf(tags.get());
+		final ChannelInformation channelInformation = new ChannelInformation().withTags(tagsAsList);
 		twitchHelix
 				.updateChannelInformation(authToken, broadcasterId, channelInformation)
 				.execute();

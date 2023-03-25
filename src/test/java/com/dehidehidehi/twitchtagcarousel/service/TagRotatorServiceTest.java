@@ -24,14 +24,14 @@ class TagRotatorServiceTest {
         @Test
         void selectTagsShouldReturnTenTags() {
             final Set<String> mandatoryTags = Set.of("123435", "sdlk");
-            assertThat(tagRotatorService.selectTags()).hasSize(10);
-            assertThat(tagRotatorService.selectTags(mandatoryTags)).hasSize(10);
+            assertThat(tagRotatorService.selectTags().get()).hasSize(10);
+            assertThat(tagRotatorService.selectTags(mandatoryTags).get()).hasSize(10);
         }
         
         @Test
         void rotateAtEachInvocation() {
-            final Set<String> firstResult = new HashSet<>(tagRotatorService.selectTags());
-            final Set<String> secondResult = new HashSet<>(tagRotatorService.selectTags());
+            final Set<String> firstResult = new HashSet<>(tagRotatorService.selectTags().get());
+            final Set<String> secondResult = new HashSet<>(tagRotatorService.selectTags().get());
             firstResult.retainAll(secondResult);
             assertThat(firstResult)
                     .as("There should be no common tags between both results.")
@@ -48,7 +48,7 @@ class TagRotatorServiceTest {
         @Test
         void returnMandatoryTagsInResponse() {
             final Set<String> mandatoryTags = Set.of("abdcef", "123465", "asddfskler");
-            final Set<String> tags = tagRotatorService.selectTags(mandatoryTags);
+            final Set<String> tags = tagRotatorService.selectTags(mandatoryTags).get();
             assertThat(tags).containsAll(mandatoryTags);
         }
     }

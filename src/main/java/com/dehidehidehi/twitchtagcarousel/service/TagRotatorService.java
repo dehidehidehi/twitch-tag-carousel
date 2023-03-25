@@ -1,6 +1,6 @@
 package com.dehidehidehi.twitchtagcarousel.service;
 
-import com.dehidehidehi.twitchtagcarousel.domain.TwitchTagEnum;
+import com.dehidehidehi.twitchtagcarousel.domain.TwitchTagBatch;
 import com.dehidehidehi.twitchtagcarousel.service.twitchclient.TwitchClient;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.dehidehidehi.twitchtagcarousel.domain.TwitchTagBatch.MAX_NB_TAGS_PER_CHANNEL;
 import static com.dehidehidehi.twitchtagcarousel.domain.TwitchTagEnum.*;
 
 @ApplicationScoped
@@ -20,7 +21,6 @@ public class TagRotatorService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TagRotatorService.class);
 
-    public static final long MAX_NB_TAGS_PER_CHANNEL = 10L;
     private final TwitchClient twitchClient;
 
     private List<String> tagsToRotate = List.of(
@@ -101,21 +101,21 @@ public class TagRotatorService {
                 .toList();
     }
     
-    public void updateTags(Set<String> tags) {
+    public void updateTags(TwitchTagBatch tags) {
         LOGGER.debug("Entered in updating tags method.");
         LOGGER.trace("With params {}: ", tags);
         twitchClient.updateTags(tags);
         LOGGER.info("Updated stream tags with: {}", tags);
     }
     
-    public Set<String> selectTags() {
+    public TwitchTagBatch selectTags() {
         return selectTags(Collections.emptySet());
     }
 
     /**
      * Selects a new batch of tags, rotates tag selection at each invocation.
      */
-    public Set<String> selectTags(Set<String> mandatoryTags) {
+    public TwitchTagBatch selectTags(Set<String> mandatoryTags) {
         final Set<String> toReturn = tagsToRotate
                 .stream()
                 .limit(MAX_NB_TAGS_PER_CHANNEL - mandatoryTags.size())
@@ -123,7 +123,7 @@ public class TagRotatorService {
         moveTagsToEndOfTheList(toReturn);
         toReturn.addAll(mandatoryTags);
         LOGGER.info("Selected tags: {}", toReturn);
-        return toReturn;
+        return new TwitchTagBatch(toReturn);
     }
 
     private void moveTagsToEndOfTheList(final Set<String> toReturn) {

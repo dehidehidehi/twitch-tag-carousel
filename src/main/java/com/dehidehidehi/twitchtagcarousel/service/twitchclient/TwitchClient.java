@@ -1,8 +1,8 @@
 package com.dehidehidehi.twitchtagcarousel.service.twitchclient;
-import java.util.Set;
+import com.dehidehidehi.twitchtagcarousel.domain.TwitchTagBatch;
 
 public interface TwitchClient {
     
-    void updateTags(Set<String> tags);
+    void updateTags(TwitchTagBatch tags);
     
 }
