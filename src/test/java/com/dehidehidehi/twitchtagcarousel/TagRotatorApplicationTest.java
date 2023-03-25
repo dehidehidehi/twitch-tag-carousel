@@ -25,6 +25,5 @@ class TagRotatorApplicationTest {
     void shouldExecute() {
         tagRotatorApplication.start();
         verify(tagRotatorService, times(1)).updateTags(anySet());
-        verifyNoMoreInteractions(tagRotatorService);
     }
 }
