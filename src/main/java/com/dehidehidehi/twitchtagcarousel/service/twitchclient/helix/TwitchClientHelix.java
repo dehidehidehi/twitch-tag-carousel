@@ -1,10 +1,12 @@
 package com.dehidehidehi.twitchtagcarousel.service.twitchclient.helix;
 import com.dehidehidehi.twitchtagcarousel.annotation.Property;
 import com.dehidehidehi.twitchtagcarousel.domain.TwitchTagBatch;
+import com.dehidehidehi.twitchtagcarousel.error.TwitchTagUpdateException;
 import com.dehidehidehi.twitchtagcarousel.service.twitchclient.TwitchClient;
 import com.github.twitch4j.helix.TwitchHelix;
 import com.github.twitch4j.helix.TwitchHelixBuilder;
 import com.github.twitch4j.helix.domain.ChannelInformation;
+import com.netflix.hystrix.exception.HystrixRuntimeException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Typed;
 import jakarta.inject.Inject;
@@ -12,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
-import java.util.Set;
 
 @HelixClient
 @Typed(TwitchClient.class)
@@ -47,12 +48,16 @@ class TwitchClientHelix implements TwitchClient {
 	 * https://id.twitch.tv/oauth2/authorize?client_id=6k3qz1pdf1wko4xec9cjbfh3fbla24&redirect_uri=http://localhost&response_type=token&scope=channel%3Amanage%3Abroadcast
 	 */
 	@Override
-	public void updateTags(final TwitchTagBatch tags) {
+	public void updateTags(final TwitchTagBatch tags) throws TwitchTagUpdateException {
 		LOGGER.debug("{} entered update tags method.", TwitchClientHelix.class.getSimpleName());
 		final List<String> tagsAsList = List.copyOf(tags.get());
 		final ChannelInformation channelInformation = new ChannelInformation().withTags(tagsAsList);
-		twitchHelix
-				.updateChannelInformation(authToken, broadcasterId, channelInformation)
-				.execute();
+		try {
+			twitchHelix
+					.updateChannelInformation(authToken, broadcasterId, channelInformation)
+					.execute();
+		} catch (HystrixRuntimeException e) {
+			throw new TwitchTagUpdateException(e);
+		}
 	}
 }

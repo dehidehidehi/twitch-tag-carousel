@@ -1,6 +1,8 @@
 package com.dehidehidehi.twitchtagcarousel.service;
 
+import com.dehidehidehi.twitchtagcarousel.annotation.Property;
 import com.dehidehidehi.twitchtagcarousel.domain.TwitchTagBatch;
+import com.dehidehidehi.twitchtagcarousel.error.TwitchTagUpdateException;
 import com.dehidehidehi.twitchtagcarousel.service.twitchclient.TwitchClient;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -8,6 +10,7 @@ import jakarta.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -22,6 +25,10 @@ public class TagRotatorService {
     private static final Logger LOGGER = LoggerFactory.getLogger(TagRotatorService.class);
 
     private final TwitchClient twitchClient;
+
+    @Inject
+    @Property("tag-carousel.mandatory-tags")
+    private String mandatoryTagsString;
 
     private List<String> tagsToRotate = List.of(
             action.name(),
@@ -101,28 +108,28 @@ public class TagRotatorService {
                 .toList();
     }
     
-    public void updateTags(TwitchTagBatch tags) {
+    public void updateTags(TwitchTagBatch tags) throws TwitchTagUpdateException {
         LOGGER.debug("Entered in updating tags method.");
         LOGGER.trace("With params {}: ", tags);
         twitchClient.updateTags(tags);
-        LOGGER.info("Updated stream tags with: {}", tags);
+        LOGGER.info("Updated stream tags with: {}", tags.get().stream().sorted().toList());
     }
     
-    public TwitchTagBatch selectTags() {
-        return selectTags(Collections.emptySet());
+    public TwitchTagBatch selectNewTags() {
+        return selectNewTags(Collections.emptySet());
     }
 
     /**
      * Selects a new batch of tags, rotates tag selection at each invocation.
      */
-    public TwitchTagBatch selectTags(Set<String> mandatoryTags) {
+    public TwitchTagBatch selectNewTags(Set<String> mandatoryTags) {
         final Set<String> toReturn = tagsToRotate
                 .stream()
                 .limit(MAX_NB_TAGS_PER_CHANNEL - mandatoryTags.size())
                 .collect(Collectors.toSet());
         moveTagsToEndOfTheList(toReturn);
         toReturn.addAll(mandatoryTags);
-        LOGGER.info("Selected tags: {}", toReturn);
+        LOGGER.info("Selected tags: {}", toReturn.stream().sorted().toList());
         return new TwitchTagBatch(toReturn);
     }
 
@@ -138,5 +145,12 @@ public class TagRotatorService {
 
     List<String> getTagsToRotate() {
         return tagsToRotate;
+    }
+
+    public Set<String> getMandatoryTags() {
+        return Arrays
+                .stream(this.mandatoryTagsString.split(","))
+                .map(String::trim)
+                .collect(Collectors.toUnmodifiableSet());
     }
 }
