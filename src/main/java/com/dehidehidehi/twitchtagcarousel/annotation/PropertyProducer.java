@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.Properties;
 import java.util.function.BooleanSupplier;
@@ -37,14 +38,14 @@ public class PropertyProducer {
 	public void init() {
 		// load application properties
 		this.applicationProperties = new Properties();
-		final URL applicationPropertiesUrl = PropertyProducer.class.getResource(APPLICATION_PROPERTIES);
-		final File applicationPropertiesFile = new File(applicationPropertiesUrl.toURI());
-		loadPropertiesFile(applicationProperties, applicationPropertiesFile, false);
+		final InputStream applicationPropertiesInputStream = PropertyProducer.class.getResourceAsStream(APPLICATION_PROPERTIES);
+		loadPropertiesFile(applicationProperties, applicationPropertiesInputStream);
 		
 		// load user properties
 		this.userProperties = new Properties();
 		final File userPropertiesFile = new File(getDirPathOfThisJar() + USER_PROPERTIES);
-		loadPropertiesFile(userProperties, userPropertiesFile, true);
+		final FileInputStream fileInputStream = new FileInputStream(userPropertiesFile);
+		loadPropertiesFile(userProperties, fileInputStream);
 	}
 
 	@Property
@@ -79,24 +80,15 @@ public class PropertyProducer {
 		return new File(jarLocation);
 	}
 
-	private void loadPropertiesFile(Properties properties, File propertiesFile, boolean ignoreFailures) {
-		LOGGER.debug("Loading : {}", propertiesFile);
-		final Consumer<FileInputStream> tryReadProperties = propertiesStream -> {
+	private void loadPropertiesFile(Properties properties, InputStream inputStream) {
+		final Consumer<InputStream> tryReadProperties = propertiesStream -> {
 			try {
 				properties.load(propertiesStream);
 			} catch (final IOException e) {
 				throw new IllegalStateException("Configuration could not be loaded!");
 			}
 		};
-		try (FileInputStream propertiesStream = new FileInputStream(propertiesFile)) {
-			tryReadProperties.accept(propertiesStream);
-		} catch (IOException e) {
-			if (ignoreFailures) {
-				LOGGER.warn("Not found, ignoring: {}", propertiesFile);
-				return;
-			}
-			throw new IllegalStateException("No %s found!".formatted(APPLICATION_PROPERTIES));
-		}
+		tryReadProperties.accept(inputStream);
 	}
 
 	/**
