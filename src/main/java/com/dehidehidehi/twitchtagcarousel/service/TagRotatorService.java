@@ -2,7 +2,6 @@ package com.dehidehidehi.twitchtagcarousel.service;
 
 import com.dehidehidehi.twitchtagcarousel.annotation.Property;
 import com.dehidehidehi.twitchtagcarousel.domain.TwitchTagBatch;
-import com.dehidehidehi.twitchtagcarousel.error.TwitchTagUpdateException;
 import com.dehidehidehi.twitchtagcarousel.service.twitchclient.TwitchClient;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -10,14 +9,17 @@ import jakarta.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.dehidehidehi.twitchtagcarousel.domain.TwitchTagBatch.MAX_NB_TAGS_PER_CHANNEL;
-import static com.dehidehidehi.twitchtagcarousel.domain.TwitchTagEnum.*;
 
 @ApplicationScoped
 public class TagRotatorService {
@@ -30,107 +32,70 @@ public class TagRotatorService {
     @Property("tag-carousel.mandatory-tags")
     private String mandatoryTagsString;
 
-    private List<String> tagsToRotate = List.of(
-            action.name(),
-            adhd.name(),
-            ama.name(),
-            anime.name(),
-            anxiety.name(),
-            arab.name(),
-            asmr.name(),
-            british.name(),
-            casual.name(),
-            chat.name(),
-            chatting.name(),
-            chatty.name(),
-            chill.name(),
-            chilled.name(),
-            comfy.name(),
-            community.name(),
-            competitive.name(),
-            cozy.name(),
-            envtuber.name(),
-            fr.name(),
-            francais.name(),
-            france.name(),
-            friendly.name(),
-            fun.name(),
-            funny.name(),
-            furry.name(),
-            game.name(),
-            gameplay.name(),
-            gamer.name(),
-            gamergirl.name(),
-            gaming.name(),
-            girl.name(),
-            horror.name(),
-            irl.name(),
-            justchatting.name(),
-            letsplay.name(),
-            lgbt.name(),
-            lgbtq.name(),
-            lgbtqia.name(),
-            lgbtqiaplus.name(),
-            lol.name(),
-            mentalhealth.name(),
-            minecraft.name(),
-            multiplayer.name(),
-            music.name(),
-            nobackseating.name(),
-            pc.name(),
-            playingwithviewers.name(),
-            pngtuber.name(),
-            retro.name(),
-            roleplay.name(),
-            rp.name(),
-            rpg.name(),
-            safespace.name(),
-            solo.name(),
-            speedrun.name(),
-            uk.name(),
-            usa.name(),
-            variety.name(),
-            vtuber.name(),
-            woman.name()
-    );
+    @Inject
+    @Property("twitch-app.user-access-token")
+    private String userAccessToken;
+
+    @Inject
+    @Property("tag-carousel.tags")
+    private String concatenatedTags;
+
+    @Inject
+    @Property("twitch-app.tag-rotation-frequency-seconds")
+    private int tagRotationFrequencySeconds;
+
+    private List<String> tagsToRotate;
 
     @Inject
     public TagRotatorService(final TwitchClient twitchClient) {
         this.twitchClient = twitchClient;
     }
-    
+
     @PostConstruct
-    private void shuffleTagsToRotate() {
-        tagsToRotate = tagsToRotate
-                .stream()
-                .collect(Collectors.toUnmodifiableSet())
-                .stream()
-                .toList();
+    private void parseThenShuffleTagsToRotate() {
+        final String[] mandatoryTags = mandatoryTagsString.split(",");
+        final String[] tags = concatenatedTags.split(",");
+        final Stream<String> combinedTagsStream = Stream.concat(Arrays.stream(mandatoryTags), Arrays.stream(tags));
+        tagsToRotate = combinedTagsStream
+                             .map(String::trim)
+                             .collect(Collectors.toUnmodifiableSet())
+                             .stream()
+                             .toList();
     }
-    
-    public void updateTags(TwitchTagBatch tags) throws TwitchTagUpdateException {
+
+    public void updateTags() {
         LOGGER.debug("Entered in updating tags method.");
-        LOGGER.trace("With params {}: ", tags);
-        twitchClient.updateTags(tags);
-        LOGGER.info("Updated stream tags with: {}", tags.get().stream().sorted().toList());
-    }
-    
-    public TwitchTagBatch selectNewTags() {
-        return selectNewTags(Collections.emptySet());
+        try {
+            final Set<String> mandatoryTags = getMandatoryTags();
+            final TwitchTagBatch tags = selectNewTags(mandatoryTags);
+            twitchClient.updateTags(tags);
+            LOGGER.info("Updated stream tags with: {}", tags.get().stream().sorted().toList());
+            LOGGER.info("Next update at {}", getNextExecutionTime());
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
+            System.exit(1);
+        }
     }
 
     /**
      * Selects a new batch of tags, rotates tag selection at each invocation.
      */
-    public TwitchTagBatch selectNewTags(Set<String> mandatoryTags) {
+    TwitchTagBatch selectNewTags(Set<String> mandatoryTags) {
         final Set<String> toReturn = tagsToRotate
                 .stream()
                 .limit(MAX_NB_TAGS_PER_CHANNEL - mandatoryTags.size())
                 .collect(Collectors.toSet());
         moveTagsToEndOfTheList(toReturn);
         toReturn.addAll(mandatoryTags);
-        LOGGER.info("Selected tags: {}", toReturn.stream().sorted().toList());
+        LOGGER.debug("Next tag batch will be: {}", toReturn.stream().sorted().toList());
         return new TwitchTagBatch(toReturn);
+    }
+
+    private Set<String> getMandatoryTags() {
+        return Arrays
+                .stream(this.mandatoryTagsString.split(","))
+                .map(String::trim)
+                .collect(Collectors.toUnmodifiableSet());
     }
 
     private void moveTagsToEndOfTheList(final Set<String> toReturn) {
@@ -147,10 +112,14 @@ public class TagRotatorService {
         return tagsToRotate;
     }
 
-    public Set<String> getMandatoryTags() {
-        return Arrays
-                .stream(this.mandatoryTagsString.split(","))
-                .map(String::trim)
-                .collect(Collectors.toUnmodifiableSet());
+    private String getNextExecutionTime() {
+        return LocalDateTime
+                .now()
+                .plus(Duration.ofSeconds(tagRotationFrequencySeconds))
+                .format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+    }
+
+    TwitchTagBatch selectNewTags() {
+        return selectNewTags(Collections.emptySet());
     }
 }

@@ -4,13 +4,13 @@ import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
 import jakarta.enterprise.inject.spi.InjectionPoint;
+import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Properties;
 import java.util.function.BooleanSupplier;
@@ -32,8 +32,9 @@ public class PropertyProducer {
 	/**
 	 * Loads the {@link PropertyProducer#APPLICATION_PROPERTIES} contents into the {@link Properties} field.
 	 */
+	@SneakyThrows
 	@PostConstruct
-	public void init() throws URISyntaxException {
+	public void init() {
 		// load application properties
 		this.applicationProperties = new Properties();
 		final URL applicationPropertiesUrl = PropertyProducer.class.getResource(APPLICATION_PROPERTIES);
@@ -67,7 +68,8 @@ public class PropertyProducer {
 	/**
 	 * Convenience method for getting the absolute path of where the .jar file will be deployed.
 	 */
-	private File getDirPathOfThisJar() throws URISyntaxException {
+	@SneakyThrows
+	private File getDirPathOfThisJar() {
 		final String jarLocation = new File(PropertyProducer.class
 																.getProtectionDomain()
 																.getCodeSource()
