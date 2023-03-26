@@ -33,11 +33,7 @@ class TwitchClientHelix implements TwitchClient {
 	private String broadcasterId;
 
 	TwitchClientHelix() {
-		twitchHelix = TwitchHelixBuilder
-				.builder()
-				.withClientId(null)
-				.withClientSecret(null)
-				.build();
+		twitchHelix = TwitchHelixBuilder.builder().build();
 	}
 
 	/**

@@ -12,6 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import java.util.Set;
 
 import static org.assertj.core.api.Assumptions.assumeThatThrownBy;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -21,6 +22,11 @@ class TwitchClientHelixTest {
     @Inject
     @HelixClient
     TwitchClient helixClient;
+
+    @Test
+    void shouldReadAuthTokenFromUserAccessiblePropertiesFile() {
+        fail("Test not implemented.");
+    }
 
     /**
      * Making sure we capture the exception.
