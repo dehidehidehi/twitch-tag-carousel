@@ -16,6 +16,7 @@ Welcome to my application! This guide will help you set up the application and g
 
 1. Download the Java 17 Runtime environment: <https://download.oracle.com/java/17/latest/jdk-17_windows-x64_bin.msi>
 2. Download the `twitch-tag-carrousel.jar` application: <https://github.com/dehidehidehi/twitch-tag-carrousel/releases/download/v1.0.0/twitch-tag-carousel-jar-with-dependencies.jar>
+2. Download the `user.properties` file: <https://github.com/dehidehidehi/twitch-tag-carrousel/releases/download/v1.0.0/user.properties>
 3. Make a copy of the `user.properties` file and place it next to where you placed the `twitch-tag-carrousel.jar`
 
 ## Step 2: Specify Your Channel Name
