@@ -29,8 +29,6 @@ class TwitchClientHelix extends BasicHttpTwitchClient implements TwitchClient {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TwitchClientHelix.class);
 	
-	private final TwitchHelix twitchHelix;
-	
 	@Inject
 	@Property("twitch-app.client.helix.timeout-seconds")
 	private int timeoutSeconds;
@@ -45,16 +43,10 @@ class TwitchClientHelix extends BasicHttpTwitchClient implements TwitchClient {
 	
 	private String broadcasterId;
 
-	TwitchClientHelix() {
-		twitchHelix = TwitchHelixBuilder
-				.builder()
-				.build();
-	}
+	private final TwitchHelix twitchHelix;
 	
-	@PostConstruct
-	private void init() {
-		validateUserAccessToken();
-		requestChannelId();
+	TwitchClientHelix() {
+		twitchHelix = TwitchHelixBuilder.builder().build();
 	}
 
 	@SneakyThrows

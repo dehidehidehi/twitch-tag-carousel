@@ -1,11 +1,13 @@
 package com.dehidehidehi.twitchtagcarousel.service.ui.swing;
 
+import com.dehidehidehi.twitchtagcarousel.service.twitchclient.TwitchClient;
 import com.dehidehidehi.twitchtagcarousel.service.ui.CarrouselUi;
 import com.dehidehidehi.twitchtagcarousel.service.ui.swing.element.ButtonPanel;
 import com.dehidehidehi.twitchtagcarousel.service.ui.swing.element.InitialPanel;
 import com.dehidehidehi.twitchtagcarousel.service.ui.swing.element.LoggingPanel;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Typed;
+import jakarta.inject.Inject;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,6 +24,8 @@ class SwingCarrouselUi extends JFrame implements CarrouselUi {
     private ButtonPanel buttonPanel;
     private LoggingPanel loggingPanel;
 
+    private TwitchClient twitchClient;
+
     SwingCarrouselUi() {
         setUpLoggingPanel();
         setUpInitialPanel();
@@ -29,15 +33,16 @@ class SwingCarrouselUi extends JFrame implements CarrouselUi {
     }
 
     @Override
-    public void start() {
+    public void start(final TwitchClient twitchClient) {
+        this.twitchClient = twitchClient;
         initialPanel.setValidationFailed();
         initialPanel.setRequestAccessTokenButtonEnabled(true);
-        initialPanel.addRequestAccessTokenButtonListener(this::openBrowerToAuthPage);
+        initialPanel.addRequestAccessTokenButtonListener(this::openBrowserToAuthPage);
         buttonPanel.setButtonsEnabled(false);
         log("Application started.");
     }
 
-    private void openBrowerToAuthPage(final ActionEvent actionEvent) {
+    private void openBrowserToAuthPage(final ActionEvent actionEvent) {
         try {
             // Open a web page to a specified URL
             URI uri = new URI("https://example.com/oauth/authorize");

@@ -1,6 +1,8 @@
 package com.dehidehidehi.twitchtagcarousel.service;
 
 import com.dehidehidehi.twitchtagcarousel.annotation.Property;
+import com.dehidehidehi.twitchtagcarousel.service.twitchclient.TwitchClient;
+import com.dehidehidehi.twitchtagcarousel.service.twitchclient.helix.HelixClient;
 import com.dehidehidehi.twitchtagcarousel.service.ui.CarrouselUi;
 import com.dehidehidehi.twitchtagcarousel.service.ui.swing.annotation.SwingCarrouselUi;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -21,26 +23,29 @@ public class StartService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(StartService.class);
 	private static final TimeUnit TIME_UNIT = TimeUnit.SECONDS;
 
-	@Inject
-	@SwingCarrouselUi
-	private CarrouselUi carrouselUi;
-	
-	@Inject
 	@Property("twitch-app.start-delay-seconds")
+	@Inject
 	private int startDelaySeconds;
 
-	@Inject @Property("twitch-app.tag-rotation-frequency-seconds")
+	@Property("twitch-app.tag-rotation-frequency-seconds") 
+	@Inject
 	private int tagRotationFrequencySeconds;
 
 	private final TagRotatorService tagRotatorService;
+	private final TwitchClient twitchClient;
+	private final CarrouselUi carrouselUi;
 
 	@Inject
-	public StartService(final TagRotatorService tagRotatorService) {
+	public StartService(final TagRotatorService tagRotatorService,
+							  @HelixClient final TwitchClient twitchClient, 
+							  @SwingCarrouselUi final CarrouselUi carrouselUi) {
 		this.tagRotatorService = tagRotatorService;
+		this.twitchClient = twitchClient;
+		this.carrouselUi = carrouselUi;
 	}
 	
 	public void startUiLayer() {
-		carrouselUi.start();
+		carrouselUi.start(twitchClient);
 		LOGGER.info(getBanner());
 	}
 
