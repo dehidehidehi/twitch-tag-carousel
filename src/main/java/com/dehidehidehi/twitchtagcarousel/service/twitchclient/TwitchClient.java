@@ -8,6 +8,8 @@ public interface TwitchClient {
     
     boolean isUserAccessTokenValid(String userAccessToken) throws TwitchUserAccessTokenException;
     
+    String getUserAccessToken();
+    
     String getChannelIdFrom(String channelName) throws TwitchChannelIdException;
     
     void updateTags(TwitchTagBatch tags) throws TwitchTagUpdateException;

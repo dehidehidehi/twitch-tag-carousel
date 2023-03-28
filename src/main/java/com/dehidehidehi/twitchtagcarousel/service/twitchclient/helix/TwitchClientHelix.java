@@ -72,6 +72,11 @@ class TwitchClientHelix extends BasicHttpTwitchClient implements TwitchClient {
 		return super.isUserAccessTokenValid(userAccessToken);
 	}
 
+	@Override
+	public String getUserAccessToken() {
+		return userAccessToken;
+	}
+
 	/**
 	 * Requests the channel's id using the channel's name as a parameter.
 	 */

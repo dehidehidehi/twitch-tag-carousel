@@ -1,12 +1,12 @@
-# What does the Tag Carrousel do?
+# What does the Tag Carousel do?
 
-Attention Twitch streamers! Introducing the Twitch Tag Carrousel - the tool that helps you reach a wider audience by using all the popular tags available.
+Attention Twitch streamers! Introducing the Twitch Tag Carousel - the tool that helps you reach a wider audience by using all the popular tags available.
 
 Twitch channels can only have 10 tags at a time, but with our tool, you can easily specify a couple of tags that you 
 always want present on your stream, and let our system automatically rotate in popular tags at your preferred interval.  
-Maximize your viewership effortlessly with the Twitch Tag Carrousel.
+Maximize your viewership effortlessly with the Twitch Tag Carousel.
 
-![img](./static/img/tag-carrousel-screencap.png)
+![img](./static/img/tag-Carousel-screencap.png)
 
 # How to Set Up The Application
 
@@ -15,9 +15,9 @@ Welcome to my application! This guide will help you set up the application and g
 ## Step 1: Download the Application
 
 1. Download the Java 17 Runtime environment: <https://download.oracle.com/java/17/latest/jdk-17_windows-x64_bin.msi>
-2. Download the `twitch-tag-carrousel.jar` application: <https://github.com/dehidehidehi/twitch-tag-carrousel/releases/download/v1.0.0/twitch-tag-carousel-jar-with-dependencies.jar>
-2. Download the `user.properties` file: <https://github.com/dehidehidehi/twitch-tag-carrousel/releases/download/v1.0.0/user.properties>
-3. Make a copy of the `user.properties` file and place it next to where you placed the `twitch-tag-carrousel.jar`
+2. Download the `twitch-tag-Carousel.jar` application: <https://github.com/dehidehidehi/twitch-tag-Carousel/releases/download/v1.0.0/twitch-tag-carousel-jar-with-dependencies.jar>
+2. Download the `user.properties` file: <https://github.com/dehidehidehi/twitch-tag-Carousel/releases/download/v1.0.0/user.properties>
+3. Make a copy of the `user.properties` file and place it next to where you placed the `twitch-tag-Carousel.jar`
 
 ## Step 2: Specify Your Channel Name
 

@@ -1,14 +1,15 @@
-package com.dehidehidehi.twitchtagcarousel.service.ui.swing.element;
+package com.dehidehidehi.twitchtagcarousel.service.ui.swing.panel;
 import javax.swing.*;
 import java.awt.*;
 
-public class ButtonPanel extends JPanel {
+public class CommandCenterPanel extends JPanel {
+
 
     private JButton setMandatoryTagsButton;
     private JButton setRotatingTagsButton;
     private JRadioButton autoFetchPopularTagsRadioButton;
 
-    public ButtonPanel() {
+    public CommandCenterPanel() {
         setLayout(new GridLayout(2, 2));
         setUpMandatoryTagsButton();
         setUpRotatingTagsButton();
@@ -19,7 +20,7 @@ public class ButtonPanel extends JPanel {
         autoFetchPopularTagsRadioButton = new JRadioButton("Auto-fetch popular tags instead");
         autoFetchPopularTagsRadioButton.setEnabled(false);
         autoFetchPopularTagsRadioButton.addActionListener(e -> {
-			  setRotatingTagsButton.setEnabled(!autoFetchPopularTagsRadioButton.isSelected());
+            setRotatingTagsButton.setEnabled(!autoFetchPopularTagsRadioButton.isSelected());
         });
         add(autoFetchPopularTagsRadioButton);
     }
@@ -47,5 +48,4 @@ public class ButtonPanel extends JPanel {
         setRotatingTagsButton.setEnabled(enabled);
         autoFetchPopularTagsRadioButton.setEnabled(enabled);
     }
-
 }

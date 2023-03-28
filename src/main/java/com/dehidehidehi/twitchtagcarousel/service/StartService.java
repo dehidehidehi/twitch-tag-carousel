@@ -3,8 +3,8 @@ package com.dehidehidehi.twitchtagcarousel.service;
 import com.dehidehidehi.twitchtagcarousel.annotation.Property;
 import com.dehidehidehi.twitchtagcarousel.service.twitchclient.TwitchClient;
 import com.dehidehidehi.twitchtagcarousel.service.twitchclient.helix.HelixClient;
-import com.dehidehidehi.twitchtagcarousel.service.ui.CarrouselUi;
-import com.dehidehidehi.twitchtagcarousel.service.ui.swing.annotation.SwingCarrouselUi;
+import com.dehidehidehi.twitchtagcarousel.service.ui.CarouselUi;
+import com.dehidehidehi.twitchtagcarousel.service.ui.swing.annotation.SwingCarouselUi;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.slf4j.Logger;
@@ -33,19 +33,19 @@ public class StartService {
 
 	private final TagRotatorService tagRotatorService;
 	private final TwitchClient twitchClient;
-	private final CarrouselUi carrouselUi;
+	private final CarouselUi CarouselUi;
 
 	@Inject
 	public StartService(final TagRotatorService tagRotatorService,
 							  @HelixClient final TwitchClient twitchClient, 
-							  @SwingCarrouselUi final CarrouselUi carrouselUi) {
+							  @SwingCarouselUi final CarouselUi CarouselUi) {
 		this.tagRotatorService = tagRotatorService;
 		this.twitchClient = twitchClient;
-		this.carrouselUi = carrouselUi;
+		this.CarouselUi = CarouselUi;
 	}
 	
 	public void startUiLayer() {
-		carrouselUi.start(twitchClient);
+		CarouselUi.start(twitchClient);
 		LOGGER.info(getBanner());
 	}
 
