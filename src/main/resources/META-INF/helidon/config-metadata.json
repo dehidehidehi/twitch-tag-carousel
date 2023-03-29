@@ -1,0 +1,36 @@
+[
+  {
+    "module": "io.helidon.microprofile.server",
+    "types": [
+      {
+        "annotatedType": "io.helidon.microprofile.server.Server.Builder",
+        "description": "Configuration of Helidon Microprofile Server",
+        "prefix": "server",
+        "type": "io.helidon.microprofile.server.Server",
+        "standalone": true,
+        "producers": [
+          "io.helidon.microprofile.server.Server.Builder#build()"
+        ],
+        "options": [
+          {
+            "description": "Set a supplier of an executor service to use for tasks connected with application\n processing (JAX-RS).",
+            "key": "executor-service",
+            "method": "io.helidon.microprofile.server.Server.Builder#defaultExecutorServiceSupplier(java.util.function.Supplier<? extends java.util.concurrent.ExecutorService>)",
+            "type": "java.util.function.Supplier<? extends java.util.concurrent.ExecutorService>"
+          },
+          {
+            "description": "Configure listen port.",
+            "key": "port",
+            "method": "io.helidon.microprofile.server.Server.Builder#port(int)",
+            "type": "java.lang.Integer"
+          },
+          {
+            "description": "Configure listen host.",
+            "key": "host",
+            "method": "io.helidon.microprofile.server.Server.Builder#host(java.lang.String)"
+          }
+        ]
+      }
+    ]
+  }
+]

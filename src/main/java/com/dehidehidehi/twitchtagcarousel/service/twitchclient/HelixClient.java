@@ -1,4 +1,4 @@
-package com.dehidehidehi.twitchtagcarousel.service.twitchclient.helix;
+package com.dehidehidehi.twitchtagcarousel.service.twitchclient;
 import jakarta.inject.Qualifier;
 
 @Qualifier

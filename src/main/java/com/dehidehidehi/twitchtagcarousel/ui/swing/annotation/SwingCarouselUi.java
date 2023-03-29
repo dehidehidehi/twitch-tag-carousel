@@ -1,4 +1,4 @@
-package com.dehidehidehi.twitchtagcarousel.service.ui.swing.annotation;
+package com.dehidehidehi.twitchtagcarousel.ui.swing.annotation;
 
 import jakarta.inject.Qualifier;
 

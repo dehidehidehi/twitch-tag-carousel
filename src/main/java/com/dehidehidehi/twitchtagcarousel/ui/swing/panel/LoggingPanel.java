@@ -1,5 +1,5 @@
-package com.dehidehidehi.twitchtagcarousel.service.ui.swing.panel;
-import com.dehidehidehi.twitchtagcarousel.service.ui.swing.types.TextAreaOutputStream;
+package com.dehidehidehi.twitchtagcarousel.ui.swing.panel;
+import com.dehidehidehi.twitchtagcarousel.ui.swing.types.TextAreaOutputStream;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -47,7 +47,7 @@ public class LoggingPanel extends JPanel {
 
     private void redirectLogsToStdoutAndStderr(JTextArea logTextArea) {
         PrintStream printStream = new PrintStream(new TextAreaOutputStream(logTextArea));
-        System.setOut(printStream);
-        System.setErr(printStream);
+//        System.setOut(printStream);
+//        System.setErr(printStream);
     }
 }

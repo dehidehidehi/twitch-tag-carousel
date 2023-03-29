@@ -1,9 +1,8 @@
-package com.dehidehidehi.twitchtagcarousel.service.ui.swing.panel;
+package com.dehidehidehi.twitchtagcarousel.ui.swing.panel;
 import javax.swing.*;
 import java.awt.*;
 
 public class CommandCenterPanel extends JPanel {
-
 
     private JButton setMandatoryTagsButton;
     private JButton setRotatingTagsButton;

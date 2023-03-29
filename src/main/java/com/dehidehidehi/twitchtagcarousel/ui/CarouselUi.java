@@ -1,4 +1,4 @@
-package com.dehidehidehi.twitchtagcarousel.service.ui;
+package com.dehidehidehi.twitchtagcarousel.ui;
 import com.dehidehidehi.twitchtagcarousel.service.twitchclient.TwitchClient;
 
 public interface CarouselUi {

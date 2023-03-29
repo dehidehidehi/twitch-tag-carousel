@@ -1,4 +1,4 @@
-package com.dehidehidehi.twitchtagcarousel.service.ui.swing.types;
+package com.dehidehidehi.twitchtagcarousel.ui.swing.types;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;

@@ -1,4 +1,4 @@
-package com.dehidehidehi.twitchtagcarousel.service.ui.swing.button;
+package com.dehidehidehi.twitchtagcarousel.ui.swing.button;
 import javax.swing.*;
 
 public class ExitButton extends JButton {

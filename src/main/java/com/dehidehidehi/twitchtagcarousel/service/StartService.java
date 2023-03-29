@@ -2,9 +2,9 @@ package com.dehidehidehi.twitchtagcarousel.service;
 
 import com.dehidehidehi.twitchtagcarousel.annotation.Property;
 import com.dehidehidehi.twitchtagcarousel.service.twitchclient.TwitchClient;
-import com.dehidehidehi.twitchtagcarousel.service.twitchclient.helix.HelixClient;
-import com.dehidehidehi.twitchtagcarousel.service.ui.CarouselUi;
-import com.dehidehidehi.twitchtagcarousel.service.ui.swing.annotation.SwingCarouselUi;
+import com.dehidehidehi.twitchtagcarousel.service.twitchclient.HelixClient;
+import com.dehidehidehi.twitchtagcarousel.ui.CarouselUi;
+import com.dehidehidehi.twitchtagcarousel.ui.swing.annotation.SwingCarouselUi;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.slf4j.Logger;

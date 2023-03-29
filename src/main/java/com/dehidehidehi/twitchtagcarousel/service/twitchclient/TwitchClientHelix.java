@@ -1,17 +1,14 @@
-package com.dehidehidehi.twitchtagcarousel.service.twitchclient.helix;
+package com.dehidehidehi.twitchtagcarousel.service.twitchclient;
 import com.dehidehidehi.twitchtagcarousel.annotation.Property;
 import com.dehidehidehi.twitchtagcarousel.domain.TwitchTagBatch;
 import com.dehidehidehi.twitchtagcarousel.error.TwitchChannelIdException;
 import com.dehidehidehi.twitchtagcarousel.error.TwitchTagUpdateException;
 import com.dehidehidehi.twitchtagcarousel.error.TwitchUserAccessTokenException;
-import com.dehidehidehi.twitchtagcarousel.service.twitchclient.TwitchClient;
-import com.dehidehidehi.twitchtagcarousel.service.twitchclient.basic.BasicHttpTwitchClient;
 import com.github.twitch4j.helix.TwitchHelix;
 import com.github.twitch4j.helix.TwitchHelixBuilder;
 import com.github.twitch4j.helix.domain.ChannelInformation;
 import com.github.twitch4j.helix.domain.UserList;
 import com.netflix.hystrix.exception.HystrixRuntimeException;
-import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Typed;
 import jakarta.inject.Inject;
@@ -25,7 +22,7 @@ import java.util.List;
 @HelixClient
 @Typed(TwitchClient.class)
 @ApplicationScoped
-class TwitchClientHelix extends BasicHttpTwitchClient implements TwitchClient {
+class TwitchClientHelix extends BasicTwitchClient implements TwitchClient {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TwitchClientHelix.class);
 	
@@ -118,5 +115,10 @@ class TwitchClientHelix extends BasicHttpTwitchClient implements TwitchClient {
 		} catch (HystrixRuntimeException e) {
 			throw new TwitchTagUpdateException(e);
 		}
+	}
+
+	@Override
+	public void setAccessToken(final String safeAccessToken) {
+		throw new UnsupportedOperationException("TwitchClientHelix.setAccessToken not implemented.");
 	}
 }

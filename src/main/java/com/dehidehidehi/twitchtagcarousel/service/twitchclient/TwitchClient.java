@@ -3,6 +3,7 @@ import com.dehidehidehi.twitchtagcarousel.domain.TwitchTagBatch;
 import com.dehidehidehi.twitchtagcarousel.error.TwitchChannelIdException;
 import com.dehidehidehi.twitchtagcarousel.error.TwitchTagUpdateException;
 import com.dehidehidehi.twitchtagcarousel.error.TwitchUserAccessTokenException;
+import com.dehidehidehi.twitchtagcarousel.error.WebServerStartException;
 
 public interface TwitchClient {
     
@@ -13,5 +14,10 @@ public interface TwitchClient {
     String getChannelIdFrom(String channelName) throws TwitchChannelIdException;
     
     void updateTags(TwitchTagBatch tags) throws TwitchTagUpdateException;
-    
+
+    void startAuthServlet() throws WebServerStartException;
+
+    void closeAuthServlet();
+
+    void setAccessToken(String safeAccessToken);
 }
