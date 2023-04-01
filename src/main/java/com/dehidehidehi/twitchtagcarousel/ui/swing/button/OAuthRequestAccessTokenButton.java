@@ -37,13 +37,13 @@ public class OAuthRequestAccessTokenButton extends JButton implements ActionList
 		  
         openBrowserToAuthPage();
 		  
-        try {
-            Thread.currentThread().join(); // prevents server from just shutting down.
-        } catch (InterruptedException ex) {
-            LOGGER.error(ex.getMessage(), ex);
-            JOptionPane.showMessageDialog(this, "Error starting webserver for receiving access token.");
-				return;
-        }
+//        try {
+//            Thread.currentThread().join(); // prevents server from just shutting down.
+//        } catch (InterruptedException ex) {
+//            LOGGER.error(ex.getMessage(), ex);
+//            JOptionPane.showMessageDialog(this, "Error starting webserver for receiving access token.");
+//				return;
+//        }
         //		twitchClient.closeAuthServlet();
     }
 

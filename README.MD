@@ -31,7 +31,8 @@ In the `user.properties` file, locate the line that says `twitch-app.tag-rotatio
 
 To use this application, you will need to obtain a user access token from Twitch. Follow these steps to get your token:
 
-1. Go to the following link: <https://id.twitch.tv/oauth2/authorize?client_id=6k3qz1pdf1wko4xec9cjbfh3fbla24&redirect_uri=http://localhost:8080/twitch-tag-carousel/auth-token&response_type=token&scope=channel%3Amanage%3Abroadcast>
+1. Go to the following
+   link: [https://id.twitch.tv/oauth2/authorize?client_id=6k3qz1pdf1wko4xec9cjbfh3fbla24&redirect_uri=http://localhost:8080/twitch-tag-carousel/token-redirect&response_type=token&scope=channel%3Amanage%3Abroadcast](test)
 2. Accept the authorization request.
 3. Copy the access token from the URL bar.
 
@@ -52,3 +53,8 @@ Under `tag-carousel.tags`, set the tags that you want to cycle through as you st
 ## Step 6: Run the Application
 
 You're all set! Save the changes to the `user.properties` file and run the application. Your Twitch tags will now be automatically updated according to the settings you specified. Enjoy streaming!
+
+# Kudos
+
+[chatty/chatty](https://github.com/chatty/chatty) - for the clever handling of the implicit auth grant flow within 
+an HTML page.
