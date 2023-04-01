@@ -31,7 +31,7 @@ In the `user.properties` file, locate the line that says `twitch-app.tag-rotatio
 
 To use this application, you will need to obtain a user access token from Twitch. Follow these steps to get your token:
 
-1. Go to the following link: <https://id.twitch.tv/oauth2/authorize?client_id=6k3qz1pdf1wko4xec9cjbfh3fbla24&redirect_uri=http://localhost&response_type=token&scope=channel%3Amanage%3Abroadcast>
+1. Go to the following link: <https://id.twitch.tv/oauth2/authorize?client_id=6k3qz1pdf1wko4xec9cjbfh3fbla24&redirect_uri=http://localhost:8080/twitch-tag-carousel/auth-token&response_type=token&scope=channel%3Amanage%3Abroadcast>
 2. Accept the authorization request.
 3. Copy the access token from the URL bar.
 

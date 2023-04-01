@@ -1,13 +1,8 @@
 package com.dehidehidehi.twitchtagcarousel.resource;
 
 import jakarta.annotation.Nullable;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.QueryParam;
-import jakarta.ws.rs.core.Application;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,11 +29,14 @@ public class TwitchCallbackResource extends Application {
 
     @GET
     @Path("auth-token")
-    public Response handleAuthTokenCallBack(@Nullable @QueryParam("access_token") String accessToken,
-                                            @Nullable @QueryParam("scope") String scope) {
+    public Response handleAuthTokenCallBack(
+//            @Context UriInfo uriInfo,
+//            @Context HttpHeaders httpHeaders
+//            @Context HttpR httpHeaders
+            ) {
         LOGGER.debug("Entrée dans la méthode TwitchCallbackResource.handleAuthTokenCallBack");
-        LOGGER.debug("accessToken={}", accessToken);
-        LOGGER.debug("scope={}", scope);
+//        LOGGER.debug("accessToken={}", accessToken);
+//        LOGGER.debug("scope={}", scope);
         //		Optional.ofNullable(accessToken).ifPresentOrElse(
         //				safeAccessToken -> twitchClient.setAccessToken(safeAccessToken),
         //				() -> {throw new IllegalStateException("Received empty access_token!");}
