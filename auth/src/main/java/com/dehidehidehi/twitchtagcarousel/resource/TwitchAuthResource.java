@@ -44,8 +44,11 @@ public class TwitchAuthResource extends Application {
     @Path("token")
     @GET
     public Response handleAuthToken(@QueryParam("access_token") @Nullable final String accessToken) throws URISyntaxException {
-        LOGGER.info("Entrée dans la méthode TwitchAuthResource.handleAuthToken");
-        LOGGER.debug("accessToken={}", accessToken);
+        LOGGER.debug("Entrée dans la méthode TwitchAuthResource.handleAuthToken");
+        final String hiddenAccessToken = Optional.ofNullable(accessToken)
+                                  .map(s -> "%s****".formatted(s.substring(0, 5)))
+                                  .orElse("No access token received.");
+        LOGGER.debug("accessToken={}", hiddenAccessToken);
         Optional
                 .ofNullable(accessToken)
                 .ifPresentOrElse(twitchAuthJakartaWebServerService::receiveAccessToken,
@@ -63,7 +66,7 @@ public class TwitchAuthResource extends Application {
     @Path("token-redirect")
     @GET
     public Response handleAuthTokenCallBack() throws URISyntaxException {
-        LOGGER.info("Serving static html page which captures URL fragments then redirects the user.");
+        LOGGER.debug("Serving static html page which captures URL fragments then redirects the user.");
         final URI page = Objects.requireNonNull(getClass().getResource("/WEB-INF/html/token_redirect.html")).toURI();
         final File file = new File(page);
         return Response.ok(file).build();

@@ -18,6 +18,7 @@ import java.awt.*;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.URI;
+import java.util.Optional;
 import java.util.concurrent.*;
 import java.util.function.Consumer;
 
@@ -32,44 +33,57 @@ public class TwitchAuthJakartaWebServerService implements TwitchAuthService, Aut
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TwitchAuthJakartaWebServerService.class);
 
-	private final String host = "http://localhost";
-	private final int port = 8080;
-	private final String rootApplicationPath = "twitch-tag-carousel";
-
-	private final int serverStopDelaySeconds = 0;
-
-	private HttpServer server;
-	private CountDownLatch browserSignalCountDownLatch;
-	private String accessToken;
-	
+	@Inject
+	@Property("twitch-auth.jakarta-web-server.host")
+	private String host;
+	@Inject
+	@Property("twitch-auth.jakarta-web-server.port")
+	private int port;
+	@Inject
+	@Property("twitch-auth.jakarta-web-server.root-application-path")
+	private String rootApplicationPath;
+	@Inject
+	@Property("twitch-auth.jakarta-web-server.server-stop-delay-seconds")
+	private int serverStopDelaySeconds;
 	@Inject
 	@Property("twitch-app.auth-uri.implicit-grant-flow")
 	private String implicitGrantFlowUriString;
+	private HttpServer server;
+	private CountDownLatch browserSignalCountDownLatch;
+	private String accessToken;
+
 
 	/**
 	 * Registers the access token and sends signal to async processes.
 	 */
 	public void receiveAccessToken(final String accessToken) {
+		final String hiddenAccessToken = Optional.ofNullable(accessToken)
+															  .map(s -> "%s****".formatted(s.substring(0, 5)))
+															  .orElse("No access token received.");
+		LOGGER.trace("Setting accessToken to {}", hiddenAccessToken);
 		this.accessToken = accessToken;
+		LOGGER.trace("Decrementing {}", browserSignalCountDownLatch.getClass().getSimpleName());
 		browserSignalCountDownLatch.countDown();
 	}
 
 	/**
-	 * Starts a webserver, waits for the token, registers it, executes the callback, then shuts down.
+	 * Starts a webserver, waits for the token, registers it, executes the callback.
 	 *
 	 * @param onAccessTokenReceivedCallback to be executed when the access token has been received.
 	 */
 	@Override
 	public CompletableFuture<Void> asyncQueryAccessTokenWithImplicitGrantFlow(final Consumer<String> onAccessTokenReceivedCallback) {
+		LOGGER.debug("Started asyncQueryAccessTokenWithImplicitGrantFlow");
 		final Executor executorService = Executors.newCachedThreadPool();
 		return supplyAsync(this::startWebServer, executorService)
 				.thenRun(this::openBrowserToAuthPage)
-				.thenCompose(i -> handleBrowserCallbackSignal(onAccessTokenReceivedCallback)) // compose waits for completion
+				.thenCompose(i -> handleBrowserCallbackSignal(onAccessTokenReceivedCallback))
 				.thenRun(this::close);
 	}
 
 	private CompletableFuture<Void> handleBrowserCallbackSignal(Consumer<String> onAccessTokenReceivedCallBack)
 	throws TwitchAuthTokenQueryException {
+		LOGGER.debug("Waiting for browser auth token received signal.");
 		final ExecutorService executorService = Executors.newCachedThreadPool();
 		return CompletableFuture
 				.supplyAsync(this::waitForBrowserSignal, executorService)
@@ -90,6 +104,7 @@ public class TwitchAuthJakartaWebServerService implements TwitchAuthService, Aut
 	}
 
 	private HttpServer startWebServer() {
+		LOGGER.debug("Starting webserver.");
 		final URI targetUri = UriBuilder.fromUri(("%s/" + rootApplicationPath + "/").formatted(host)).port(port).build();
 		try {
 			server = HttpServer.create(new InetSocketAddress(targetUri.getPort()), 0);
@@ -99,10 +114,12 @@ public class TwitchAuthJakartaWebServerService implements TwitchAuthService, Aut
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> server.stop(0)));
 		registerTwitchCallbackJaxRsApplication(targetUri);
 		server.start();
+		LOGGER.debug("Started webserver.");
 		return server;
 	}
 
 	private void registerTwitchCallbackJaxRsApplication(final URI targetUri) {
+		LOGGER.trace("Registering {} as a web resource.", TwitchAuthResource.class.getSimpleName());
 		final Application jaxRsApplication = new TwitchAuthResource(this);
 		HttpHandler handler = RuntimeDelegate.getInstance().createEndpoint(jaxRsApplication, HttpHandler.class);
 		server.createContext(targetUri.getPath(), handler);
@@ -112,6 +129,7 @@ public class TwitchAuthJakartaWebServerService implements TwitchAuthService, Aut
 	 * Open a web page to a specified URL.
 	 */
 	private void openBrowserToAuthPage() {
+		LOGGER.info("Opening browser page for twitch auth.");
 		try {
 			Desktop.getDesktop().browse(URI.create(implicitGrantFlowUriString));
 		} catch (Exception ex) {
@@ -124,11 +142,7 @@ public class TwitchAuthJakartaWebServerService implements TwitchAuthService, Aut
 	 */
 	@Override
 	public void close() {
-		LOGGER.debug("Closing server.");
+		LOGGER.debug("Closing server in {} seconds.", serverStopDelaySeconds);
 		server.stop(serverStopDelaySeconds);
-	}
-
-	public CountDownLatch getBrowserSignalCountDownLatch() {
-		return browserSignalCountDownLatch;
 	}
 }

@@ -18,7 +18,7 @@ import java.util.function.Consumer;
 public class PropertyProducer {
 
 	private static final String USER_PROPERTIES = "/user.properties";
-	private final String APPLICATION_PROPERTIES = "/application.properties";
+	private static final String APPLICATION_PROPERTIES = "/application.properties";
 	private Properties applicationProperties;
 	private Properties userProperties;
 
