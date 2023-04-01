@@ -21,7 +21,6 @@ import java.util.Set;
 
 /**
  * A simple application which listens for oAuth callbacks from Twitch.
- * Should NOT be a CDI bean because we don't want this instantiated at CDI discovery.
  */
 @Produces(MediaType.TEXT_HTML)
 @Path("/")
@@ -52,7 +51,7 @@ public class TwitchAuthResource extends Application {
         Optional
                 .ofNullable(accessToken)
                 .ifPresentOrElse(twitchAuthJakartaWebServerService::receiveAccessToken,
-                                 () -> {throw new IllegalStateException("Received empty access_token!");});
+                                 () -> {throw new IllegalStateException("Received no access_token!");});
         final URI page = Objects.requireNonNull(getClass().getResource("/WEB-INF/html/token_received.html")).toURI();
         final File file = new File(page);
         return Response.ok(file).build();

@@ -54,19 +54,6 @@ public class TwitchAuthJakartaWebServerService implements TwitchAuthService, Aut
 
 
 	/**
-	 * Registers the access token and sends signal to async processes.
-	 */
-	public void receiveAccessToken(final String accessToken) {
-		final String hiddenAccessToken = Optional.ofNullable(accessToken)
-															  .map(s -> "%s****".formatted(s.substring(0, 5)))
-															  .orElse("No access token received.");
-		LOGGER.trace("Setting accessToken to {}", hiddenAccessToken);
-		this.accessToken = accessToken;
-		LOGGER.trace("Decrementing {}", browserSignalCountDownLatch.getClass().getSimpleName());
-		browserSignalCountDownLatch.countDown();
-	}
-
-	/**
 	 * Starts a webserver, waits for the token, registers it, executes the callback.
 	 *
 	 * @param onAccessTokenReceivedCallback to be executed when the access token has been received.
@@ -81,6 +68,22 @@ public class TwitchAuthJakartaWebServerService implements TwitchAuthService, Aut
 				.thenRun(this::close);
 	}
 
+	/**
+	 * Registers the access token and sends signal to async processes.
+	 */
+	public void receiveAccessToken(final String accessToken) {
+		final String hiddenAccessToken = Optional.ofNullable(accessToken)
+															  .map(s -> "%s****".formatted(s.substring(0, 5)))
+															  .orElse("No access token received.");
+		LOGGER.trace("Setting accessToken to {}", hiddenAccessToken);
+		this.accessToken = accessToken;
+		LOGGER.trace("Decrementing {}", browserSignalCountDownLatch.getClass().getSimpleName());
+		browserSignalCountDownLatch.countDown();
+	}
+
+	/**
+	 * When the browser has been redirected to our token_redirect page, we execute the supplied callback.
+	 */
 	private CompletableFuture<Void> handleBrowserCallbackSignal(Consumer<String> onAccessTokenReceivedCallBack)
 	throws TwitchAuthTokenQueryException {
 		LOGGER.debug("Waiting for browser auth token received signal.");
@@ -96,6 +99,7 @@ public class TwitchAuthJakartaWebServerService implements TwitchAuthService, Aut
 	private String waitForBrowserSignal() {
 		browserSignalCountDownLatch = new CountDownLatch(1);
 		try {
+			LOGGER.debug("Waiting for browser signal.");
 			browserSignalCountDownLatch.await();
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);

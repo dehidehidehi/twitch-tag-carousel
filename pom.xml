@@ -10,9 +10,11 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>core</module>
+        <module>main</module>
         <module>auth</module>
         <module>commons</module>
+        <module>ui</module>
+        <module>tags</module>
     </modules>
 
     <properties>
@@ -25,6 +27,24 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>com.dehidehidehi.twitchtagcarousel</groupId>
+                <artifactId>ui</artifactId>
+                <version>${twitch-tag-carousel.version}</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.dehidehidehi.twitchtagcarousel</groupId>
+                <artifactId>tags</artifactId>
+                <version>${twitch-tag-carousel.version}</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.dehidehidehi.twitch-tag-carousel</groupId>
+                <artifactId>core</artifactId>
+                <version>${twitch-tag-carousel.version}</version>
+                <scope>compile</scope>
+            </dependency>
             <dependency>
                 <groupId>com.dehidehidehi.twitchtagcarousel</groupId>
                 <artifactId>commons</artifactId>
