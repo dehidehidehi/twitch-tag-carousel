@@ -4,6 +4,7 @@ import com.dehidehidehi.twitchtagcarousel.error.TwitchChannelIdException;
 import com.dehidehidehi.twitchtagcarousel.error.TwitchTagUpdateException;
 import com.dehidehidehi.twitchtagcarousel.error.TwitchUserAccessTokenException;
 import com.dehidehidehi.twitchtagcarousel.error.WebServerStartException;
+import com.sun.net.httpserver.HttpServer;
 
 public interface TwitchClient {
     
@@ -15,9 +16,9 @@ public interface TwitchClient {
     
     void updateTags(TwitchTagBatch tags) throws TwitchTagUpdateException;
 
-    void startAuthServlet() throws WebServerStartException;
+    HttpServer startAuthServer() throws WebServerStartException;
 
-    void closeAuthServlet();
+    void stopAuthServer(HttpServer httpServer);
 
     void setAccessToken(String safeAccessToken);
 }
