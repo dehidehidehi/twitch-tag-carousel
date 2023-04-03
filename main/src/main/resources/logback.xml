@@ -5,6 +5,24 @@
             <pattern>%d{HH:mm:ss} %highlight(%-5level) %ex{short} %msg%n</pattern>
         </encoder>
     </appender>
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${resource:twitch-tag-carousel.log}</file>
+        <append>true</append>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${resource:twitch-tag-carousel.log.%d{yyyy-MM-dd}.log}</fileNamePattern>
+            <maxHistory>7</maxHistory>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <maxFileSize>2000</maxFileSize>
+        </triggeringPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <root level="INFO">
+        <appender-ref ref="FILE" />
+        <appender-ref ref="console"/>
+    </root>
     <root level="DEBUG">
         <appender-ref ref="console"/>
     </root>

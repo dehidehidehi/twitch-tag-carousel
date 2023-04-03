@@ -7,7 +7,7 @@ import com.dehidehidehi.twitchtagcarousel.service.TwitchTagService;
 import com.dehidehidehi.twitchtagcarousel.swing.label.TwitchTagTitleLabel;
 import com.dehidehidehi.twitchtagcarousel.swing.panel.AuthTokenValidationPanel;
 import com.dehidehidehi.twitchtagcarousel.swing.panel.CommandCenterPanel;
-import com.dehidehidehi.twitchtagcarousel.swing.panel.LoggingPanel;
+import com.dehidehidehi.twitchtagcarousel.swing.panel.logging.LoggingPanel;
 import com.dehidehidehi.twitchtagcarousel.swing.panel.StartUpPanel;
 import jakarta.inject.Inject;
 import org.slf4j.Logger;
@@ -57,6 +57,24 @@ public final class SwingCarouselUi implements CarouselUi {
     }
 
 
+    private void handleTokenValidationUi(TwitchTagService twitchTagService) {
+        final boolean userAuthTokenValid = isUserAuthTokenValid(twitchTagService);
+        if (!userAuthTokenValid) {
+            LOGGER.info("userAccessToken is not valid: instantiating AuthTokenValidationPanel");
+            final AuthTokenValidationPanel authTokenValidationPanel = new AuthTokenValidationPanel(twitchTagService);
+            startUpFrame.add(authTokenValidationPanel);
+            startUpFrame.pack();
+        } else {
+            LOGGER.info("userAccessToken is valid: instantiating CommandCenterPanel");
+            commandCenterPanel = new CommandCenterPanel();
+            startUpFrame.add(commandCenterPanel);
+            startUpFrame.pack();
+        }
+        startUpPanel.setVisible(false);
+        LOGGER.info("Startup pane: set as disabled");
+        LOGGER.info("StartUpPanel done handlingAuthToken.");
+    }
+
     /**
      * Top part of the application we'd always like to have.
      */
@@ -83,24 +101,6 @@ public final class SwingCarouselUi implements CarouselUi {
 
     private void popUpInCenterOfTheScreen(final JFrame jFrame) {
         jFrame.setLocationRelativeTo(null);
-    }
-
-    private void handleTokenValidationUi(TwitchTagService twitchTagService) {
-        final boolean userAuthTokenValid = isUserAuthTokenValid(twitchTagService);
-        if (!userAuthTokenValid) {
-            LOGGER.info("userAccessToken is not valid: instantiating AuthTokenValidationPanel");
-            authTokenValidationPanel = new AuthTokenValidationPanel(twitchTagService);
-            startUpFrame.add(authTokenValidationPanel);
-            startUpFrame.pack();
-        } else {
-            LOGGER.info("userAccessToken is valid: instantiating CommandCenterPanel");
-            commandCenterPanel = new CommandCenterPanel();
-            startUpFrame.add(commandCenterPanel);
-            startUpFrame.pack();
-        }
-        startUpPanel.setVisible(false);
-        LOGGER.info("Startup pane: set as disabled");
-        LOGGER.info("StartUpPanel done handlingAuthToken.");
     }
 
     /**

@@ -18,7 +18,6 @@ public class MainApplication {
             final CommandCenter commandCenter = container.select(CommandCenter.class).get();
             commandCenter.startUi();
             LOGGER.info(commandCenter.getBanner());
-            commandCenter.startUpdatingTags();
             Thread.sleep(Long.MAX_VALUE);
         }
     }

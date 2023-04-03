@@ -1,10 +1,8 @@
-package com.dehidehidehi.twitchtagcarousel.swing.panel;
-import com.dehidehidehi.twitchtagcarousel.swing.types.TextAreaOutputStream;
+package com.dehidehidehi.twitchtagcarousel.swing.panel.logging;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.PrintStream;
 
 public class LoggingPanel extends JPanel {
 
@@ -19,7 +17,6 @@ public class LoggingPanel extends JPanel {
 
     public LoggingPanel(int rows, boolean lineWrap) {
         final JTextArea logTextArea = buildTextArea(rows, lineWrap);
-        redirectLogsToStdoutAndStderr(logTextArea);
         final JScrollPane scrollPane = buildScrollPane(logTextArea);
         add(scrollPane, BorderLayout.CENTER);
     }
@@ -34,8 +31,7 @@ public class LoggingPanel extends JPanel {
 
     @NotNull
     private JTextArea buildTextArea(final int rows, final boolean lineWrap) {
-        final JTextArea logTextArea;
-        logTextArea = new JTextArea();
+        final JTextArea logTextArea = new LoggingTextAreaFactory().getTextArea();
         logTextArea.setEditable(false);
         logTextArea.setLineWrap(lineWrap);
         logTextArea.setWrapStyleWord(true);
@@ -43,11 +39,5 @@ public class LoggingPanel extends JPanel {
         logTextArea.setAutoscrolls(true);
         logTextArea.setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
         return logTextArea;
-    }
-
-    private void redirectLogsToStdoutAndStderr(JTextArea logTextArea) {
-        PrintStream printStream = new PrintStream(new TextAreaOutputStream(logTextArea));
-//        System.setOut(printStream);
-//        System.setErr(printStream);
     }
 }
