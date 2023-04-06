@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 
 public class OAuthRequestAccessTokenButton extends JButton implements ActionListener {
@@ -32,14 +33,16 @@ public class OAuthRequestAccessTokenButton extends JButton implements ActionList
     @Override
     public void actionPerformed(final ActionEvent e) {
         LOGGER.info("Action on button triggered : {}", OAuthRequestAccessTokenButton.class.getSimpleName());
-        try {
-            twitchTagService.queryUserAccessToken();
-            getParent().setEnabled(false);
-            getParent().setVisible(false);
-            getTopLevelAncestor().add(onSuccessCommandCenterPanelSupplier.get());
-        } catch (TwitchAuthTokenQueryException ex) {
-            LOGGER.error(ex.getMessage(), ex);
-            JOptionPane.showMessageDialog(this, "Error starting webserver for receiving access token.");
-        }
+        Executors.newSingleThreadExecutor().execute(() -> {
+            try {
+                twitchTagService.queryUserAccessToken();
+                getParent().setEnabled(false);
+                getParent().setVisible(false);
+                getTopLevelAncestor().add(onSuccessCommandCenterPanelSupplier.get());
+            } catch (TwitchAuthTokenQueryException ex) {
+                LOGGER.error(ex.getMessage(), ex);
+                JOptionPane.showMessageDialog(this, "Error starting webserver for receiving access token.");
+            }
+        });
     }
 }

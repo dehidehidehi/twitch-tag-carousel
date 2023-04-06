@@ -16,11 +16,9 @@ public class LoggingTextAreaAppender extends AppenderBase<ILoggingEvent> {
 
 	@Override
 	protected void append(ILoggingEvent event) {
-		String message;
-		message = event.getFormattedMessage();
+		final String message = event.getFormattedMessage();
 		textArea.append(message + "\n");
 	}
-
 
 	public void setTextArea(final JTextArea textArea) {
 		this.textArea = textArea;

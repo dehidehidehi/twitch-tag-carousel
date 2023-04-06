@@ -2,6 +2,8 @@ package com.dehidehidehi.twitchtagcarousel.swing.panel.logging;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
 
 public class LoggingPanel extends JPanel {
@@ -17,16 +19,9 @@ public class LoggingPanel extends JPanel {
 
     public LoggingPanel(int rows, boolean lineWrap) {
         final JTextArea logTextArea = buildTextArea(rows, lineWrap);
-        final JScrollPane scrollPane = buildScrollPane(logTextArea);
+        final JScrollPane scrollPane = setUpVerticalScrollBar(logTextArea);
+        alwaysScrollToBottomOnTextUpdate(logTextArea, scrollPane);
         add(scrollPane, BorderLayout.CENTER);
-    }
-
-    @NotNull
-    private static JScrollPane buildScrollPane(final JTextArea logTextArea) {
-        final JScrollPane scrollPane = new JScrollPane(logTextArea);
-        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS); // always show vertical scrollbar
-        scrollPane.setAutoscrolls(true);
-        return scrollPane;
     }
 
     @NotNull
@@ -39,5 +34,31 @@ public class LoggingPanel extends JPanel {
         logTextArea.setAutoscrolls(true);
         logTextArea.setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
         return logTextArea;
+    }
+
+    @NotNull
+    private static JScrollPane setUpVerticalScrollBar(final JTextArea logTextArea) {
+        final JScrollPane scrollPane = new JScrollPane(logTextArea);
+        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS); // always show vertical scrollbar
+        scrollPane.setAutoscrolls(true);
+        return scrollPane;
+    }
+
+    private void alwaysScrollToBottomOnTextUpdate(final JTextArea logTextArea, final JScrollPane scrollPane) {
+        logTextArea.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                SwingUtilities.invokeLater(() -> {
+                    JScrollBar verticalScrollBar = scrollPane.getVerticalScrollBar();
+                    verticalScrollBar.setValue(verticalScrollBar.getMaximum());
+                });
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {}
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {}
+        });
     }
 }
