@@ -32,7 +32,7 @@ public class OAuthRequestAccessTokenButton extends JButton implements ActionList
 
     @Override
     public void actionPerformed(final ActionEvent e) {
-        LOGGER.info("Action on button triggered : {}", OAuthRequestAccessTokenButton.class.getSimpleName());
+        LOGGER.debug("Action on button triggered : {}", OAuthRequestAccessTokenButton.class.getSimpleName());
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
                 twitchTagService.queryUserAccessToken();

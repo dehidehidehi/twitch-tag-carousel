@@ -9,6 +9,7 @@ import com.dehidehidehi.twitchtagcarousel.swing.panel.AuthTokenValidationPanel;
 import com.dehidehidehi.twitchtagcarousel.swing.panel.CommandCenterPanel;
 import com.dehidehidehi.twitchtagcarousel.swing.panel.logging.LoggingPanel;
 import com.dehidehidehi.twitchtagcarousel.swing.panel.StartUpPanel;
+import com.dehidehidehi.twitchtagcarousel.ui.BannerUi;
 import jakarta.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,9 +26,6 @@ public final class SwingCarouselUi implements CarouselUi {
 
     private JFrame startUpFrame;
     private StartUpPanel startUpPanel;
-    private LoggingPanel loggingPanel;
-    private AuthTokenValidationPanel authTokenValidationPanel;
-    private CommandCenterPanel commandCenterPanel;
 
     @Property("twitch-app.auth-uri.implicit-grant-flow")
     @Inject
@@ -35,7 +33,8 @@ public final class SwingCarouselUi implements CarouselUi {
 
     @Override
     public void start(TwitchTagService twitchTagService) {
-        LOGGER.info("SwingCarouselUi#start entry.");
+        LOGGER.debug("SwingCarouselUi#start entry.");
+
         startUpFrame = new JFrame();
         startUpFrame.setVisible(false);
         startUpFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -44,7 +43,7 @@ public final class SwingCarouselUi implements CarouselUi {
         
         final JPanel topPartOfTheApplication = getTopPartOfTheApplication();
         startUpFrame.add(topPartOfTheApplication, BorderLayout.NORTH);
-        LOGGER.info("SwingCarouselUi added startUpPanel to Container.");
+        LOGGER.debug("SwingCarouselUi added startUpPanel to Container.");
 
         startUpPanel = new StartUpPanel();
         startUpFrame.add(startUpPanel, BorderLayout.CENTER);
@@ -53,26 +52,31 @@ public final class SwingCarouselUi implements CarouselUi {
 
         startUpFrame.pack();
         startUpFrame.setVisible(true);
-        LOGGER.info("SwingCarousel JFrame enabled.");
+        
+        LOGGER.info(BannerUi.getBanner());
+        LOGGER.info("Starting application.");
+        LOGGER.debug("SwingCarousel JFrame enabled.");
     }
 
 
     private void handleTokenValidationUi(TwitchTagService twitchTagService) {
         final boolean userAuthTokenValid = isUserAuthTokenValid(twitchTagService);
         if (!userAuthTokenValid) {
-            LOGGER.info("userAccessToken is not valid: instantiating AuthTokenValidationPanel");
+            LOGGER.info("Your user access token is not valid!");
+            LOGGER.info("Please get a valid access token.");
+            LOGGER.debug("userAccessToken is not valid: instantiating AuthTokenValidationPanel");
             final AuthTokenValidationPanel authTokenValidationPanel = new AuthTokenValidationPanel(twitchTagService);
             startUpFrame.add(authTokenValidationPanel);
             startUpFrame.pack();
         } else {
-            LOGGER.info("userAccessToken is valid: instantiating CommandCenterPanel");
-            commandCenterPanel = new CommandCenterPanel();
+            LOGGER.debug("userAccessToken is valid: instantiating CommandCenterPanel");
+            CommandCenterPanel commandCenterPanel = new CommandCenterPanel();
             startUpFrame.add(commandCenterPanel);
             startUpFrame.pack();
         }
         startUpPanel.setVisible(false);
-        LOGGER.info("Startup pane: set as disabled");
-        LOGGER.info("StartUpPanel done handlingAuthToken.");
+        LOGGER.debug("Startup pane: set as disabled");
+        LOGGER.debug("StartUpPanel done handlingAuthToken.");
     }
 
     /**
@@ -85,7 +89,7 @@ public final class SwingCarouselUi implements CarouselUi {
         final TwitchTagTitleLabel twitchTagTitleLabel = new TwitchTagTitleLabel();
         centerTheTitleLabel(topPanel, twitchTagTitleLabel);
 
-        loggingPanel = new LoggingPanel();
+        LoggingPanel loggingPanel = new LoggingPanel();
         topPanel.add(loggingPanel);
         
         return topPanel;

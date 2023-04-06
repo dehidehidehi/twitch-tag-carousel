@@ -13,13 +13,13 @@ public class StartUpPanel extends JPanel {
     
     public StartUpPanel() {
         setAccessTokenValidationLabel("Validating access token...");
-        LOGGER.info("StartUpPanel done instantiating.");
+        LOGGER.debug("StartUpPanel done instantiating.");
     }
 
     private void setAccessTokenValidationLabel(final String label) {
         validationLabel = new JLabel();
         validationLabel.setText(label);
         add(validationLabel, BorderLayout.CENTER);
-        LOGGER.info("StartUpPanel done settingValidationLabel.");
+        LOGGER.debug("StartUpPanel done settingValidationLabel.");
     }
 }

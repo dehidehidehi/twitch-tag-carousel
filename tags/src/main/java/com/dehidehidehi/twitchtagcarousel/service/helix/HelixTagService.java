@@ -133,6 +133,9 @@ public class HelixTagService extends BasicTwitchTagService implements TwitchTagS
 	@Override
 	public void setUserAccessToken(final String userAccessToken) {
 		this.userAccessToken = userAccessToken;
+		final String hiddenToken = StringUtils.abbreviateMiddle(userAccessToken, "******", 12);
+		LOGGER.info("Successfully received access token :)");
+		LOGGER.debug("Received access token {}", hiddenToken);
 		// todo save it in user config files?
 	}
 }

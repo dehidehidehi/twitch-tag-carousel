@@ -1,24 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
+    <!-- PROPERTY -->
+    <property name="LOG_DIR" value="./logs"/>
+    
+    <!-- APPENDER -->
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%d{HH:mm:ss} %highlight(%-5level) %ex{short} %msg%n</pattern>
         </encoder>
-    </appender> 
-    <property name="LOG_DIR" value="./logs" />
-    <appender name="LoggingTextAreaAppender" class="com.dehidehidehi.twitchtagcarousel.swing.panel.logging.LoggingTextAreaAppender">
+    </appender>
+    <appender name="LoggingTextAreaAppender"
+              class="com.dehidehidehi.twitchtagcarousel.swing.panel.logging.LoggingTextAreaAppender">
         <encoder>
             <pattern>%d{HH:mm:ss} %-5level %logger{36} - %msg%n</pattern>
         </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <filter class="ch.qos.logback.classic.filter.LoggerNameFilter">
+            <logger>com.dehidehidehi.twitchtagcarousel</logger>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
     </appender>
-    <root level="INFO">
+    
+    <!-- LOGGER -->
+    <logger name="com.dehidehidehi.twitchtagcarousel" level="DEBUG" additivity="false">
         <appender-ref ref="console"/>
         <appender-ref ref="LoggingTextAreaAppender"/>
-    </root>
+    </logger>
+    <logger name="org.jboss.weld" level="ERROR"/>
+    <logger name="com.netflix" level="ERROR"/>
+    <logger name="io.github.xanthic" level="ERROR"/>
     <root level="DEBUG">
         <appender-ref ref="console"/>
     </root>
-    <logger name="org.jboss.weld" level="OFF"/>
-    <logger name="com.netflix" level="OFF"/>
-    <logger name="io.github.xanthic" level="OFF"/>
 </configuration>

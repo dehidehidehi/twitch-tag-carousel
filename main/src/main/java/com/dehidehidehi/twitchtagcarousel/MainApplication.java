@@ -1,5 +1,6 @@
 package com.dehidehidehi.twitchtagcarousel;
 
+import com.dehidehidehi.twitchtagcarousel.ui.BannerUi;
 import jakarta.enterprise.inject.se.SeContainer;
 import jakarta.enterprise.inject.se.SeContainerInitializer;
 import org.slf4j.Logger;
@@ -17,7 +18,6 @@ public class MainApplication {
             LOGGER.debug("CDI container started successfully.");
             final CommandCenter commandCenter = container.select(CommandCenter.class).get();
             commandCenter.startUi();
-            LOGGER.info(commandCenter.getBanner());
             Thread.sleep(Long.MAX_VALUE);
         }
     }

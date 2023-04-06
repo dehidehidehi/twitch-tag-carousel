@@ -3,6 +3,7 @@ package com.dehidehidehi.twitchtagcarousel;
 import com.dehidehidehi.twitchtagcarousel.annotation.Property;
 import com.dehidehidehi.twitchtagcarousel.service.TagRotatorService;
 import com.dehidehidehi.twitchtagcarousel.service.TwitchTagService;
+import com.dehidehidehi.twitchtagcarousel.ui.BannerUi;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.slf4j.Logger;
@@ -49,6 +50,7 @@ class CommandCenter {
 	 * Executes tag updater at a specified frequency.
 	 */
 	void startUpdatingTags() {
+		LOGGER.info(BannerUi.getBanner());
 		LOGGER.debug("Scheduling execution of app every {} {}.", tagRotationFrequencySeconds, TIME_UNIT);
 		LOGGER.info("First execution of Twitch Tag rotator will start in {} {}", startDelaySeconds, TIME_UNIT);
 		ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
@@ -63,13 +65,5 @@ class CommandCenter {
 
 	}
 
-	String getBanner() {
-		return """
-				 _____              ____                                    _\s
-				|_   _|_ _  __ _   / ___|__ _ _ __ _ __ ___  _   _ ___  ___| |
-				  | |/ _` |/ _` | | |   / _` | '__| '__/ _ \\| | | / __|/ _ \\ |
-				  | | (_| | (_| | | |__| (_| | |  | | | (_) | |_| \\__ \\  __/ |
-				  |_|\\__,_|\\__, |  \\____\\__,_|_|  |_|  \\___/ \\__,_|___/\\___|_|
-				           |___/""";
-	}
+
 }

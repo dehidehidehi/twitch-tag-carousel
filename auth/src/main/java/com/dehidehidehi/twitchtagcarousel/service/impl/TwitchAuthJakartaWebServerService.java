@@ -133,7 +133,7 @@ public class TwitchAuthJakartaWebServerService implements TwitchAuthService, Aut
 	 * Open a web page to a specified URL.
 	 */
 	private void openBrowserToAuthPage() {
-		LOGGER.info("Opening browser page for twitch auth.");
+		LOGGER.info("Opening browser to Twitch.tv to ask permission for an access token.");
 		try {
 			Desktop.getDesktop().browse(URI.create(implicitGrantFlowUriString));
 		} catch (Exception ex) {
