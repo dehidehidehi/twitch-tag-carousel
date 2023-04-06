@@ -31,7 +31,7 @@ public class LoggingPanel extends JPanel {
 
     @NotNull
     private JTextArea buildTextArea(final int rows, final boolean lineWrap) {
-        final JTextArea logTextArea = new LoggingTextAreaFactory().getTextArea();
+        final JTextArea logTextArea = LoggingTextAreaFactory.ofLogBackAppendedTextArea();
         logTextArea.setEditable(false);
         logTextArea.setLineWrap(lineWrap);
         logTextArea.setWrapStyleWord(true);

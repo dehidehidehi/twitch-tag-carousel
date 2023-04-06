@@ -1,6 +1,10 @@
 package com.dehidehidehi.twitchtagcarousel.swing.panel.logging;
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.Appender;
+import org.slf4j.LoggerFactory;
+
 import javax.swing.*;
-import java.io.RandomAccessFile;
 
 /**
  * Factory for providing logging panels for our GUI.<br>
@@ -8,36 +12,26 @@ import java.io.RandomAccessFile;
  */
 class LoggingTextAreaFactory {
 
-    public static final String TWITCH_TAG_CAROUSEL_LOG = "logs/twitch-tag-carousel.log";
-    private final JTextArea textArea;
-    private long lastPosition;
+    private static final String LOGGER_NAME = "root";
+    private static final String APPENDER_NAME = "LoggingTextAreaAppender";
 
-    public LoggingTextAreaFactory() {
-        textArea = new JTextArea();
-        startListeningToLogsFile();
+    private LoggingTextAreaFactory() {
     }
 
-    private void startListeningToLogsFile() {
-        final Timer timer = new Timer(1000, e -> {
-            try {
-                final RandomAccessFile file = new RandomAccessFile(TWITCH_TAG_CAROUSEL_LOG, "r");
-                file.seek(lastPosition);
-                String line;
-                while ((line = file.readLine()) != null) {
-                    textArea.append(line + "\n");
-                }
-                lastPosition = file.getFilePointer();
-                file.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        });
-        timer.start();
+    static JTextArea ofLogBackAppendedTextArea() {
+        final JTextArea jTextArea = new JTextArea();
+        final LoggingTextAreaAppender appender = getLoggingTextAreaAppenderFromLogbackContext();
+        appender.setTextArea(jTextArea);
+        appender.start();
+        return jTextArea;
     }
 
-
-    public JTextArea getTextArea() {
-        return textArea;
+    private static LoggingTextAreaAppender getLoggingTextAreaAppenderFromLogbackContext() {
+        LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+        Appender<ILoggingEvent> appender = context.getLogger(LOGGER_NAME).getAppender(APPENDER_NAME);
+        if (appender instanceof LoggingTextAreaAppender textAreaAppender) {
+            return textAreaAppender;
+        }
+        throw new IllegalStateException("Logback custom LoggingTextAreaAppender not found in Logback context.");
     }
-
 }
