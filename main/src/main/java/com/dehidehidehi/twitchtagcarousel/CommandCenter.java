@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
  * Orchestrates application.
  */
 @ApplicationScoped
-public class CommandCenter {
+class CommandCenter {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(CommandCenter.class);
 	private static final TimeUnit TIME_UNIT = TimeUnit.SECONDS;
@@ -33,7 +33,7 @@ public class CommandCenter {
 	private int tagRotationFrequencySeconds;
 
 	@Inject
-	public CommandCenter(final TagRotatorService tagRotatorService,
+	CommandCenter(final TagRotatorService tagRotatorService,
 								final TwitchTagService twitchTagService,
 								final CarouselUi carouselUi) {
 		this.tagRotatorService = tagRotatorService;
@@ -41,14 +41,14 @@ public class CommandCenter {
 		this.carouselUi = carouselUi;
 	}
 
-	public void startUi() {
+	void startUi() {
 		carouselUi.start(twitchTagService);
 	}
 
 	/**
 	 * Executes tag updater at a specified frequency.
 	 */
-	public void startUpdatingTags() {
+	void startUpdatingTags() {
 		LOGGER.debug("Scheduling execution of app every {} {}.", tagRotationFrequencySeconds, TIME_UNIT);
 		LOGGER.info("First execution of Twitch Tag rotator will start in {} {}", startDelaySeconds, TIME_UNIT);
 		ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
