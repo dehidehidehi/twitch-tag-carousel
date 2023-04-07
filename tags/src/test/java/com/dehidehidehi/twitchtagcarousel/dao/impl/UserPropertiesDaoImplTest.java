@@ -20,6 +20,9 @@ import static com.dehidehidehi.twitchtagcarousel.dao.impl.UserPropertiesDaoImpl.
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
+/**
+ * Note: These config files are generated in /test-classes/*
+ */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ExtendWith(CDIExtension.class)
 class UserPropertiesDaoImplTest {
