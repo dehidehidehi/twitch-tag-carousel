@@ -1,4 +1,5 @@
 package com.dehidehidehi.twitchtagcarousel.service;
+import com.dehidehidehi.twitchtagcarousel.domain.TwitchTag;
 import com.dehidehidehi.twitchtagcarousel.util.CDIExtension;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.Nested;
@@ -8,6 +9,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assumptions.assumeThat;
@@ -30,8 +32,8 @@ class TagRotatorServiceTest {
         
         @Test
         void rotateAtEachInvocation() {
-            final Set<String> firstResult = new HashSet<>(tagRotatorService.selectNewTags().get());
-            final Set<String> secondResult = new HashSet<>(tagRotatorService.selectNewTags().get());
+            final Set<TwitchTag> firstResult = new HashSet<>(tagRotatorService.selectNewTags().get());
+            final Set<TwitchTag> secondResult = new HashSet<>(tagRotatorService.selectNewTags().get());
             firstResult.retainAll(secondResult);
             assertThat(firstResult)
                     .as("There should be no common tags between both results.")
@@ -48,7 +50,7 @@ class TagRotatorServiceTest {
         @Test
         void returnMandatoryTagsInResponse() {
             final Set<String> mandatoryTags = Set.of("abdcef", "123465", "asddfskler");
-            final Set<String> tags = tagRotatorService.selectNewTags(mandatoryTags).get();
+            final Set<String> tags = tagRotatorService.selectNewTags(mandatoryTags).get().stream().map(TwitchTag::toString).collect(Collectors.toSet());
             assertThat(tags).containsAll(mandatoryTags);
         }
     }

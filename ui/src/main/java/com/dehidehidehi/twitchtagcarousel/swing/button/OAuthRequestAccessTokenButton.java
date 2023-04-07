@@ -1,6 +1,6 @@
 package com.dehidehidehi.twitchtagcarousel.swing.button;
 import com.dehidehidehi.twitchtagcarousel.error.TwitchAuthTokenQueryException;
-import com.dehidehidehi.twitchtagcarousel.service.TwitchTagService;
+import com.dehidehidehi.twitchtagcarousel.service.TagCarouselService;
 import com.dehidehidehi.twitchtagcarousel.swing.panel.CommandCenterPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,17 +15,17 @@ public class OAuthRequestAccessTokenButton extends JButton implements ActionList
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OAuthRequestAccessTokenButton.class);
 
-    private final TwitchTagService twitchTagService;
+    private final TagCarouselService tagCarouselService;
 
     /**
      * When actionPerformed finishes without an exception, then display this panel.
      */
     private final Supplier<CommandCenterPanel> onSuccessCommandCenterPanelSupplier;
 
-    public OAuthRequestAccessTokenButton(final TwitchTagService twitchTagService, 
+    public OAuthRequestAccessTokenButton(final TagCarouselService tagCarouselService, 
                                          final Supplier<CommandCenterPanel> onSuccessCommandCenterPanelSupplier) {
         super("Get Access Token");
-        this.twitchTagService = twitchTagService;
+        this.tagCarouselService = tagCarouselService;
         this.onSuccessCommandCenterPanelSupplier = onSuccessCommandCenterPanelSupplier;
         addActionListener(this);
     }
@@ -35,7 +35,7 @@ public class OAuthRequestAccessTokenButton extends JButton implements ActionList
         LOGGER.debug("Action on button triggered : {}", OAuthRequestAccessTokenButton.class.getSimpleName());
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
-                twitchTagService.queryUserAccessToken();
+                tagCarouselService.queryUserAccessToken();
                 getParent().setEnabled(false);
                 getParent().setVisible(false);
                 getTopLevelAncestor().add(onSuccessCommandCenterPanelSupplier.get());

@@ -1,6 +1,5 @@
 package com.dehidehidehi.twitchtagcarousel;
 
-import com.dehidehidehi.twitchtagcarousel.ui.BannerUi;
 import jakarta.enterprise.inject.se.SeContainer;
 import jakarta.enterprise.inject.se.SeContainerInitializer;
 import org.slf4j.Logger;

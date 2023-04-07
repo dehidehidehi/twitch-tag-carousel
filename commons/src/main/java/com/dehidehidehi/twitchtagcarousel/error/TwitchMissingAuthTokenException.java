@@ -1,5 +1,5 @@
 package com.dehidehidehi.twitchtagcarousel.error;
-public class TwitchMissingAuthTokenException extends RuntimeException {
+public class TwitchMissingAuthTokenException extends Exception {
 
 	public TwitchMissingAuthTokenException() {
 	}

@@ -1,8 +1,8 @@
 package com.dehidehidehi.twitchtagcarousel;
 
 import com.dehidehidehi.twitchtagcarousel.annotation.Property;
+import com.dehidehidehi.twitchtagcarousel.service.TagCarouselService;
 import com.dehidehidehi.twitchtagcarousel.service.TagRotatorService;
-import com.dehidehidehi.twitchtagcarousel.service.TwitchTagService;
 import com.dehidehidehi.twitchtagcarousel.ui.BannerUi;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -25,7 +25,6 @@ class CommandCenter {
 	@Property("twitch-app.start-delay-seconds")
 	@Inject
 	private int startDelaySeconds;
-	private final TwitchTagService twitchTagService;
 
 	private final TagRotatorService tagRotatorService;
 	private final CarouselUi carouselUi;
@@ -35,15 +34,13 @@ class CommandCenter {
 
 	@Inject
 	CommandCenter(final TagRotatorService tagRotatorService,
-								final TwitchTagService twitchTagService,
-								final CarouselUi carouselUi) {
+					  final CarouselUi carouselUi) {
 		this.tagRotatorService = tagRotatorService;
-		this.twitchTagService = twitchTagService;
 		this.carouselUi = carouselUi;
 	}
 
 	void startUi() {
-		carouselUi.start(twitchTagService);
+		carouselUi.start(tagRotatorService.getTagCarouselService());
 	}
 
 	/**

@@ -3,7 +3,8 @@ package com.dehidehidehi.twitchtagcarousel.swing;
 import com.dehidehidehi.twitchtagcarousel.CarouselUi;
 import com.dehidehidehi.twitchtagcarousel.annotation.Property;
 import com.dehidehidehi.twitchtagcarousel.error.TwitchAuthTokenQueryException;
-import com.dehidehidehi.twitchtagcarousel.service.TwitchTagService;
+import com.dehidehidehi.twitchtagcarousel.error.TwitchMissingAuthTokenException;
+import com.dehidehidehi.twitchtagcarousel.service.TagCarouselService;
 import com.dehidehidehi.twitchtagcarousel.swing.label.TwitchTagTitleLabel;
 import com.dehidehidehi.twitchtagcarousel.swing.panel.AuthTokenValidationPanel;
 import com.dehidehidehi.twitchtagcarousel.swing.panel.CommandCenterPanel;
@@ -32,7 +33,7 @@ public final class SwingCarouselUi implements CarouselUi {
     private String implicitGrantFlowUriString;
 
     @Override
-    public void start(TwitchTagService twitchTagService) {
+    public void start(TagCarouselService tagCarouselService) {
         LOGGER.debug("SwingCarouselUi#start entry.");
 
         startUpFrame = new JFrame();
@@ -48,7 +49,7 @@ public final class SwingCarouselUi implements CarouselUi {
         startUpPanel = new StartUpPanel();
         startUpFrame.add(startUpPanel, BorderLayout.CENTER);
         
-        new Thread(() -> handleTokenValidationUi(twitchTagService)).start();
+        new Thread(() -> handleTokenValidationUi(tagCarouselService)).start();
 
         startUpFrame.pack();
         startUpFrame.setVisible(true);
@@ -59,13 +60,13 @@ public final class SwingCarouselUi implements CarouselUi {
     }
 
 
-    private void handleTokenValidationUi(TwitchTagService twitchTagService) {
-        final boolean userAuthTokenValid = isUserAuthTokenValid(twitchTagService);
+    private void handleTokenValidationUi(TagCarouselService tagCarouselService) {
+        final boolean userAuthTokenValid = isUserAuthTokenValid(tagCarouselService);
         if (!userAuthTokenValid) {
             LOGGER.info("Your user access token is not valid!");
             LOGGER.info("Please get a valid access token.");
             LOGGER.debug("userAccessToken is not valid: instantiating AuthTokenValidationPanel");
-            final AuthTokenValidationPanel authTokenValidationPanel = new AuthTokenValidationPanel(twitchTagService);
+            final AuthTokenValidationPanel authTokenValidationPanel = new AuthTokenValidationPanel(tagCarouselService);
             startUpFrame.add(authTokenValidationPanel);
             startUpFrame.pack();
         } else {
@@ -108,19 +109,23 @@ public final class SwingCarouselUi implements CarouselUi {
     }
 
     /**
-     * Checks if the user authentication token is valid by using the given TwitchTagService object.
+     * Checks if the user authentication token is valid by using the given TagCarouselService object.
      *
-     * @param twitchTagService the TwitchTagService object to use for checking the user authentication token validity
+     * @param tagCarouselService the TagCarouselService object to use for checking the user authentication token validity
      *
      * @return true if the user authentication token is valid, false otherwise
      */
-    public boolean isUserAuthTokenValid(TwitchTagService twitchTagService) {
+    public boolean isUserAuthTokenValid(TagCarouselService tagCarouselService) {
         final boolean userAccessTokenValid;
         try {
-            userAccessTokenValid = twitchTagService.isUserAccessTokenValid(twitchTagService.getUserAccessToken());
+            final String userAccessToken = tagCarouselService.getUserAccessToken();
+            userAccessTokenValid = tagCarouselService.isUserAccessTokenValid(userAccessToken);
         } catch (TwitchAuthTokenQueryException e) {
             JOptionPane.showMessageDialog(startUpFrame, "An unexpected error occurred:%n%s".formatted(e.getMessage()));
             LOGGER.warn("An unexpected error occurred:%n%s".formatted(e.getMessage()));
+            return false;
+        } catch (TwitchMissingAuthTokenException e) {
+            LOGGER.warn("We couldn't find your access token.");
             return false;
         }
         return userAccessTokenValid;

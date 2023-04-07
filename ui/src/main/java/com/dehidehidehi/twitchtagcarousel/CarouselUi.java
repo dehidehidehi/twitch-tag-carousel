@@ -1,9 +1,9 @@
 package com.dehidehidehi.twitchtagcarousel;
 
-import com.dehidehidehi.twitchtagcarousel.service.TwitchTagService;
+import com.dehidehidehi.twitchtagcarousel.service.TagCarouselService;
 
 public interface CarouselUi {
     
-    void start(TwitchTagService twitchTagService);
+    void start(TagCarouselService tagCarouselService);
     
 }

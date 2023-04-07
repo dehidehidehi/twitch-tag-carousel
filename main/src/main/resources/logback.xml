@@ -19,11 +19,6 @@
             <onMatch>ACCEPT</onMatch>
             <onMismatch>DENY</onMismatch>
         </filter>
-        <filter class="ch.qos.logback.classic.filter.LoggerNameFilter">
-            <logger>com.dehidehidehi.twitchtagcarousel</logger>
-            <onMatch>ACCEPT</onMatch>
-            <onMismatch>DENY</onMismatch>
-        </filter>
     </appender>
     
     <!-- LOGGER -->

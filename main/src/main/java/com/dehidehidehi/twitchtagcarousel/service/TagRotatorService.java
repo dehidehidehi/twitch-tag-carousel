@@ -44,11 +44,15 @@ public class TagRotatorService {
 
     private List<String> tagsToRotate;
     
-    private final TwitchTagService twitchTagService;
+    private final TagCarouselService tagCarouselService;
 
     @Inject
-    public TagRotatorService(final TwitchTagService twitchTagService) {
-        this.twitchTagService = twitchTagService;
+    public TagRotatorService(final TagCarouselService tagCarouselService) {
+        this.tagCarouselService = tagCarouselService;
+    }
+
+    public TagCarouselService getTagCarouselService() {
+        return tagCarouselService;
     }
 
     @PostConstruct
@@ -68,7 +72,7 @@ public class TagRotatorService {
         try {
             final Set<String> mandatoryTags = getMandatoryTags();
             final TwitchTagBatch tags = selectNewTags(mandatoryTags);
-            twitchTagService.updateTags(tags);
+            tagCarouselService.updateTags(tags);
             LOGGER.info("Updated stream tags with: {}", tags.get().stream().sorted().toList());
             LOGGER.info("Next update at {}", getNextExecutionTime());
         } catch (Exception e) {
