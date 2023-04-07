@@ -14,6 +14,9 @@ import jakarta.inject.Inject;
 
 import java.util.List;
 
+/**
+ * Giant service facade for our application. It's passed around in the UI.
+ */
 @Typed(TagCarouselService.class)
 @ApplicationScoped
 class TagCarouselServiceImpl implements TagCarouselService {
@@ -42,13 +45,23 @@ class TagCarouselServiceImpl implements TagCarouselService {
 	}
 
 	@Override
-	public void saveAllTags(final List<TwitchTag> tags) {
-		userPropertiesDao.saveAllTags(tags);
+	public void saveMandatoryTags(final List<TwitchTag> tags) {
+		userPropertiesDao.saveMandatoryTags(tags);
 	}
 
 	@Override
-	public List<TwitchTag> getAllTags() {
-		return userPropertiesDao.getAllTags();
+	public List<TwitchTag> getMandatoryTags() {
+		return userPropertiesDao.getMandatoryTags();
+	}
+
+	@Override
+	public void saveRotatingTags(final List<TwitchTag> tags) {
+		userPropertiesDao.saveRotatingTags(tags);
+	}
+
+	@Override
+	public List<TwitchTag> getRotatingTags() {
+		return userPropertiesDao.getRotatingTags();
 	}
 
 	@Override

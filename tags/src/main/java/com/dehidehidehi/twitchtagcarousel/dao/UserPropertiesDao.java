@@ -6,13 +6,22 @@ import java.util.List;
 public interface UserPropertiesDao {
 
     /**
-     * Overwrites all tags.
+     * Overwrites mandatory tags.
      */
-    void saveAllTags(List<TwitchTag> tags);
+    void saveMandatoryTags(List<TwitchTag> tags);
 
     /**
-     * Lists all tags.
+     * Lists mandatory tags.
      */
-    List<TwitchTag> getAllTags();
-    
+    List<TwitchTag> getMandatoryTags();
+
+    /**
+     * Overwrites rotating tags.
+     */
+    void saveRotatingTags(List<TwitchTag> tags);
+
+    /**
+     * Lists rotating tags.
+     */
+    List<TwitchTag> getRotatingTags();
 }

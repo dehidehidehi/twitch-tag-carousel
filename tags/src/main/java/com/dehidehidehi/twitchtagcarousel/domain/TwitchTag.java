@@ -5,7 +5,7 @@ public final class TwitchTag {
 
 	private final String tag;
 	
-    TwitchTag(final String tag) {
+    public TwitchTag(final String tag) {
 		 validateTag(tag);
 		 this.tag = tag;
     }

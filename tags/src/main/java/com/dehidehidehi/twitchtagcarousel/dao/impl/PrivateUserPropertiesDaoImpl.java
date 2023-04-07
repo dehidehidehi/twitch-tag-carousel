@@ -34,7 +34,6 @@ class PrivateUserPropertiesDaoImpl implements PrivateUserPropertiesDao, AutoClos
 		}
 	}
 
-	// TODO simple caching mecanism
 	@Override
 	public String getUserAccessToken() throws TwitchMissingAuthTokenException {
 		final String accessToken = properties.getProperty(PROPERTY_TWITCH_ACCESS_TOKEN);
