@@ -25,6 +25,11 @@
         </dependency>
         <dependency>
             <groupId>com.dehidehidehi.twitchtagcarousel</groupId>
+            <artifactId>commons</artifactId>
+            <type>test-jar</type>
+        </dependency>
+        <dependency>
+            <groupId>com.dehidehidehi.twitchtagcarousel</groupId>
             <artifactId>auth</artifactId>
         </dependency>
         <dependency>

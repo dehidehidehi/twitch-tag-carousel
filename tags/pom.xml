@@ -18,6 +18,11 @@
         </dependency>
         <dependency>
             <groupId>com.dehidehidehi.twitchtagcarousel</groupId>
+            <artifactId>commons</artifactId>
+            <type>test-jar</type>
+        </dependency>
+        <dependency>
+            <groupId>com.dehidehidehi.twitchtagcarousel</groupId>
             <artifactId>auth</artifactId>
         </dependency>
         <dependency>
@@ -31,6 +36,21 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.weld.se</groupId>
+            <artifactId>weld-se-core</artifactId>
+            <scope>test,runtime</scope>
         </dependency>
     </dependencies>
 </project>

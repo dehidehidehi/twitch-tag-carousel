@@ -53,6 +53,13 @@
             </dependency>
             <dependency>
                 <groupId>com.dehidehidehi.twitchtagcarousel</groupId>
+                <artifactId>commons</artifactId>
+                <version>${twitch-tag-carousel.version}</version>
+                <type>test-jar</type>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.dehidehidehi.twitchtagcarousel</groupId>
                 <artifactId>auth</artifactId>
                 <version>${twitch-tag-carousel.version}</version>
                 <scope>compile</scope>
@@ -170,6 +177,11 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>3.0.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>3.2.0</version>
                 </plugin>
             </plugins>
         </pluginManagement>
