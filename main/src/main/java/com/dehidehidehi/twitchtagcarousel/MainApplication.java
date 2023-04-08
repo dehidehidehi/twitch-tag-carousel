@@ -16,7 +16,7 @@ public class MainApplication {
         try (SeContainer container = SeContainerInitializer.newInstance().initialize()) {
             LOGGER.debug("CDI container started successfully.");
             final CommandCenter commandCenter = container.select(CommandCenter.class).get();
-            commandCenter.startUi();
+            commandCenter.startUiMode();
             Thread.sleep(Long.MAX_VALUE);
         }
     }

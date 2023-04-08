@@ -3,9 +3,9 @@ import com.dehidehidehi.twitchtagcarousel.dao.PrivateUserPropertiesDao;
 import com.dehidehidehi.twitchtagcarousel.dao.UserPropertiesDao;
 import com.dehidehidehi.twitchtagcarousel.domain.TwitchTag;
 import com.dehidehidehi.twitchtagcarousel.domain.TwitchTagBatch;
-import com.dehidehidehi.twitchtagcarousel.error.TwitchAuthTokenQueryException;
+import com.dehidehidehi.twitchtagcarousel.error.AuthTokenQueryException;
 import com.dehidehidehi.twitchtagcarousel.error.TwitchChannelIdException;
-import com.dehidehidehi.twitchtagcarousel.error.TwitchMissingAuthTokenException;
+import com.dehidehidehi.twitchtagcarousel.error.MissingAuthTokenException;
 import com.dehidehidehi.twitchtagcarousel.error.TwitchTagUpdateException;
 import com.dehidehidehi.twitchtagcarousel.service.twitch.TwitchApiService;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -35,13 +35,18 @@ class TagCarouselServiceImpl implements TagCarouselService {
 	}
 
 	@Override
-	public String getUserAccessToken() throws TwitchMissingAuthTokenException {
+	public String getUserAccessToken() throws MissingAuthTokenException {
 		return privateUserPropertiesDao.getUserAccessToken();
 	}
 
 	@Override
 	public void setUserAccessToken(final String userAccessToken) {
 		privateUserPropertiesDao.setUserAccessToken(userAccessToken);
+	}
+
+	@Override
+	public String readUserProperty(final String propertyKey) {
+		throw new UnsupportedOperationException("Method should not be used in %s".formatted(getClass().getSimpleName()));
 	}
 
 	@Override
@@ -55,6 +60,11 @@ class TagCarouselServiceImpl implements TagCarouselService {
 	}
 
 	@Override
+	public int countMandatoryTags() {
+		return userPropertiesDao.countMandatoryTags();
+	}
+
+	@Override
 	public void saveRotatingTags(final List<TwitchTag> tags) {
 		userPropertiesDao.saveRotatingTags(tags);
 	}
@@ -65,22 +75,27 @@ class TagCarouselServiceImpl implements TagCarouselService {
 	}
 
 	@Override
-	public boolean isUserAccessTokenValid(final String userAccessToken) throws TwitchAuthTokenQueryException {
+	public int countRotatingTags() {
+		return userPropertiesDao.countRotatingTags();
+	}
+
+	@Override
+	public boolean isUserAccessTokenValid(final String userAccessToken) throws AuthTokenQueryException {
 		return twitchApiService.isUserAccessTokenValid(userAccessToken);
 	}
 
 	@Override
-	public String getChannelIdFrom(final String channelName) throws TwitchChannelIdException, TwitchMissingAuthTokenException {
-		return twitchApiService.getChannelIdFrom(channelName);
+	public String getBroadcasterIdOf(final String channelName) throws TwitchChannelIdException, MissingAuthTokenException {
+		return twitchApiService.getBroadcasterIdOf(channelName);
 	}
 
 	@Override
-	public void updateTags(final TwitchTagBatch tags) throws TwitchTagUpdateException, TwitchMissingAuthTokenException {
+	public void updateTags(final TwitchTagBatch tags) throws TwitchTagUpdateException, MissingAuthTokenException {
 		twitchApiService.updateTags(tags);
 	}
 
 	@Override
-	public void queryUserAccessToken() throws TwitchAuthTokenQueryException {
+	public void queryUserAccessToken() throws AuthTokenQueryException {
 		twitchApiService.queryUserAccessToken();
 	}
 }

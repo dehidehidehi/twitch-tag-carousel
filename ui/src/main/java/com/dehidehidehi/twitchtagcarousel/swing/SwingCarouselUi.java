@@ -1,9 +1,9 @@
 package com.dehidehidehi.twitchtagcarousel.swing;
 
 import com.dehidehidehi.twitchtagcarousel.CarouselUi;
-import com.dehidehidehi.twitchtagcarousel.annotation.Property;
-import com.dehidehidehi.twitchtagcarousel.error.TwitchAuthTokenQueryException;
-import com.dehidehidehi.twitchtagcarousel.error.TwitchMissingAuthTokenException;
+import com.dehidehidehi.twitchtagcarousel.annotation.qualifier.ApplicationProperty;
+import com.dehidehidehi.twitchtagcarousel.error.AuthTokenQueryException;
+import com.dehidehidehi.twitchtagcarousel.error.MissingAuthTokenException;
 import com.dehidehidehi.twitchtagcarousel.service.TagCarouselService;
 import com.dehidehidehi.twitchtagcarousel.swing.label.TwitchTagTitleLabel;
 import com.dehidehidehi.twitchtagcarousel.swing.panel.AuthTokenValidationPanel;
@@ -28,7 +28,7 @@ public final class SwingCarouselUi implements CarouselUi {
     private JFrame startUpFrame;
     private StartUpPanel startUpPanel;
 
-    @Property("twitch-app.auth-uri.implicit-grant-flow")
+    @ApplicationProperty("twitch-app.auth-uri.implicit-grant-flow")
     @Inject
     private String implicitGrantFlowUriString;
 
@@ -120,11 +120,11 @@ public final class SwingCarouselUi implements CarouselUi {
         try {
             final String userAccessToken = tagCarouselService.getUserAccessToken();
             userAccessTokenValid = tagCarouselService.isUserAccessTokenValid(userAccessToken);
-        } catch (TwitchAuthTokenQueryException e) {
+        } catch (AuthTokenQueryException e) {
             JOptionPane.showMessageDialog(startUpFrame, "An unexpected error occurred:%n%s".formatted(e.getMessage()));
             LOGGER.warn("An unexpected error occurred:%n%s".formatted(e.getMessage()));
             return false;
-        } catch (TwitchMissingAuthTokenException e) {
+        } catch (MissingAuthTokenException e) {
             LOGGER.warn("We couldn't find your access token.");
             return false;
         }

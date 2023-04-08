@@ -1,18 +1,21 @@
 package com.dehidehidehi.twitchtagcarousel.service;
+import com.dehidehidehi.twitchtagcarousel.dao.UserPropertiesDao;
 import com.dehidehidehi.twitchtagcarousel.domain.TwitchTag;
 import com.dehidehidehi.twitchtagcarousel.util.CDIExtension;
 import jakarta.inject.Inject;
+import lombok.SneakyThrows;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assumptions.assumeThat;
 
 @ExtendWith(CDIExtension.class)
 class TagRotatorServiceTest {
@@ -20,62 +23,66 @@ class TagRotatorServiceTest {
     @Inject
     private TagRotatorService tagRotatorService;
 
+    @Inject
+    private UserPropertiesDao userPropertiesDao;
+
     @Nested
     class SelectTagsShould {
 
+        private final Function<Integer, List<TwitchTag>> makeTags = i -> IntStream
+                .range(0, i - 1)
+                .mapToObj(j -> RandomStringUtils.randomAlphabetic(10))
+                .map(TwitchTag::new)
+                .toList();
+
+        @BeforeEach
+        void setUp() {
+            userPropertiesDao.saveMandatoryTags(Collections.emptyList());
+            userPropertiesDao.saveRotatingTags(Collections.emptyList());
+            userPropertiesDao.saveMandatoryTags(makeTags.apply(10));
+        }
+
+        @AfterEach
+        void tearDown() {
+            userPropertiesDao.saveMandatoryTags(Collections.emptyList());
+            userPropertiesDao.saveRotatingTags(Collections.emptyList());
+        }
+
+        @SneakyThrows
         @Test
         void selectTagsShouldReturnTenTags() {
-            final Set<String> mandatoryTags = Set.of("123435", "sdlk");
+            userPropertiesDao.saveMandatoryTags(Collections.emptyList());
+            assertThat(tagRotatorService.selectNewTags().get()).hasSize(0);
+            userPropertiesDao.saveMandatoryTags(makeTags.apply(10));
             assertThat(tagRotatorService.selectNewTags().get()).hasSize(10);
-            assertThat(tagRotatorService.selectNewTags(mandatoryTags).get()).hasSize(10);
         }
-        
+
+        @SneakyThrows
         @Test
         void rotateAtEachInvocation() {
+            userPropertiesDao.saveMandatoryTags(makeTags.apply(5));
+            userPropertiesDao.saveRotatingTags(makeTags.apply(30));
             final Set<TwitchTag> firstResult = new HashSet<>(tagRotatorService.selectNewTags().get());
             final Set<TwitchTag> secondResult = new HashSet<>(tagRotatorService.selectNewTags().get());
             firstResult.retainAll(secondResult);
-            assertThat(firstResult)
-                    .as("There should be no common tags between both results.")
-                    .isEmpty();
+            assertThat(firstResult).as("There should be no common tags between both results.").isEmpty();
         }
 
+        @SneakyThrows
         @Test
         void notChangeTagsToRotateListNumberOfElements() {
-            final int tagsToRotateUniqueElementCount = new HashSet<>(tagRotatorService.getTagsToRotate()).size();
-            tagRotatorService.getTagsToRotate();
-            assertThat(new HashSet<>(tagRotatorService.getTagsToRotate())).hasSize(tagsToRotateUniqueElementCount);
+            final int tagsToRotateUniqueElementCount = new HashSet<>(tagRotatorService.selectNewTags().get()).size();
+            tagRotatorService.selectNewTags();
+            assertThat(new HashSet<>(tagRotatorService.selectNewTags().get())).hasSize(tagsToRotateUniqueElementCount);
         }
 
+        @SneakyThrows
         @Test
         void returnMandatoryTagsInResponse() {
-            final Set<String> mandatoryTags = Set.of("abdcef", "123465", "asddfskler");
-            final Set<String> tags = tagRotatorService.selectNewTags(mandatoryTags).get().stream().map(TwitchTag::toString).collect(Collectors.toSet());
-            assertThat(tags).containsAll(mandatoryTags);
+            final List<TwitchTag> tenTags = makeTags.apply(10);
+            userPropertiesDao.saveMandatoryTags(tenTags);
+            final Collection<TwitchTag> twitchTags = tagRotatorService.selectNewTags().get();
+            assertThat(twitchTags).containsAll(tenTags);
         }
-    }
-
-    @Test
-    void getTagsToRotateShouldBePackagePrivate() throws NoSuchMethodException {
-        final int getTagsToRotateModifiers = tagRotatorService
-                .getClass()
-                .getDeclaredMethod("getTagsToRotate")
-                .getModifiers();
-        assertThat(getTagsToRotateModifiers)
-                .as("Access to all tags to rotate should remain somewhat hidden, for now.")
-                .isZero();
-    }
-
-    @Test
-    void tagsToRotateShouldBeShuffledAfterServiceInstanciation() {
-        final List<String> naturallySortedTags = tagRotatorService
-                .getTagsToRotate()
-                .stream()
-                .sorted()
-                .toList();
-        final List<String> maybeShuffledTags = tagRotatorService.getTagsToRotate().stream().toList();
-        assumeThat(naturallySortedTags)
-                .as("Assuming tags were hardcoded in alphabetical order, this test should be useful, otherwise it won't be of any use.")
-                .isNotEqualTo(maybeShuffledTags);
     }
 }

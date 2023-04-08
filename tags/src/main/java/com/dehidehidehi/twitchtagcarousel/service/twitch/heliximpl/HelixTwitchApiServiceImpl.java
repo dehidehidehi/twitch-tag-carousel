@@ -1,13 +1,12 @@
 package com.dehidehidehi.twitchtagcarousel.service.twitch.heliximpl;
-import com.dehidehidehi.twitchtagcarousel.annotation.Property;
 import com.dehidehidehi.twitchtagcarousel.dao.PrivateUserPropertiesDao;
+import com.dehidehidehi.twitchtagcarousel.dao.UserPropertiesDao;
 import com.dehidehidehi.twitchtagcarousel.domain.TwitchTag;
 import com.dehidehidehi.twitchtagcarousel.domain.TwitchTagBatch;
-import com.dehidehidehi.twitchtagcarousel.error.TwitchAuthTokenQueryException;
+import com.dehidehidehi.twitchtagcarousel.error.AuthTokenQueryException;
 import com.dehidehidehi.twitchtagcarousel.error.TwitchChannelIdException;
-import com.dehidehidehi.twitchtagcarousel.error.TwitchMissingAuthTokenException;
+import com.dehidehidehi.twitchtagcarousel.error.MissingAuthTokenException;
 import com.dehidehidehi.twitchtagcarousel.error.TwitchTagUpdateException;
-import com.dehidehidehi.twitchtagcarousel.service.TagCarouselService;
 import com.dehidehidehi.twitchtagcarousel.service.TwitchAuthService;
 import com.dehidehidehi.twitchtagcarousel.service.twitch.TwitchApiService;
 import com.dehidehidehi.twitchtagcarousel.service.twitch.basicimpl.BasicTwitchApiServiceImpl;
@@ -32,12 +31,8 @@ import java.util.concurrent.ExecutionException;
 public class HelixTwitchApiServiceImpl extends BasicTwitchApiServiceImpl implements TwitchApiService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(HelixTwitchApiServiceImpl.class);
-	
-	@Inject
-	@Property("twitch-app.channel-name")
-	private String channelName;
-	
-	private String broadcasterId;
+	public static final String PROPERTY_KEY_CHANNEL_NAME = "twitch-app.channel-name";
+	private final UserPropertiesDao userPropertiesDao;
 	
 	private final TwitchAuthService twitchAuthService;
 	private final PrivateUserPropertiesDao privateUserPropertiesDao;
@@ -45,9 +40,11 @@ public class HelixTwitchApiServiceImpl extends BasicTwitchApiServiceImpl impleme
 	
 	@Inject
 	HelixTwitchApiServiceImpl(final TwitchAuthService twitchAuthService,
+									  final UserPropertiesDao userPropertiesDao,
 									  final PrivateUserPropertiesDao privateUserPropertiesDao) {
 		this.twitchAuthService = twitchAuthService;
 		this.privateUserPropertiesDao = privateUserPropertiesDao;
+		this.userPropertiesDao = userPropertiesDao;
 		twitchHelix = TwitchHelixBuilder.builder().build();
 	}
 
@@ -57,17 +54,12 @@ public class HelixTwitchApiServiceImpl extends BasicTwitchApiServiceImpl impleme
 		final boolean isValid = isUserAccessTokenValid(userAccessToken);
 		if (!isValid) {
 			LOGGER.error("Your user access token is invalid : {}", hiddenToken);
-			throw new TwitchAuthTokenQueryException("Your user access token is invalid : %s".formatted(hiddenToken));
+			throw new AuthTokenQueryException("Your user access token is invalid : %s".formatted(hiddenToken));
 		}
 	}
 
-	private void requestChannelId() throws TwitchMissingAuthTokenException {
-		LOGGER.info("Requesting channelId from channelName={}", channelName);
-		broadcasterId = getChannelIdFrom(channelName);
-	}
-
 	@Override
-	public boolean isUserAccessTokenValid(final String userAccessToken) throws TwitchAuthTokenQueryException {
+	public boolean isUserAccessTokenValid(final String userAccessToken) throws AuthTokenQueryException {
 		// Twitch4J implementation is otherwise available in the Auth module, TwitchIdentityProvider#getAdditionalCredentialInformation
 		return super.isUserAccessTokenValid(userAccessToken);
 	}
@@ -76,7 +68,7 @@ public class HelixTwitchApiServiceImpl extends BasicTwitchApiServiceImpl impleme
 	 * Requests the channel's id using the channel's name as a parameter.
 	 */
 	@Override
-	public String getChannelIdFrom(final String channelName) throws TwitchChannelIdException, TwitchMissingAuthTokenException {
+	public String getBroadcasterIdOf(final String channelName) throws TwitchChannelIdException, MissingAuthTokenException {
 		LOGGER.debug("{} entered getChannelIdFrom method.", HelixTwitchApiServiceImpl.class.getSimpleName());
 		final UserList userList;
 		try {
@@ -103,12 +95,14 @@ public class HelixTwitchApiServiceImpl extends BasicTwitchApiServiceImpl impleme
 	 * https://id.twitch.tv/oauth2/authorize?client_id=6k3qz1pdf1wko4xec9cjbfh3fbla24&redirect_uri=http://localhost&response_type=token&scope=channel%3Amanage%3Abroadcast
 	 */
 	@Override
-	public void updateTags(final TwitchTagBatch tags) throws TwitchTagUpdateException, TwitchMissingAuthTokenException {
+	public void updateTags(final TwitchTagBatch tags) throws TwitchTagUpdateException, MissingAuthTokenException {
 		LOGGER.debug("{} entered update tags method with params {}.", HelixTwitchApiServiceImpl.class.getSimpleName(), tags);
 		final List<String> tagsAsList = tags.get().stream().map(TwitchTag::toString).toList();
 		final ChannelInformation channelInformation = new ChannelInformation().withTags(tagsAsList);
 		try {
 			final String userAccessToken = privateUserPropertiesDao.getUserAccessToken();
+			final String channelName = userPropertiesDao.readUserProperty(PROPERTY_KEY_CHANNEL_NAME);
+			final String broadcasterId = getBroadcasterIdOf(channelName);
 			twitchHelix
 					.updateChannelInformation(userAccessToken, broadcasterId, channelInformation)
 					.execute();

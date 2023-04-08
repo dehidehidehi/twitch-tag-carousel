@@ -1,5 +1,5 @@
 package com.dehidehidehi.twitchtagcarousel.service.twitch.basicimpl;
-import com.dehidehidehi.twitchtagcarousel.error.TwitchAuthTokenQueryException;
+import com.dehidehidehi.twitchtagcarousel.error.AuthTokenQueryException;
 import com.dehidehidehi.twitchtagcarousel.service.twitch.TwitchApiService;
 
 import java.io.IOException;
@@ -17,7 +17,7 @@ public abstract class BasicTwitchApiServiceImpl implements TwitchApiService {
     private final HttpClient httpClient = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(5L)).build();
 
     @Override
-    public boolean isUserAccessTokenValid(final String userAccessToken) throws TwitchAuthTokenQueryException {
+    public boolean isUserAccessTokenValid(final String userAccessToken) throws AuthTokenQueryException {
         final HttpRequest request = HttpRequest
                 .newBuilder()
                 .GET()
@@ -28,7 +28,7 @@ public abstract class BasicTwitchApiServiceImpl implements TwitchApiService {
         try {
             response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
         } catch (IOException | InterruptedException e) {
-            throw new TwitchAuthTokenQueryException(e);
+            throw new AuthTokenQueryException(e);
         }
         return response.statusCode() == 200;
     }

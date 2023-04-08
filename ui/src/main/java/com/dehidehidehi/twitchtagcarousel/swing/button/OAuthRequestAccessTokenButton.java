@@ -1,5 +1,5 @@
 package com.dehidehidehi.twitchtagcarousel.swing.button;
-import com.dehidehidehi.twitchtagcarousel.error.TwitchAuthTokenQueryException;
+import com.dehidehidehi.twitchtagcarousel.error.AuthTokenQueryException;
 import com.dehidehidehi.twitchtagcarousel.service.TagCarouselService;
 import com.dehidehidehi.twitchtagcarousel.swing.panel.CommandCenterPanel;
 import org.slf4j.Logger;
@@ -39,7 +39,7 @@ public class OAuthRequestAccessTokenButton extends JButton implements ActionList
                 getParent().setEnabled(false);
                 getParent().setVisible(false);
                 getTopLevelAncestor().add(onSuccessCommandCenterPanelSupplier.get());
-            } catch (TwitchAuthTokenQueryException ex) {
+            } catch (AuthTokenQueryException ex) {
                 LOGGER.error(ex.getMessage(), ex);
                 JOptionPane.showMessageDialog(this, "Error starting webserver for receiving access token.");
             }

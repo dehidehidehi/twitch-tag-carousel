@@ -1,6 +1,6 @@
 package com.dehidehidehi.twitchtagcarousel.service.impl;
-import com.dehidehidehi.twitchtagcarousel.annotation.Property;
-import com.dehidehidehi.twitchtagcarousel.error.TwitchAuthTokenQueryException;
+import com.dehidehidehi.twitchtagcarousel.annotation.qualifier.ApplicationProperty;
+import com.dehidehidehi.twitchtagcarousel.error.AuthTokenQueryException;
 import com.dehidehidehi.twitchtagcarousel.resource.TwitchAuthResource;
 import com.dehidehidehi.twitchtagcarousel.service.TwitchAuthService;
 import com.sun.net.httpserver.HttpHandler;
@@ -34,19 +34,19 @@ public class TwitchAuthJakartaWebServerService implements TwitchAuthService, Aut
 	private static final Logger LOGGER = LoggerFactory.getLogger(TwitchAuthJakartaWebServerService.class);
 
 	@Inject
-	@Property("twitch-auth.jakarta-web-server.host")
+	@ApplicationProperty("twitch-auth.jakarta-web-server.host")
 	private String host;
 	@Inject
-	@Property("twitch-auth.jakarta-web-server.port")
+	@ApplicationProperty("twitch-auth.jakarta-web-server.port")
 	private int port;
 	@Inject
-	@Property("twitch-auth.jakarta-web-server.root-application-path")
+	@ApplicationProperty("twitch-auth.jakarta-web-server.root-application-path")
 	private String rootApplicationPath;
 	@Inject
-	@Property("twitch-auth.jakarta-web-server.server-stop-delay-seconds")
+	@ApplicationProperty("twitch-auth.jakarta-web-server.server-stop-delay-seconds")
 	private int serverStopDelaySeconds;
 	@Inject
-	@Property("twitch-app.auth-uri.implicit-grant-flow")
+	@ApplicationProperty("twitch-app.auth-uri.implicit-grant-flow")
 	private String implicitGrantFlowUriString;
 	private HttpServer server;
 	private CountDownLatch browserSignalCountDownLatch;
@@ -85,7 +85,7 @@ public class TwitchAuthJakartaWebServerService implements TwitchAuthService, Aut
 	 * When the browser has been redirected to our token_redirect page, we execute the supplied callback.
 	 */
 	private CompletableFuture<Void> handleBrowserCallbackSignal(Consumer<String> onAccessTokenReceivedCallBack)
-	throws TwitchAuthTokenQueryException {
+	throws AuthTokenQueryException {
 		LOGGER.debug("Waiting for browser auth token received signal.");
 		final ExecutorService executorService = Executors.newCachedThreadPool();
 		return CompletableFuture
@@ -113,7 +113,7 @@ public class TwitchAuthJakartaWebServerService implements TwitchAuthService, Aut
 		try {
 			server = HttpServer.create(new InetSocketAddress(targetUri.getPort()), 0);
 		} catch (IOException e) {
-			throw new TwitchAuthTokenQueryException("Failed to start auth token server", e);
+			throw new AuthTokenQueryException("Failed to start auth token server", e);
 		}
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> server.stop(0)));
 		registerTwitchCallbackJaxRsApplication(targetUri);

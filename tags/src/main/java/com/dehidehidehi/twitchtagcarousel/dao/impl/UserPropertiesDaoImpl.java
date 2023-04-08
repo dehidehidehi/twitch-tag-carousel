@@ -1,18 +1,22 @@
 package com.dehidehidehi.twitchtagcarousel.dao.impl;
 
-import com.dehidehidehi.twitchtagcarousel.annotation.PropertyProducer;
+import com.dehidehidehi.twitchtagcarousel.annotation.impl.ApplicationPropertyProducer;
 import com.dehidehidehi.twitchtagcarousel.dao.UserPropertiesDao;
 import com.dehidehidehi.twitchtagcarousel.domain.TwitchTag;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Typed;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
@@ -26,8 +30,6 @@ class UserPropertiesDaoImpl implements UserPropertiesDao {
 	private static final Logger LOGGER = LoggerFactory.getLogger(UserPropertiesDaoImpl.class);
 
 	static final String USER_PROPERTIES_FILE_NEXT_TO_JAR = "/user.properties";
-	static final String PROPERTY_MANDATORY_TAGS = "tags.mandatory";
-	static final String PROPERTY_ROTATING_TAGS = "tags.rotating";
 
 	private Properties properties;
 
@@ -48,6 +50,11 @@ class UserPropertiesDaoImpl implements UserPropertiesDao {
 	}
 
 	@Override
+	public String readUserProperty(final String propertyKey) {
+		return properties.getProperty(propertyKey);
+	}
+
+	@Override
 	public void saveMandatoryTags(final List<TwitchTag> tags) {
 		final String concatenated = tags
 				.stream()
@@ -58,11 +65,19 @@ class UserPropertiesDaoImpl implements UserPropertiesDao {
 
 	@Override
 	public List<TwitchTag> getMandatoryTags() {
-		final String concatenatedTags = properties.getProperty(PROPERTY_MANDATORY_TAGS);
-		return Arrays.stream(concatenatedTags.split(","))
+		final String[] unparsedTags = Optional.ofNullable(properties.get(PROPERTY_MANDATORY_TAGS))
+														  .map(String.class::cast)
+														  .map(tags -> tags.split(","))
+														  .orElseGet(() -> new String[0]);
+		return Arrays.stream(unparsedTags)
 						 .map(TwitchTag::new)
 						 .distinct()
-						 .toList();
+						 .collect(Collectors.toList());
+	}
+
+	@Override
+	public int countMandatoryTags() {
+		return getMandatoryTags().size();
 	}
 
 	@Override
@@ -76,20 +91,29 @@ class UserPropertiesDaoImpl implements UserPropertiesDao {
 
 	@Override
 	public List<TwitchTag> getRotatingTags() {
-		final String concatenatedTags = properties.getProperty(PROPERTY_ROTATING_TAGS);
-		return Arrays.stream(concatenatedTags.split(","))
+		final String[] unparsedTags = Optional.ofNullable(properties.get(PROPERTY_ROTATING_TAGS))
+														  .map(String.class::cast)
+														  .map(tags -> tags.split(","))
+														  .orElseGet(() -> new String[0]);
+		return Arrays.stream(unparsedTags)
+						 .filter(StringUtils::isNotEmpty)
 						 .map(TwitchTag::new)
 						 .distinct()
-						 .toList();
+						 .collect(Collectors.toList());
 	}
-	
+
+	@Override
+	public int countRotatingTags() {
+		return getRotatingTags().size();
+	}
+
 	/**
 	 * Convenience method for getting the absolute path of where the .jar file will be deployed.
 	 */
 	private File getDirPathOfThisJar() {
 		final String jarLocation;
 		try {
-			jarLocation = new File(PropertyProducer.class
+			jarLocation = new File(ApplicationPropertyProducer.class
 												  .getProtectionDomain()
 												  .getCodeSource()
 												  .getLocation()

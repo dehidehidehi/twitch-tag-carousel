@@ -1,4 +1,4 @@
-package com.dehidehidehi.twitchtagcarousel.annotation;
+package com.dehidehidehi.twitchtagcarousel.annotation.qualifier;
 
 import jakarta.enterprise.util.Nonbinding;
 import jakarta.inject.Qualifier;
@@ -10,12 +10,12 @@ import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Represents a property key to be injected.
+ * Represents an application specific property to be loaded from a properties file.
  */
 @Qualifier
 @Retention(RUNTIME)
 @Target({METHOD, FIELD, PARAMETER})
-public @interface Property {
+public @interface ApplicationProperty {
     
     /**
      * Key to search for in the property files.

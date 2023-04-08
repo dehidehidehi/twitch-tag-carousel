@@ -1,6 +1,6 @@
 package com.dehidehidehi.twitchtagcarousel.dao.impl;
 import com.dehidehidehi.twitchtagcarousel.dao.PrivateUserPropertiesDao;
-import com.dehidehidehi.twitchtagcarousel.error.TwitchMissingAuthTokenException;
+import com.dehidehidehi.twitchtagcarousel.error.MissingAuthTokenException;
 import com.dehidehidehi.twitchtagcarousel.util.CDIExtension;
 import jakarta.inject.Inject;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -48,7 +48,7 @@ class PrivateUserPropertiesDaoImplTest {
 
     @Order(1)
     @Test
-    void getUserAccessTokenShouldReturnAccessTokenFromPropertiesFile() throws TwitchMissingAuthTokenException {
+    void getUserAccessTokenShouldReturnAccessTokenFromPropertiesFile() throws MissingAuthTokenException {
         assertThatCode(() -> privateUserPropertiesDao.getUserAccessToken()).doesNotThrowAnyException();
         assertThat(privateUserPropertiesDao.getUserAccessToken())
                 .isNotNull()
@@ -56,7 +56,7 @@ class PrivateUserPropertiesDaoImplTest {
     }
 
     @Test
-    void setUserAccessTokenShouldChangeAccessTokenInPropertiesFile() throws TwitchMissingAuthTokenException {
+    void setUserAccessTokenShouldChangeAccessTokenInPropertiesFile() throws MissingAuthTokenException {
         final String randomToken = RandomStringUtils.random(20);
         assertThatCode(() -> privateUserPropertiesDao.setUserAccessToken(randomToken)).doesNotThrowAnyException();
         assertThat(privateUserPropertiesDao.getUserAccessToken())

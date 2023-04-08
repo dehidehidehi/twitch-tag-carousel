@@ -1,9 +1,9 @@
 package com.dehidehidehi.twitchtagcarousel.dao;
-import com.dehidehidehi.twitchtagcarousel.error.TwitchMissingAuthTokenException;
+import com.dehidehidehi.twitchtagcarousel.error.MissingAuthTokenException;
 
 public interface PrivateUserPropertiesDao {
     
-    String getUserAccessToken() throws TwitchMissingAuthTokenException;
+    String getUserAccessToken() throws MissingAuthTokenException;
 
     void setUserAccessToken(final String userAccessToken);
 

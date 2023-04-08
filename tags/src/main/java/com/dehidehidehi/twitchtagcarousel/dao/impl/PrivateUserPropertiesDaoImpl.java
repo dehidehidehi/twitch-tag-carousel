@@ -1,7 +1,7 @@
 package com.dehidehidehi.twitchtagcarousel.dao.impl;
 
 import com.dehidehidehi.twitchtagcarousel.dao.PrivateUserPropertiesDao;
-import com.dehidehidehi.twitchtagcarousel.error.TwitchMissingAuthTokenException;
+import com.dehidehidehi.twitchtagcarousel.error.MissingAuthTokenException;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Typed;
@@ -35,10 +35,10 @@ class PrivateUserPropertiesDaoImpl implements PrivateUserPropertiesDao, AutoClos
 	}
 
 	@Override
-	public String getUserAccessToken() throws TwitchMissingAuthTokenException {
+	public String getUserAccessToken() throws MissingAuthTokenException {
 		final String accessToken = properties.getProperty(PROPERTY_TWITCH_ACCESS_TOKEN);
 		if (StringUtils.isEmpty(accessToken)) {
-			throw new TwitchMissingAuthTokenException("Missing user access token! Did you query it before calling this method?");
+			throw new MissingAuthTokenException("Missing user access token! Did you query it before calling this method?");
 		}
 		return accessToken;
 	}

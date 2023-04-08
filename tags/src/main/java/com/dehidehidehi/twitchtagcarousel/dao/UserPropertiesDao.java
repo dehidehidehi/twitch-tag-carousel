@@ -4,6 +4,12 @@ import com.dehidehidehi.twitchtagcarousel.domain.TwitchTag;
 import java.util.List;
 
 public interface UserPropertiesDao {
+    
+    String PROPERTY_KEY_TAG_ROTATION_FREQUENCY_SECONDS = "twitch-app.tag-rotation-frequency-seconds";
+    String PROPERTY_MANDATORY_TAGS = "tags.mandatory";
+    String PROPERTY_ROTATING_TAGS = "tags.rotating";
+    
+    String readUserProperty(String propertyKey);
 
     /**
      * Overwrites mandatory tags.
@@ -14,6 +20,8 @@ public interface UserPropertiesDao {
      * Lists mandatory tags.
      */
     List<TwitchTag> getMandatoryTags();
+    
+    int countMandatoryTags();
 
     /**
      * Overwrites rotating tags.
@@ -24,4 +32,6 @@ public interface UserPropertiesDao {
      * Lists rotating tags.
      */
     List<TwitchTag> getRotatingTags();
+    
+    int countRotatingTags();
 }

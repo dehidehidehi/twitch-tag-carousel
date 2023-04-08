@@ -1,5 +1,5 @@
 package com.dehidehidehi.twitchtagcarousel.dao.impl;
-import com.dehidehidehi.twitchtagcarousel.annotation.PropertyProducer;
+import com.dehidehidehi.twitchtagcarousel.annotation.impl.ApplicationPropertyProducer;
 import com.dehidehidehi.twitchtagcarousel.dao.UserPropertiesDao;
 import com.dehidehidehi.twitchtagcarousel.domain.TwitchTag;
 import com.dehidehidehi.twitchtagcarousel.util.CDIExtension;
@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 import static com.dehidehidehi.twitchtagcarousel.dao.impl.UserPropertiesDaoImpl.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Note: These config files are generated in /test-classes/*
@@ -55,7 +56,7 @@ class UserPropertiesDaoImplTest {
     private File getDirPathOfThisJar() {
         final String jarLocation;
         try {
-            jarLocation = new File(PropertyProducer.class
+            jarLocation = new File(ApplicationPropertyProducer.class
                                            .getProtectionDomain()
                                            .getCodeSource()
                                            .getLocation()
@@ -78,6 +79,14 @@ class UserPropertiesDaoImplTest {
                 .containsAll(expected);
     }
 
+    @Test
+    void getMandatoryTagsShouldReturnMutableCollection() {
+        final List<TwitchTag> mandatoryTags = userPropertiesDao.getMandatoryTags();
+        int size = mandatoryTags.size();
+        assertThatCode(() -> mandatoryTags.add(null)).doesNotThrowAnyException();
+        assertThat(mandatoryTags).hasSize(size + 1);
+    }
+
     @Order(1)
     @Test
     void getRotatingTagsShouldReturnRotatingTagsFromPropertiesFile() {
@@ -87,6 +96,14 @@ class UserPropertiesDaoImplTest {
         assertThat(result)
                 .isNotNull()
                 .containsAll(expected);
+    }
+
+    @Test
+    void getRotatingTagsShouldReturnMutableCollection() {
+        final List<TwitchTag> rotatingTags = userPropertiesDao.getRotatingTags();
+        int size = rotatingTags.size();
+        assertThatCode(() -> rotatingTags.add(null)).doesNotThrowAnyException();
+        assertThat(rotatingTags).hasSize(size + 1);
     }
 
     @Test
