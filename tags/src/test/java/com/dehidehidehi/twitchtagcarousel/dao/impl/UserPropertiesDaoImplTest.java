@@ -1,4 +1,5 @@
 package com.dehidehidehi.twitchtagcarousel.dao.impl;
+import com.dehidehidehi.twitchtagcarousel.annotation.PropertyProducer;
 import com.dehidehidehi.twitchtagcarousel.dao.UserPropertiesDao;
 import com.dehidehidehi.twitchtagcarousel.domain.TwitchTag;
 import com.dehidehidehi.twitchtagcarousel.util.CDIExtension;
@@ -9,7 +10,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -38,9 +38,8 @@ class UserPropertiesDaoImplTest {
         setUpPropertiesFileWithDefaultValues();
     }
 
-    private void setUpPropertiesFileWithDefaultValues() throws URISyntaxException, IOException {
-        final URI fileUri = PrivateUserPropertiesDaoImpl.class.getResource(USER_PROPERTIES_FILE).toURI();
-        final File propertiesFile = new File(fileUri);
+    private void setUpPropertiesFileWithDefaultValues() throws IOException {
+        final File propertiesFile = new File(getDirPathOfThisJar() + USER_PROPERTIES_FILE_NEXT_TO_JAR);
         propertiesFile.createNewFile();
         try (FileOutputStream fileOutputStream = new FileOutputStream(propertiesFile)) {
             final String mandatoryTags = "%s=%s".formatted(PROPERTY_MANDATORY_TAGS, defaultMandatoryTags);
@@ -48,6 +47,24 @@ class UserPropertiesDaoImplTest {
             final String properties = String.join(System.lineSeparator(), mandatoryTags, rotatingTags);
             fileOutputStream.write(properties.getBytes(StandardCharsets.UTF_8));
         }
+    }
+    
+    /**
+     * Convenience method for getting the absolute path of where the .jar file will be deployed.
+     */
+    private File getDirPathOfThisJar() {
+        final String jarLocation;
+        try {
+            jarLocation = new File(PropertyProducer.class
+                                           .getProtectionDomain()
+                                           .getCodeSource()
+                                           .getLocation()
+                                           .toURI()
+                                           .getPath()).getParent();
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+        return new File(jarLocation);
     }
 
     @Order(1)

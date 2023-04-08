@@ -17,7 +17,7 @@ import java.util.function.Consumer;
 @ApplicationScoped
 public class PropertyProducer {
 
-	private static final String USER_PROPERTIES = "/user.properties";
+	private static final String USER_PROPERTIES = "/user-deprecated.properties";
 	private static final String APPLICATION_PROPERTIES = "/application.properties";
 	private Properties applicationProperties;
 	private Properties userProperties;
@@ -98,7 +98,7 @@ public class PropertyProducer {
 		// first check app.properties
 		final String property = this.applicationProperties.getProperty(getKey(ip));
 		if (property == null) {
-			// else check user.properties
+			// else check user-deprecated.properties
 			return this.userProperties.getProperty(getKey(ip));
 		}
 		return property;
