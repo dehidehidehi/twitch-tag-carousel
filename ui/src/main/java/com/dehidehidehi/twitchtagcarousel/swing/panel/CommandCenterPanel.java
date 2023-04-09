@@ -1,6 +1,7 @@
 package com.dehidehidehi.twitchtagcarousel.swing.panel;
 import com.dehidehidehi.twitchtagcarousel.service.TagCarouselService;
 import com.dehidehidehi.twitchtagcarousel.swing.frame.MandatoryTagsFrame;
+import com.dehidehidehi.twitchtagcarousel.swing.frame.RotatingTagsFrame;
 
 import javax.swing.*;
 import java.awt.*;
@@ -32,9 +33,9 @@ public class CommandCenterPanel extends JPanel {
 
     private void setUpRotatingTagsButton() {
         setRotatingTagsButton = new JButton("Set rotating tags");
-        setRotatingTagsButton.setEnabled(false);
         setRotatingTagsButton.addActionListener(e -> {
-            // TODO: Implement set rotating tags functionality
+            final RotatingTagsFrame rotatingTagsFrame = new RotatingTagsFrame(tagCarouselService);
+            rotatingTagsFrame.setVisible(true);
         });
         add(setRotatingTagsButton);
     }

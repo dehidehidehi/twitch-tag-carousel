@@ -21,20 +21,20 @@ public class MandatoryTagsFrame extends TagsFrame {
         this.tagCarouselService = tagCarouselService;
         setTitle("Mandatory Tags Editor");
         getTagTextAreaEditorPanel().getPanelLabel().setText("Mandatory Tags:");
-        getTagTextAreaEditorPanel().getTagsTextArea().setText(getUserSavedTags());
+        getTagTextAreaEditorPanel().getTagsTextArea().setText(getUserSavedMandatoryTags());
         getCancelButton().addActionListener(e -> this.dispose());
         getSaveButton().addActionListener(e -> setTags(getTagTextAreaEditorPanel().getTagsTextArea().getText()));
     }
 
-    private String getUserSavedTags() {
-        LOGGER.trace("Retrieving user saved tags.");
+    private String getUserSavedMandatoryTags() {
+        LOGGER.trace("Retrieving user mandatory tags.");
         final String userSavedTags = tagCarouselService
                 .getMandatoryTags()
                 .stream()
                 .map(TwitchTag::toString)
                 .sorted()
                 .collect(Collectors.joining(",%n".formatted()));
-        LOGGER.trace("User saved tags : {}", userSavedTags);
+        LOGGER.trace("User mandatory tags : {}", userSavedTags);
         return userSavedTags;
     }
 
@@ -64,5 +64,4 @@ public class MandatoryTagsFrame extends TagsFrame {
                                           JOptionPane.WARNING_MESSAGE);
         }
     }
-
 }
