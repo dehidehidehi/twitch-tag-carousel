@@ -96,4 +96,9 @@ class TagCarouselServiceImpl implements TagCarouselService {
 	public void queryUserAccessToken() throws AuthTokenQueryException {
 		twitchApiService.queryUserAccessToken();
 	}
+
+	@Override
+	public void close() throws Exception {
+		throw new UnsupportedOperationException("Method should not be used in %s".formatted(getClass().getSimpleName()));
+	}
 }

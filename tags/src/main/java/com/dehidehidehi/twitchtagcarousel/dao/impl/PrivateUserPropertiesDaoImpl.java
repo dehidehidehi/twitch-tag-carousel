@@ -15,7 +15,7 @@ import java.util.Properties;
 
 @Typed(PrivateUserPropertiesDao.class)
 @ApplicationScoped
-class PrivateUserPropertiesDaoImpl extends PropertiesDaoUtil implements PrivateUserPropertiesDao, AutoCloseable {
+class PrivateUserPropertiesDaoImpl extends PropertiesDaoUtil implements PrivateUserPropertiesDao {
 
     static final String PRIVATE_USER_PROPERTIES_FILE = "/private-user.properties";
     static final String PROPERTY_TWITCH_ACCESS_TOKEN = "twitch.access-token";

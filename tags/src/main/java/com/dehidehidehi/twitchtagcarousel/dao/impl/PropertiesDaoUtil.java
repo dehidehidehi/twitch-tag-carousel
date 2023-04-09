@@ -9,6 +9,9 @@ import java.util.Properties;
 
 abstract class PropertiesDaoUtil {
 
+	/**
+	 * Writes the properties object into the specified file.
+	 */
 	protected void updatePropertiesFile(final Properties properties, final String filePath) {
 		final URL resource = getClass().getResource(filePath);
 		final URI uri;

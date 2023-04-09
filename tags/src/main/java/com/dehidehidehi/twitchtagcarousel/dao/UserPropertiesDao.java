@@ -3,7 +3,7 @@ import com.dehidehidehi.twitchtagcarousel.domain.TwitchTag;
 
 import java.util.List;
 
-public interface UserPropertiesDao {
+public interface UserPropertiesDao extends AutoCloseable {
     
     String PROPERTY_KEY_TAG_ROTATION_FREQUENCY_SECONDS = "twitch-app.tag-rotation-frequency-seconds";
     String PROPERTY_MANDATORY_TAGS = "tags.mandatory";

@@ -10,9 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.List;
@@ -30,6 +28,7 @@ class UserPropertiesDaoImpl implements UserPropertiesDao {
     static final String USER_PROPERTIES_FILE_NEXT_TO_JAR = "/user.properties";
     private static final Logger LOGGER = LoggerFactory.getLogger(UserPropertiesDaoImpl.class);
     private Properties properties;
+    private InputStream propertiesInputStream;
 
     @PostConstruct
     void init() {
@@ -40,7 +39,12 @@ class UserPropertiesDaoImpl implements UserPropertiesDao {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        try (final FileInputStream propertiesInputStream = new FileInputStream(userPropertiesFile)) {
+        try {
+            propertiesInputStream = new FileInputStream(userPropertiesFile);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        try {
             properties.load(propertiesInputStream);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -122,5 +126,12 @@ class UserPropertiesDaoImpl implements UserPropertiesDao {
     @Override
     public int countRotatingTags() {
         return getRotatingTags().size();
+    }
+
+    @Override
+    public void close() throws Exception {
+        if (propertiesInputStream != null) {
+            propertiesInputStream.close();
+        }
     }
 }
