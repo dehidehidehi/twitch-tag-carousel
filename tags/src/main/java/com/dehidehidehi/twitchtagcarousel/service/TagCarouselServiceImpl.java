@@ -47,7 +47,7 @@ class TagCarouselServiceImpl implements TagCarouselService {
 	}
 
 	@Override
-	public void saveMandatoryTags(final List<TwitchTag> tags) {
+	public void saveMandatoryTags(final List<TwitchTag> tags) throws TwitchTagValidationException {
 		userPropertiesDao.saveMandatoryTags(tags);
 	}
 
@@ -62,7 +62,7 @@ class TagCarouselServiceImpl implements TagCarouselService {
 	}
 
 	@Override
-	public void saveRotatingTags(final List<TwitchTag> tags) {
+	public void saveRotatingTags(final List<TwitchTag> tags) throws TwitchTagValidationException {
 		userPropertiesDao.saveRotatingTags(tags);
 	}
 

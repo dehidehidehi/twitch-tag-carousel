@@ -1,4 +1,5 @@
 package com.dehidehidehi.twitchtagcarousel.domain;
+import com.dehidehidehi.twitchtagcarousel.error.TwitchTagValidationException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -10,26 +11,26 @@ public final class TwitchTag implements Comparable<TwitchTag> {
 
 	private final String tag;
 	
-    public TwitchTag(final String tag) {
+    public TwitchTag(final String tag) throws TwitchTagValidationException {
 		 validateTag(tag);
 		 this.tag = tag;
     }
 	 
-	private void validateTag(final String tag) {
+	private void validateTag(final String tag) throws TwitchTagValidationException {
 		if (tag.length() > 25) {
-			throw new AssertionError("Max tag length is 25, bit has length : %d".formatted(tag.length()));
+			throw new TwitchTagValidationException("%s: Max tag length is 25, tag has length : %d".formatted(tag, tag.length()));
 		}
 		if (tag.length() == 0) {
-			throw new AssertionError("A tag cannot be empty.");
+			throw new TwitchTagValidationException("%s: A tag cannot be empty.".formatted(tag));
 		}
 		if (!StringUtils.isAsciiPrintable(tag)) {
-			throw new AssertionError("Found non ascii printable char in tag : %s".formatted(tag));
+			throw new TwitchTagValidationException("%s: Found non ascii printable char in tag.".formatted(tag));
 		}
 		if (StringUtils.containsWhitespace(tag)) {
-			throw new AssertionError("No whitespace allowed in tags, found in : %s".formatted(tag));
+			throw new TwitchTagValidationException("%s: No whitespace allowed in tags.".formatted(tag));
 		}
 		if (!StringUtils.isAlphanumeric(tag)) {
-			throw new AssertionError("Found non alpha numeric character in tag : %s".formatted(tag));
+			throw new TwitchTagValidationException("%s: Found non alpha numeric character in tag.".formatted(tag));
 		}
 	}
 

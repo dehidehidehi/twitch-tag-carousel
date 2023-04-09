@@ -5,6 +5,7 @@ import com.dehidehidehi.twitchtagcarousel.dao.UserPropertiesDao;
 import com.dehidehidehi.twitchtagcarousel.error.MissingAuthTokenException;
 import com.dehidehidehi.twitchtagcarousel.error.MissingUserProvidedTagsException;
 import com.dehidehidehi.twitchtagcarousel.error.TwitchTagUpdateException;
+import com.dehidehidehi.twitchtagcarousel.error.TwitchTagValidationException;
 import com.dehidehidehi.twitchtagcarousel.service.TagRotatorService;
 import com.dehidehidehi.twitchtagcarousel.ui.BannerUi;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -59,7 +60,8 @@ class CommandCenter {
 		Runnable startUpdatingTags = () -> {
 			try {
 				tagRotatorService.updateTags();
-			} catch (MissingUserProvidedTagsException | MissingAuthTokenException | TwitchTagUpdateException e) {
+			} catch (MissingUserProvidedTagsException | MissingAuthTokenException | TwitchTagUpdateException |
+						TwitchTagValidationException e) {
 				throw new RuntimeException(e);
 			}
 		};

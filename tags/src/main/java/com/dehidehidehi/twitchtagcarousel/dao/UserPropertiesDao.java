@@ -1,5 +1,6 @@
 package com.dehidehidehi.twitchtagcarousel.dao;
 import com.dehidehidehi.twitchtagcarousel.domain.TwitchTag;
+import com.dehidehidehi.twitchtagcarousel.error.TwitchTagValidationException;
 
 import java.util.List;
 
@@ -14,7 +15,7 @@ public interface UserPropertiesDao extends AutoCloseable {
     /**
      * Overwrites mandatory tags.
      */
-    void saveMandatoryTags(List<TwitchTag> tags);
+    void saveMandatoryTags(List<TwitchTag> tags) throws TwitchTagValidationException;
 
     /**
      * Lists mandatory tags.
@@ -26,7 +27,7 @@ public interface UserPropertiesDao extends AutoCloseable {
     /**
      * Overwrites rotating tags.
      */
-    void saveRotatingTags(List<TwitchTag> tags);
+    void saveRotatingTags(List<TwitchTag> tags) throws TwitchTagValidationException;
 
     /**
      * Lists rotating tags.

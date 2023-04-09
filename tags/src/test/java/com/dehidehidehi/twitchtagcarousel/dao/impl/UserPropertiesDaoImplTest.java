@@ -4,6 +4,7 @@ import com.dehidehidehi.twitchtagcarousel.dao.UserPropertiesDao;
 import com.dehidehidehi.twitchtagcarousel.domain.TwitchTag;
 import com.dehidehidehi.twitchtagcarousel.util.CDIExtension;
 import jakarta.inject.Inject;
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -19,7 +20,6 @@ import java.util.stream.Collectors;
 import static com.dehidehidehi.twitchtagcarousel.dao.impl.UserPropertiesDaoImpl.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Note: These config files are generated in /test-classes/*
@@ -49,7 +49,7 @@ class UserPropertiesDaoImplTest {
             fileOutputStream.write(properties.getBytes(StandardCharsets.UTF_8));
         }
     }
-    
+
     /**
      * Convenience method for getting the absolute path of where the .jar file will be deployed.
      */
@@ -106,6 +106,7 @@ class UserPropertiesDaoImplTest {
         assertThat(rotatingTags).hasSize(size + 1);
     }
 
+    @SneakyThrows
     @Test
     void setMandatoryTagsShouldOverwriteInPropertiesFile() {
         final List<TwitchTag> newMandatoryTags = List.of(
@@ -115,10 +116,15 @@ class UserPropertiesDaoImplTest {
         );
         userPropertiesDao.saveMandatoryTags(newMandatoryTags);
         final String expected = newMandatoryTags.stream().map(TwitchTag::toString).collect(Collectors.joining(","));
-        final String result = userPropertiesDao.getMandatoryTags().stream().map(TwitchTag::toString).collect(Collectors.joining(","));
+        final String result = userPropertiesDao
+                .getMandatoryTags()
+                .stream()
+                .map(TwitchTag::toString)
+                .collect(Collectors.joining(","));
         assertThat(result).isEqualTo(expected);
     }
 
+    @SneakyThrows
     @Test
     void setRotatingTagsShouldOverwriteInPropertiesFile() {
         final List<TwitchTag> newRotatingTags = List.of(
@@ -128,7 +134,11 @@ class UserPropertiesDaoImplTest {
         );
         userPropertiesDao.saveRotatingTags(newRotatingTags);
         final String expected = newRotatingTags.stream().map(TwitchTag::toString).collect(Collectors.joining(","));
-        final String result = userPropertiesDao.getRotatingTags().stream().map(TwitchTag::toString).collect(Collectors.joining(","));
+        final String result = userPropertiesDao
+                .getRotatingTags()
+                .stream()
+                .map(TwitchTag::toString)
+                .collect(Collectors.joining(","));
         assertThat(result).isEqualTo(expected);
     }
 }

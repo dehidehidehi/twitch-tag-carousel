@@ -8,6 +8,10 @@ import java.net.URL;
 import java.util.Properties;
 
 abstract class PropertiesDaoUtil {
+	
+	protected void updatePropertiesFile(final Properties properties, final File propertiesFile) {
+		storeIt(properties, propertiesFile);
+	}
 
 	/**
 	 * Writes the properties object into the specified file.
@@ -21,11 +25,15 @@ abstract class PropertiesDaoUtil {
 			throw new RuntimeException(e);
 		}
 		final File file = new File(uri);
+		storeIt(properties, file);
+	}
+
+	private void storeIt(final Properties properties, final File file) {
 		try (FileOutputStream fileOutputStream = new FileOutputStream(file)) {
-			properties.store(fileOutputStream, null);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+				properties.store(fileOutputStream, null);
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
 	}
 
 }

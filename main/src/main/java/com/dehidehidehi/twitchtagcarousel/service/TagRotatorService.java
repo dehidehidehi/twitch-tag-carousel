@@ -6,6 +6,7 @@ import com.dehidehidehi.twitchtagcarousel.domain.TwitchTagBatch;
 import com.dehidehidehi.twitchtagcarousel.error.MissingAuthTokenException;
 import com.dehidehidehi.twitchtagcarousel.error.MissingUserProvidedTagsException;
 import com.dehidehidehi.twitchtagcarousel.error.TwitchTagUpdateException;
+import com.dehidehidehi.twitchtagcarousel.error.TwitchTagValidationException;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
@@ -43,16 +44,21 @@ public class TagRotatorService {
     
     @PostConstruct
     private void init() {
-        shuffleTagsToRotate();
+        try {
+            shuffleTagsToRotate();
+        } catch (TwitchTagValidationException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    private void shuffleTagsToRotate() {
+    private void shuffleTagsToRotate() throws TwitchTagValidationException {
         final List<TwitchTag> rotatingTags = userPropertiesDao.getRotatingTags();
         final List<TwitchTag> shuffledRotatingTags = new ArrayList<>(new HashSet<>(rotatingTags));
         userPropertiesDao.saveRotatingTags(shuffledRotatingTags);
     }
 
-    public void updateTags() throws MissingUserProvidedTagsException, MissingAuthTokenException, TwitchTagUpdateException {
+    public void updateTags()
+    throws MissingUserProvidedTagsException, MissingAuthTokenException, TwitchTagUpdateException, TwitchTagValidationException {
         LOGGER.debug("Entered in updating tags method.");
         final TwitchTagBatch tags = selectNewTags();
         tagCarouselService.updateTags(tags);
@@ -63,7 +69,7 @@ public class TagRotatorService {
     /**
      * Selects a new batch of tags, rotates tag selection at each invocation.
      */
-    TwitchTagBatch selectNewTags() {
+    TwitchTagBatch selectNewTags() throws TwitchTagValidationException {
         // If too many mandatory tags
         final List<TwitchTag> mandatoryTags = userPropertiesDao.getMandatoryTags();
         final List<TwitchTag> tagBatch = new ArrayList<>(mandatoryTags);

@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
  */
 @Typed(UserPropertiesDao.class)
 @ApplicationScoped
-class UserPropertiesDaoImpl implements UserPropertiesDao {
+class UserPropertiesDaoImpl extends PropertiesDaoUtil implements UserPropertiesDao {
 
     static final String USER_PROPERTIES_FILE_NEXT_TO_JAR = "/user.properties";
     private static final Logger LOGGER = LoggerFactory.getLogger(UserPropertiesDaoImpl.class);
@@ -81,6 +81,7 @@ class UserPropertiesDaoImpl implements UserPropertiesDao {
                 .map(TwitchTag::toString)
                 .collect(Collectors.joining(","));
         properties.setProperty(PROPERTY_MANDATORY_TAGS, concatenated);
+        updatePropertiesFile();
     }
 
     @Override
@@ -108,6 +109,7 @@ class UserPropertiesDaoImpl implements UserPropertiesDao {
                 .map(TwitchTag::toString)
                 .collect(Collectors.joining(","));
         properties.setProperty(PROPERTY_ROTATING_TAGS, concatenated);
+        updatePropertiesFile();
     }
 
     @Override
@@ -126,6 +128,11 @@ class UserPropertiesDaoImpl implements UserPropertiesDao {
     @Override
     public int countRotatingTags() {
         return getRotatingTags().size();
+    }
+    
+    private void updatePropertiesFile() {
+        final File userPropertiesFile = new File(getDirPathOfThisJar() + USER_PROPERTIES_FILE_NEXT_TO_JAR);
+        updatePropertiesFile(properties, userPropertiesFile);
     }
 
     @Override

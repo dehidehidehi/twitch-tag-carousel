@@ -71,7 +71,7 @@ public final class SwingCarouselUi implements CarouselUi {
             startUpFrame.pack();
         } else {
             LOGGER.debug("userAccessToken is valid: instantiating CommandCenterPanel");
-            CommandCenterPanel commandCenterPanel = new CommandCenterPanel();
+            CommandCenterPanel commandCenterPanel = new CommandCenterPanel(tagCarouselService);
             startUpFrame.add(commandCenterPanel);
             startUpFrame.pack();
         }

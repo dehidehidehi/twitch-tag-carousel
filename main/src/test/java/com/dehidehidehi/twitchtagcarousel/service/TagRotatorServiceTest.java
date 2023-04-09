@@ -1,6 +1,7 @@
 package com.dehidehidehi.twitchtagcarousel.service;
 import com.dehidehidehi.twitchtagcarousel.dao.UserPropertiesDao;
 import com.dehidehidehi.twitchtagcarousel.domain.TwitchTag;
+import com.dehidehidehi.twitchtagcarousel.error.TwitchTagValidationException;
 import com.dehidehidehi.twitchtagcarousel.util.CDIExtension;
 import jakarta.inject.Inject;
 import lombok.SneakyThrows;
@@ -32,9 +33,16 @@ class TagRotatorServiceTest {
         private final Function<Integer, List<TwitchTag>> makeTags = i -> IntStream
                 .rangeClosed(1, i)
                 .mapToObj(j -> RandomStringUtils.randomAlphabetic(10))
-                .map(TwitchTag::new)
+                .map(s -> {
+                    try {
+                        return new TwitchTag(s);
+                    } catch (TwitchTagValidationException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
                 .toList();
 
+        @SneakyThrows
         @BeforeEach
         void setUp() {
             userPropertiesDao.saveMandatoryTags(Collections.emptyList());
@@ -42,6 +50,7 @@ class TagRotatorServiceTest {
             userPropertiesDao.saveMandatoryTags(makeTags.apply(10));
         }
 
+        @SneakyThrows
         @AfterEach
         void tearDown() {
             userPropertiesDao.saveMandatoryTags(Collections.emptyList());
@@ -57,6 +66,7 @@ class TagRotatorServiceTest {
             assertThat(tagRotatorService.selectNewTags().get()).hasSize(10);
         }
 
+        @SneakyThrows
         @RepeatedTest(5)
         void includeMandatoryTagsAtEachInvocation() {
             final List<TwitchTag> mandatoryTags = makeTags.apply(5);

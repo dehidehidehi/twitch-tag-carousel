@@ -1,4 +1,7 @@
 package com.dehidehidehi.twitchtagcarousel.swing.panel;
+import com.dehidehidehi.twitchtagcarousel.service.TagCarouselService;
+import com.dehidehidehi.twitchtagcarousel.swing.frame.MandatoryTagsFrame;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -8,11 +11,14 @@ public class CommandCenterPanel extends JPanel {
     private JButton setRotatingTagsButton;
     private JRadioButton autoFetchPopularTagsRadioButton;
 
-    public CommandCenterPanel() {
+    private final TagCarouselService tagCarouselService;
+
+    public CommandCenterPanel(final TagCarouselService tagCarouselService) {
+        this.tagCarouselService = tagCarouselService;
         setLayout(new GridLayout(2, 2));
         setUpMandatoryTagsButton();
         setUpRotatingTagsButton();
-        setUpAutoFetchPopularTagsRadioButton();
+//        setUpAutoFetchPopularTagsRadioButton();
     }
 
     private void setUpAutoFetchPopularTagsRadioButton() {
@@ -35,16 +41,12 @@ public class CommandCenterPanel extends JPanel {
 
     private void setUpMandatoryTagsButton() {
         setMandatoryTagsButton = new JButton("Set mandatory tags");
-        setMandatoryTagsButton.setEnabled(false);
         setMandatoryTagsButton.addActionListener(e -> {
-            // TODO: Implement set mandatory tags functionality
+            final MandatoryTagsFrame mandatoryTagsFrame = new MandatoryTagsFrame(tagCarouselService);
+            mandatoryTagsFrame.setVisible(true);
         });
         add(setMandatoryTagsButton);
     }
+    
 
-    public void setButtonsEnabled(boolean enabled) {
-        setMandatoryTagsButton.setEnabled(enabled);
-        setRotatingTagsButton.setEnabled(enabled);
-        autoFetchPopularTagsRadioButton.setEnabled(enabled);
-    }
 }

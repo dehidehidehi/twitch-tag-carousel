@@ -8,7 +8,8 @@ public class AuthTokenValidationPanel extends JPanel {
 
     public AuthTokenValidationPanel(TagCarouselService tagCarouselService) {
         super();
-        final var requestAccessTokenButton = new OAuthRequestAccessTokenButton(tagCarouselService, CommandCenterPanel::new);
+        final var requestAccessTokenButton = new OAuthRequestAccessTokenButton(tagCarouselService,
+                                                                               () -> new CommandCenterPanel(tagCarouselService));
         add(requestAccessTokenButton);
     }
 
