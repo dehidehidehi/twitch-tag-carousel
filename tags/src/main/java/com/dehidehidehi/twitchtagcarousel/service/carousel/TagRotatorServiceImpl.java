@@ -1,4 +1,4 @@
-package com.dehidehidehi.twitchtagcarousel.service;
+package com.dehidehidehi.twitchtagcarousel.service.carousel;
 
 import com.dehidehidehi.twitchtagcarousel.dao.UserPropertiesDao;
 import com.dehidehidehi.twitchtagcarousel.domain.TwitchTag;
@@ -7,6 +7,7 @@ import com.dehidehidehi.twitchtagcarousel.error.MissingAuthTokenException;
 import com.dehidehidehi.twitchtagcarousel.error.MissingUserProvidedTagsException;
 import com.dehidehidehi.twitchtagcarousel.error.TwitchTagUpdateException;
 import com.dehidehidehi.twitchtagcarousel.error.TwitchTagValidationException;
+import com.dehidehidehi.twitchtagcarousel.service.TagCarouselService;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
@@ -16,24 +17,25 @@ import org.slf4j.LoggerFactory;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 
 import static com.dehidehidehi.twitchtagcarousel.dao.UserPropertiesDao.PROPERTY_KEY_TAG_ROTATION_FREQUENCY_SECONDS;
 import static com.dehidehidehi.twitchtagcarousel.domain.TwitchTagBatch.MAX_NB_TAGS_PER_CHANNEL;
 
 
 @Dependent
-public class TagRotatorService {
+public class TagRotatorServiceImpl implements TagRotatorService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(TagRotatorService.class);
-
+    public static final long DEFAULT_ROTATION_FREQUENCY_SECONDS = 300L;
+    private static final Logger LOGGER = LoggerFactory.getLogger(TagRotatorServiceImpl.class);
     private final TagCarouselService tagCarouselService;
     private final UserPropertiesDao userPropertiesDao;
 
     @Inject
-    public TagRotatorService(final TagCarouselService tagCarouselService, final UserPropertiesDao userPropertiesDao) {
+    public TagRotatorServiceImpl(final TagCarouselService tagCarouselService, final UserPropertiesDao userPropertiesDao) {
         this.tagCarouselService = tagCarouselService;
         this.userPropertiesDao = userPropertiesDao;
     }
@@ -41,7 +43,7 @@ public class TagRotatorService {
     public TagCarouselService getTagCarouselService() {
         return tagCarouselService;
     }
-    
+
     @PostConstruct
     private void init() {
         try {
@@ -57,6 +59,7 @@ public class TagRotatorService {
         userPropertiesDao.saveRotatingTags(shuffledRotatingTags);
     }
 
+    @Override
     public void updateTags()
     throws MissingUserProvidedTagsException, MissingAuthTokenException, TwitchTagUpdateException, TwitchTagValidationException {
         LOGGER.debug("Entered in updating tags method.");
@@ -77,7 +80,7 @@ public class TagRotatorService {
             final List<TwitchTag> onlyMandatoryTags = tagBatch.stream().limit(MAX_NB_TAGS_PER_CHANNEL).toList();
             return new TwitchTagBatch(onlyMandatoryTags);
         }
-        
+
         // If user has set tags to rotate
         final List<TwitchTag> rotatingTags = userPropertiesDao.getRotatingTags();
         tagBatch.addAll(rotatingTags);
@@ -102,8 +105,12 @@ public class TagRotatorService {
     }
 
     private String getNextExecutionTime() {
-        final String rotationFrequency = userPropertiesDao.readUserProperty(PROPERTY_KEY_TAG_ROTATION_FREQUENCY_SECONDS);
-        final Duration amountToAddInSeconds = Duration.ofSeconds(Long.parseLong(rotationFrequency));
+        final String frequencySecondsFromProperties = userPropertiesDao.readUserProperty(
+                PROPERTY_KEY_TAG_ROTATION_FREQUENCY_SECONDS);
+        final long rotationFrequency = frequencySecondsFromProperties == null
+                                       ? DEFAULT_ROTATION_FREQUENCY_SECONDS
+                                       : Long.parseLong(frequencySecondsFromProperties);
+        final Duration amountToAddInSeconds = Duration.ofSeconds(rotationFrequency);
         final DateTimeFormatter localTime = DateTimeFormatter.ofPattern("HH:mm:ss");
         return LocalDateTime.now().plus(amountToAddInSeconds).format(localTime);
     }

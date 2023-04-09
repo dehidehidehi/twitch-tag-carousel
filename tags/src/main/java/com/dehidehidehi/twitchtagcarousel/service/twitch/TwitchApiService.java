@@ -8,7 +8,7 @@ public interface TwitchApiService {
     boolean isUserAccessTokenValid(String userAccessToken) throws AuthTokenQueryException;
 
     // TODO move this to AUTH module
-    String getBroadcasterIdOf(String channelName) throws TwitchChannelIdException, MissingAuthTokenException;
+    String getBroadcasterIdOf() throws TwitchChannelIdException, MissingAuthTokenException;
 
     void updateTags(TwitchTagBatch tags) throws MissingUserProvidedTagsException, TwitchTagUpdateException, MissingAuthTokenException;
 

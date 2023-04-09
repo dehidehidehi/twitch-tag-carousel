@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <!-- PROPERTY -->
-    <property name="LOG_DIR" value="./logs"/>
-    
     <!-- APPENDER -->
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>

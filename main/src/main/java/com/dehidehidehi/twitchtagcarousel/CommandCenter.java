@@ -6,7 +6,7 @@ import com.dehidehidehi.twitchtagcarousel.error.MissingAuthTokenException;
 import com.dehidehidehi.twitchtagcarousel.error.MissingUserProvidedTagsException;
 import com.dehidehidehi.twitchtagcarousel.error.TwitchTagUpdateException;
 import com.dehidehidehi.twitchtagcarousel.error.TwitchTagValidationException;
-import com.dehidehidehi.twitchtagcarousel.service.TagRotatorService;
+import com.dehidehidehi.twitchtagcarousel.service.carousel.TagRotatorServiceImpl;
 import com.dehidehidehi.twitchtagcarousel.ui.BannerUi;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -32,20 +32,20 @@ class CommandCenter {
 	@Inject
 	private int startDelaySeconds;
 
-	private final TagRotatorService tagRotatorService;
+	private final TagRotatorServiceImpl tagRotatorServiceImpl;
 	private final CarouselUi carouselUi;
 	private final UserPropertiesDao userPropertiesDao;
 
 	@Inject
-	CommandCenter(final TagRotatorService tagRotatorService,
+	CommandCenter(final TagRotatorServiceImpl tagRotatorServiceImpl,
 					  final CarouselUi carouselUi, final UserPropertiesDao userPropertiesDao) {
-		this.tagRotatorService = tagRotatorService;
+		this.tagRotatorServiceImpl = tagRotatorServiceImpl;
 		this.carouselUi = carouselUi;
 		this.userPropertiesDao = userPropertiesDao;
 	}
 
 	void startUiMode() {
-		carouselUi.start(tagRotatorService.getTagCarouselService());
+		carouselUi.start(tagRotatorServiceImpl.getTagCarouselService());
 	}
 
 	/**
@@ -59,7 +59,7 @@ class CommandCenter {
 		ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
 		Runnable startUpdatingTags = () -> {
 			try {
-				tagRotatorService.updateTags();
+				tagRotatorServiceImpl.updateTags();
 			} catch (MissingUserProvidedTagsException | MissingAuthTokenException | TwitchTagUpdateException |
 						TwitchTagValidationException e) {
 				throw new RuntimeException(e);

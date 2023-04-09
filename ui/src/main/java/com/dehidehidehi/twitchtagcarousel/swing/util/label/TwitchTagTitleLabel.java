@@ -12,6 +12,6 @@ public class TwitchTagTitleLabel extends JLabel {
 	public TwitchTagTitleLabel() {
 		super("Twitch Tag Carousel", SwingConstants.CENTER);
 		this.setFont(new Font("Arial", Font.BOLD, 24));
-		LOGGER.trace("StartUpPanel done centering title.");
+		LOGGER.trace("AuthTokenPanel done centering title.");
 	}
 }

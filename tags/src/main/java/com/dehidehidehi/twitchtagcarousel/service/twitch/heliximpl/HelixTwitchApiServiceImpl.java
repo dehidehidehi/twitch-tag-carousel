@@ -65,22 +65,22 @@ public class HelixTwitchApiServiceImpl extends BasicTwitchApiServiceImpl impleme
 	 * Requests the channel's id using the channel's name as a parameter.
 	 */
 	@Override
-	public String getBroadcasterIdOf(final String channelName) throws TwitchChannelIdException, MissingAuthTokenException {
+	public String getBroadcasterIdOf() throws TwitchChannelIdException, MissingAuthTokenException {
 		LOGGER.debug("{} entered getChannelIdFrom method.", HelixTwitchApiServiceImpl.class.getSimpleName());
 		final UserList userList;
 		try {
 			final String userAccessToken = privateUserPropertiesDao.getUserAccessToken();
 			userList = twitchHelix
-					.getUsers(userAccessToken, null, List.of(channelName))
+					.getUsers(userAccessToken, null, null)
 					.execute();
 		} catch (HystrixRuntimeException e) {
 			throw new TwitchChannelIdException(e);
 		}
 		if (userList.getUsers().isEmpty()) {
-			throw new TwitchChannelIdException("No channel information found for channelName=%s".formatted(channelName));
+			throw new TwitchChannelIdException("Unhandled error: Could not find find your channel name.");
 		}
 		final String channelId = userList.getUsers().get(0).getId();
-		LOGGER.debug("Found channelId from {}: {}", channelName, channelId);
+		LOGGER.debug("Found channelId {}: {}", channelId);
 		return channelId;
 	}
 
@@ -102,7 +102,7 @@ public class HelixTwitchApiServiceImpl extends BasicTwitchApiServiceImpl impleme
 		try {
 			final String userAccessToken = privateUserPropertiesDao.getUserAccessToken();
 			final String channelName = userPropertiesDao.readUserProperty(PROPERTY_KEY_CHANNEL_NAME);
-			final String broadcasterId = getBroadcasterIdOf(channelName);
+			final String broadcasterId = getBroadcasterIdOf();
 			twitchHelix
 					.updateChannelInformation(userAccessToken, broadcasterId, channelInformation)
 					.execute();

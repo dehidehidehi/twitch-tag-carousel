@@ -10,7 +10,7 @@ import javax.swing.*;
  * Factory for providing logging panels for our GUI.<br>
  * see logback.xml file
  */
-class LoggingTextAreaFactory {
+public class LoggingTextAreaFactory {
 
     private static final String APPENDER_NAME = "LoggingTextAreaAppender";
     private static final String[] LOGGERS = {
@@ -20,7 +20,7 @@ class LoggingTextAreaFactory {
     private LoggingTextAreaFactory() {
     }
 
-    static JTextArea ofLogBackAppendedTextArea() {
+    public static JTextArea ofLogBackAppendedTextArea() {
         final JTextArea jTextArea = new JTextArea();
         for (String logger : LOGGERS) {
             final LoggingTextAreaAppender appender = getLoggingTextAreaAppenderFromLogbackContext(logger);

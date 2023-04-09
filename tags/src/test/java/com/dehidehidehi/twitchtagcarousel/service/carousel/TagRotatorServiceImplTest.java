@@ -1,4 +1,4 @@
-package com.dehidehidehi.twitchtagcarousel.service;
+package com.dehidehidehi.twitchtagcarousel.service.carousel;
 import com.dehidehidehi.twitchtagcarousel.dao.UserPropertiesDao;
 import com.dehidehidehi.twitchtagcarousel.domain.TwitchTag;
 import com.dehidehidehi.twitchtagcarousel.error.TwitchTagValidationException;
@@ -19,10 +19,10 @@ import java.util.stream.IntStream;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(CDIExtension.class)
-class TagRotatorServiceTest {
+class TagRotatorServiceImplTest {
 
     @Inject
-    private TagRotatorService tagRotatorService;
+    private TagRotatorServiceImpl tagRotatorServiceImpl;
 
     @Inject
     private UserPropertiesDao userPropertiesDao;
@@ -61,9 +61,9 @@ class TagRotatorServiceTest {
         @Test
         void selectTagsShouldReturnTenTags() {
             userPropertiesDao.saveMandatoryTags(Collections.emptyList());
-            assertThat(tagRotatorService.selectNewTags().get()).isEmpty();
+            assertThat(tagRotatorServiceImpl.selectNewTags().get()).isEmpty();
             userPropertiesDao.saveMandatoryTags(makeTags.apply(10));
-            assertThat(tagRotatorService.selectNewTags().get()).hasSize(10);
+            assertThat(tagRotatorServiceImpl.selectNewTags().get()).hasSize(10);
         }
 
         @SneakyThrows
@@ -72,8 +72,8 @@ class TagRotatorServiceTest {
             final List<TwitchTag> mandatoryTags = makeTags.apply(5);
             userPropertiesDao.saveMandatoryTags(mandatoryTags);
             userPropertiesDao.saveRotatingTags(makeTags.apply(30));
-            final Collection<TwitchTag> firstResult = tagRotatorService.selectNewTags().get();
-            final Collection<TwitchTag> secondResult = tagRotatorService.selectNewTags().get();
+            final Collection<TwitchTag> firstResult = tagRotatorServiceImpl.selectNewTags().get();
+            final Collection<TwitchTag> secondResult = tagRotatorServiceImpl.selectNewTags().get();
             assertThat(firstResult).containsAll(mandatoryTags);
             assertThat(secondResult).containsAll(mandatoryTags);
         }
@@ -84,8 +84,8 @@ class TagRotatorServiceTest {
             final List<TwitchTag> mandatoryTags = makeTags.apply(5);
             userPropertiesDao.saveMandatoryTags(mandatoryTags);
             userPropertiesDao.saveRotatingTags(makeTags.apply(30));
-            final Collection<TwitchTag> firstResult = tagRotatorService.selectNewTags().get();
-            final Collection<TwitchTag> secondResult = tagRotatorService.selectNewTags().get();
+            final Collection<TwitchTag> firstResult = tagRotatorServiceImpl.selectNewTags().get();
+            final Collection<TwitchTag> secondResult = tagRotatorServiceImpl.selectNewTags().get();
             mandatoryTags.forEach(firstResult::remove);
             mandatoryTags.forEach(secondResult::remove);
             assertThat(secondResult).isNotEmpty()
@@ -96,9 +96,9 @@ class TagRotatorServiceTest {
         @SneakyThrows
         @Test
         void notChangeTagsToRotateListNumberOfElements() {
-            final int tagsToRotateUniqueElementCount = new HashSet<>(tagRotatorService.selectNewTags().get()).size();
-            tagRotatorService.selectNewTags();
-            assertThat(new HashSet<>(tagRotatorService.selectNewTags().get())).hasSize(tagsToRotateUniqueElementCount);
+            final int tagsToRotateUniqueElementCount = new HashSet<>(tagRotatorServiceImpl.selectNewTags().get()).size();
+            tagRotatorServiceImpl.selectNewTags();
+            assertThat(new HashSet<>(tagRotatorServiceImpl.selectNewTags().get())).hasSize(tagsToRotateUniqueElementCount);
         }
 
         @SneakyThrows
@@ -106,7 +106,7 @@ class TagRotatorServiceTest {
         void returnMandatoryTagsInResponse() {
             final List<TwitchTag> tenTags = makeTags.apply(10);
             userPropertiesDao.saveMandatoryTags(tenTags);
-            final Collection<TwitchTag> twitchTags = tagRotatorService.selectNewTags().get();
+            final Collection<TwitchTag> twitchTags = tagRotatorServiceImpl.selectNewTags().get();
             assertThat(twitchTags).containsAll(tenTags);
         }
     }

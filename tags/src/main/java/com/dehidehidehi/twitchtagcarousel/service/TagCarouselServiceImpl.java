@@ -4,6 +4,7 @@ import com.dehidehidehi.twitchtagcarousel.dao.UserPropertiesDao;
 import com.dehidehidehi.twitchtagcarousel.domain.TwitchTag;
 import com.dehidehidehi.twitchtagcarousel.domain.TwitchTagBatch;
 import com.dehidehidehi.twitchtagcarousel.error.*;
+import com.dehidehidehi.twitchtagcarousel.service.carousel.TagRotatorService;
 import com.dehidehidehi.twitchtagcarousel.service.twitch.TwitchApiService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Typed;
@@ -21,14 +22,17 @@ class TagCarouselServiceImpl implements TagCarouselService {
 	private final UserPropertiesDao userPropertiesDao;
 	private final PrivateUserPropertiesDao privateUserPropertiesDao;
 	private final TwitchApiService twitchApiService;
+	private final TagRotatorService tagRotatorService;
 
 	@Inject
 	TagCarouselServiceImpl(final UserPropertiesDao userPropertiesDao,
 								  final PrivateUserPropertiesDao privateUserPropertiesDao,
-								  final TwitchApiService twitchApiService) {
+								  final TwitchApiService twitchApiService, 
+								  final TagRotatorService tagRotatorService) {
 		this.userPropertiesDao = userPropertiesDao;
 		this.privateUserPropertiesDao = privateUserPropertiesDao;
 		this.twitchApiService = twitchApiService;
+		this.tagRotatorService = tagRotatorService;
 	}
 
 	@Override
@@ -82,8 +86,8 @@ class TagCarouselServiceImpl implements TagCarouselService {
 	}
 
 	@Override
-	public String getBroadcasterIdOf(final String channelName) throws TwitchChannelIdException, MissingAuthTokenException {
-		return twitchApiService.getBroadcasterIdOf(channelName);
+	public String getBroadcasterIdOf() throws TwitchChannelIdException, MissingAuthTokenException {
+		return twitchApiService.getBroadcasterIdOf();
 	}
 
 	@Override
@@ -98,7 +102,13 @@ class TagCarouselServiceImpl implements TagCarouselService {
 	}
 
 	@Override
-	public void close() throws Exception {
+	public void close() {
 		throw new UnsupportedOperationException("Method should not be used in %s".formatted(getClass().getSimpleName()));
+	}
+
+	@Override
+	public void updateTags()
+	throws MissingUserProvidedTagsException, MissingAuthTokenException, TwitchTagUpdateException, TwitchTagValidationException {
+		tagRotatorService.updateTags();
 	}
 }
