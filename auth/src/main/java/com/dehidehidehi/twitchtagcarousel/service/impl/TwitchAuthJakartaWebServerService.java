@@ -147,6 +147,9 @@ public class TwitchAuthJakartaWebServerService implements TwitchAuthService, Aut
 	@Override
 	public void close() {
 		LOGGER.debug("Closing server in {} seconds.", serverStopDelaySeconds);
-		server.stop(serverStopDelaySeconds);
+		Executors.newSingleThreadExecutor().execute(() -> {
+			server.stop(serverStopDelaySeconds);
+			LOGGER.debug("Server has now been closed.");
+		});
 	}
 }

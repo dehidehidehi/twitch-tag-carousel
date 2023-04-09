@@ -53,7 +53,7 @@ class PrivateUserPropertiesDaoImpl extends PropertiesDaoUtil implements PrivateU
     }
 
     private void updatePropertiesFile() {
-        updatePropertiesFile(properties, PROPERTY_TWITCH_ACCESS_TOKEN);
+        updatePropertiesFile(properties, PRIVATE_USER_PROPERTIES_FILE);
     }
 
     @Override
