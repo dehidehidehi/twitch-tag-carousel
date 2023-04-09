@@ -25,4 +25,9 @@ public final class TwitchTagBatch {
 	public Collection<TwitchTag> get() {
 		return unmodifiableTags;
 	}
+
+	@Override
+	public String toString() {
+		return "TwitchTagBatch=[%s]".formatted(unmodifiableTags);
+	}
 }

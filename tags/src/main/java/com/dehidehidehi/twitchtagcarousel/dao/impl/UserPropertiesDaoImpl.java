@@ -27,101 +27,100 @@ import java.util.stream.Collectors;
 @ApplicationScoped
 class UserPropertiesDaoImpl implements UserPropertiesDao {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(UserPropertiesDaoImpl.class);
+    static final String USER_PROPERTIES_FILE_NEXT_TO_JAR = "/user.properties";
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserPropertiesDaoImpl.class);
+    private Properties properties;
 
-	static final String USER_PROPERTIES_FILE_NEXT_TO_JAR = "/user.properties";
+    @PostConstruct
+    void init() {
+        properties = new Properties();
+        final File userPropertiesFile = new File(getDirPathOfThisJar() + USER_PROPERTIES_FILE_NEXT_TO_JAR);
+        try {
+            userPropertiesFile.createNewFile();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        try (final FileInputStream propertiesInputStream = new FileInputStream(userPropertiesFile)) {
+            properties.load(propertiesInputStream);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-	private Properties properties;
+    /**
+     * Convenience method for getting the absolute path of where the .jar file will be deployed.
+     */
+    private File getDirPathOfThisJar() {
+        final String jarLocation;
+        try {
+            jarLocation = new File(ApplicationPropertyProducer.class
+                                           .getProtectionDomain()
+                                           .getCodeSource()
+                                           .getLocation()
+                                           .toURI()
+                                           .getPath()).getParent();
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+        return new File(jarLocation);
+    }
 
-	@PostConstruct
-	void init() {
-		properties = new Properties();
-		final File userPropertiesFile = new File(getDirPathOfThisJar() + USER_PROPERTIES_FILE_NEXT_TO_JAR);
-		try {
-			userPropertiesFile.createNewFile();
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-		try (final FileInputStream propertiesInputStream = new FileInputStream(userPropertiesFile)) {
-			properties.load(propertiesInputStream);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-	}
+    @Override
+    public String readUserProperty(final String propertyKey) {
+        return properties.getProperty(propertyKey);
+    }
 
-	@Override
-	public String readUserProperty(final String propertyKey) {
-		return properties.getProperty(propertyKey);
-	}
+    @Override
+    public void saveMandatoryTags(final List<TwitchTag> tags) {
+        final String concatenated = tags
+                .stream()
+                .map(TwitchTag::toString)
+                .collect(Collectors.joining(","));
+        properties.setProperty(PROPERTY_MANDATORY_TAGS, concatenated);
+    }
 
-	@Override
-	public void saveMandatoryTags(final List<TwitchTag> tags) {
-		final String concatenated = tags
-				.stream()
-				.map(TwitchTag::toString)
-				.collect(Collectors.joining(","));
-		properties.setProperty(PROPERTY_MANDATORY_TAGS, concatenated);
-	}
+    @Override
+    public List<TwitchTag> getMandatoryTags() {
+        final String[] unparsedTags = Optional.ofNullable(properties.get(PROPERTY_MANDATORY_TAGS))
+                                              .map(String.class::cast)
+                                              .map(tags -> tags.split(","))
+                                              .orElseGet(() -> new String[0]);
+        return Arrays.stream(unparsedTags)
+                     .filter(StringUtils::isNotEmpty)
+                     .map(TwitchTag::new)
+                     .distinct()
+                     .collect(Collectors.toList());
+    }
 
-	@Override
-	public List<TwitchTag> getMandatoryTags() {
-		final String[] unparsedTags = Optional.ofNullable(properties.get(PROPERTY_MANDATORY_TAGS))
-														  .map(String.class::cast)
-														  .map(tags -> tags.split(","))
-														  .orElseGet(() -> new String[0]);
-		return Arrays.stream(unparsedTags)
-						 .map(TwitchTag::new)
-						 .distinct()
-						 .collect(Collectors.toList());
-	}
+    @Override
+    public int countMandatoryTags() {
+        return getMandatoryTags().size();
+    }
 
-	@Override
-	public int countMandatoryTags() {
-		return getMandatoryTags().size();
-	}
+    @Override
+    public void saveRotatingTags(final List<TwitchTag> tags) {
+        final String concatenated = tags
+                .stream()
+                .map(TwitchTag::toString)
+                .collect(Collectors.joining(","));
+        properties.setProperty(PROPERTY_ROTATING_TAGS, concatenated);
+    }
 
-	@Override
-	public void saveRotatingTags(final List<TwitchTag> tags) {
-		final String concatenated = tags
-				.stream()
-				.map(TwitchTag::toString)
-				.collect(Collectors.joining(","));
-		properties.setProperty(PROPERTY_ROTATING_TAGS, concatenated);
-	}
+    @Override
+    public List<TwitchTag> getRotatingTags() {
+        final String[] unparsedTags = Optional.ofNullable(properties.get(PROPERTY_ROTATING_TAGS))
+                                              .map(String.class::cast)
+                                              .map(tags -> tags.split(","))
+                                              .orElseGet(() -> new String[0]);
+        return Arrays.stream(unparsedTags)
+                     .filter(StringUtils::isNotEmpty)
+                     .map(TwitchTag::new)
+                     .distinct()
+                     .collect(Collectors.toList());
+    }
 
-	@Override
-	public List<TwitchTag> getRotatingTags() {
-		final String[] unparsedTags = Optional.ofNullable(properties.get(PROPERTY_ROTATING_TAGS))
-														  .map(String.class::cast)
-														  .map(tags -> tags.split(","))
-														  .orElseGet(() -> new String[0]);
-		return Arrays.stream(unparsedTags)
-						 .filter(StringUtils::isNotEmpty)
-						 .map(TwitchTag::new)
-						 .distinct()
-						 .collect(Collectors.toList());
-	}
-
-	@Override
-	public int countRotatingTags() {
-		return getRotatingTags().size();
-	}
-
-	/**
-	 * Convenience method for getting the absolute path of where the .jar file will be deployed.
-	 */
-	private File getDirPathOfThisJar() {
-		final String jarLocation;
-		try {
-			jarLocation = new File(ApplicationPropertyProducer.class
-												  .getProtectionDomain()
-												  .getCodeSource()
-												  .getLocation()
-												  .toURI()
-												  .getPath()).getParent();
-		} catch (URISyntaxException e) {
-			throw new RuntimeException(e);
-		}
-		return new File(jarLocation);
-	}
+    @Override
+    public int countRotatingTags() {
+        return getRotatingTags().size();
+    }
 }

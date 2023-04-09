@@ -64,16 +64,35 @@ public class TagRotatorService {
      * Selects a new batch of tags, rotates tag selection at each invocation.
      */
     TwitchTagBatch selectNewTags() {
-        final List<TwitchTag> tagBatch = new ArrayList<>();
-        tagBatch.addAll(userPropertiesDao.getMandatoryTags());
-        tagBatch.addAll(userPropertiesDao.getRotatingTags());
-        final List<TwitchTag> rotatingTags = tagBatch.subList(userPropertiesDao.getMandatoryTags().size(), tagBatch.size());
-        Collections.rotate(rotatingTags, 1);
+        // If too many mandatory tags
+        final List<TwitchTag> mandatoryTags = userPropertiesDao.getMandatoryTags();
+        final List<TwitchTag> tagBatch = new ArrayList<>(mandatoryTags);
+        if (tagBatch.size() >= MAX_NB_TAGS_PER_CHANNEL) {
+            final List<TwitchTag> onlyMandatoryTags = tagBatch.stream().limit(MAX_NB_TAGS_PER_CHANNEL).toList();
+            return new TwitchTagBatch(onlyMandatoryTags);
+        }
+        
+        // If user has set tags to rotate
+        final List<TwitchTag> rotatingTags = userPropertiesDao.getRotatingTags();
+        tagBatch.addAll(rotatingTags);
+        final List<TwitchTag> rotatingTagsToUpdate = tagBatch
+                .stream()
+                .skip(mandatoryTags.size())
+                .limit(MAX_NB_TAGS_PER_CHANNEL - mandatoryTags.size())
+                .toList();
+
+        // Create batch to send to twitch
+        final List<TwitchTag> tagsToSendToUpdateMethod = new ArrayList<>(10);
+        tagsToSendToUpdateMethod.addAll(mandatoryTags);
+        tagsToSendToUpdateMethod.addAll(rotatingTagsToUpdate);
+        final TwitchTagBatch batchToUpdate = new TwitchTagBatch(tagsToSendToUpdateMethod);
+
+        // Rotate tags to rotate.
+        Collections.rotate(rotatingTags, rotatingTagsToUpdate.size());
         userPropertiesDao.saveRotatingTags(rotatingTags);
         LOGGER.debug("Moved {} to the end of tag queue.", rotatingTags);
-        final List<TwitchTag> limitedTagBatch = tagBatch.stream().limit(MAX_NB_TAGS_PER_CHANNEL).collect(Collectors.toList());
-        LOGGER.debug("Next tag batch will be: {}", limitedTagBatch.stream().sorted().toList());
-        return new TwitchTagBatch(limitedTagBatch);
+        LOGGER.debug("Next tag batch will be: {}", batchToUpdate);
+        return batchToUpdate;
     }
 
     private String getNextExecutionTime() {

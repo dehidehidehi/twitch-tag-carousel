@@ -5,13 +5,13 @@ import com.dehidehidehi.twitchtagcarousel.util.CDIExtension;
 import jakarta.inject.Inject;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 
@@ -30,7 +30,7 @@ class TagRotatorServiceTest {
     class SelectTagsShould {
 
         private final Function<Integer, List<TwitchTag>> makeTags = i -> IntStream
-                .range(0, i - 1)
+                .rangeClosed(1, i)
                 .mapToObj(j -> RandomStringUtils.randomAlphabetic(10))
                 .map(TwitchTag::new)
                 .toList();
@@ -52,20 +52,35 @@ class TagRotatorServiceTest {
         @Test
         void selectTagsShouldReturnTenTags() {
             userPropertiesDao.saveMandatoryTags(Collections.emptyList());
-            assertThat(tagRotatorService.selectNewTags().get()).hasSize(0);
+            assertThat(tagRotatorService.selectNewTags().get()).isEmpty();
             userPropertiesDao.saveMandatoryTags(makeTags.apply(10));
             assertThat(tagRotatorService.selectNewTags().get()).hasSize(10);
         }
 
+        @RepeatedTest(5)
+        void includeMandatoryTagsAtEachInvocation() {
+            final List<TwitchTag> mandatoryTags = makeTags.apply(5);
+            userPropertiesDao.saveMandatoryTags(mandatoryTags);
+            userPropertiesDao.saveRotatingTags(makeTags.apply(30));
+            final Collection<TwitchTag> firstResult = tagRotatorService.selectNewTags().get();
+            final Collection<TwitchTag> secondResult = tagRotatorService.selectNewTags().get();
+            assertThat(firstResult).containsAll(mandatoryTags);
+            assertThat(secondResult).containsAll(mandatoryTags);
+        }
+
         @SneakyThrows
         @Test
-        void rotateAtEachInvocation() {
-            userPropertiesDao.saveMandatoryTags(makeTags.apply(5));
+        void rotatesRotatingTagsAtEachInvocation() {
+            final List<TwitchTag> mandatoryTags = makeTags.apply(5);
+            userPropertiesDao.saveMandatoryTags(mandatoryTags);
             userPropertiesDao.saveRotatingTags(makeTags.apply(30));
-            final Set<TwitchTag> firstResult = new HashSet<>(tagRotatorService.selectNewTags().get());
-            final Set<TwitchTag> secondResult = new HashSet<>(tagRotatorService.selectNewTags().get());
-            firstResult.retainAll(secondResult);
-            assertThat(firstResult).as("There should be no common tags between both results.").isEmpty();
+            final Collection<TwitchTag> firstResult = tagRotatorService.selectNewTags().get();
+            final Collection<TwitchTag> secondResult = tagRotatorService.selectNewTags().get();
+            mandatoryTags.forEach(firstResult::remove);
+            mandatoryTags.forEach(secondResult::remove);
+            assertThat(secondResult).isNotEmpty()
+                    .as("There should be no common tags between both results.")
+                    .doesNotContainAnyElementsOf(firstResult);
         }
 
         @SneakyThrows

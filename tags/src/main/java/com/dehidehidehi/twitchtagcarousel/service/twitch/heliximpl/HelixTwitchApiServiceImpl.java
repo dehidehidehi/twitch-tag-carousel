@@ -3,10 +3,7 @@ import com.dehidehidehi.twitchtagcarousel.dao.PrivateUserPropertiesDao;
 import com.dehidehidehi.twitchtagcarousel.dao.UserPropertiesDao;
 import com.dehidehidehi.twitchtagcarousel.domain.TwitchTag;
 import com.dehidehidehi.twitchtagcarousel.domain.TwitchTagBatch;
-import com.dehidehidehi.twitchtagcarousel.error.AuthTokenQueryException;
-import com.dehidehidehi.twitchtagcarousel.error.TwitchChannelIdException;
-import com.dehidehidehi.twitchtagcarousel.error.MissingAuthTokenException;
-import com.dehidehidehi.twitchtagcarousel.error.TwitchTagUpdateException;
+import com.dehidehidehi.twitchtagcarousel.error.*;
 import com.dehidehidehi.twitchtagcarousel.service.TwitchAuthService;
 import com.dehidehidehi.twitchtagcarousel.service.twitch.TwitchApiService;
 import com.dehidehidehi.twitchtagcarousel.service.twitch.basicimpl.BasicTwitchApiServiceImpl;
@@ -95,8 +92,11 @@ public class HelixTwitchApiServiceImpl extends BasicTwitchApiServiceImpl impleme
 	 * https://id.twitch.tv/oauth2/authorize?client_id=6k3qz1pdf1wko4xec9cjbfh3fbla24&redirect_uri=http://localhost&response_type=token&scope=channel%3Amanage%3Abroadcast
 	 */
 	@Override
-	public void updateTags(final TwitchTagBatch tags) throws TwitchTagUpdateException, MissingAuthTokenException {
+	public void updateTags(final TwitchTagBatch tags) throws MissingUserProvidedTagsException, TwitchTagUpdateException, MissingAuthTokenException {
 		LOGGER.debug("{} entered update tags method with params {}.", HelixTwitchApiServiceImpl.class.getSimpleName(), tags);
+		if (tags.get().isEmpty()) {
+			throw new MissingUserProvidedTagsException("No tags found. You must provide at least one tag to use the tag carousel.");
+		}
 		final List<String> tagsAsList = tags.get().stream().map(TwitchTag::toString).toList();
 		final ChannelInformation channelInformation = new ChannelInformation().withTags(tagsAsList);
 		try {

@@ -3,10 +3,7 @@ import com.dehidehidehi.twitchtagcarousel.dao.PrivateUserPropertiesDao;
 import com.dehidehidehi.twitchtagcarousel.dao.UserPropertiesDao;
 import com.dehidehidehi.twitchtagcarousel.domain.TwitchTag;
 import com.dehidehidehi.twitchtagcarousel.domain.TwitchTagBatch;
-import com.dehidehidehi.twitchtagcarousel.error.AuthTokenQueryException;
-import com.dehidehidehi.twitchtagcarousel.error.TwitchChannelIdException;
-import com.dehidehidehi.twitchtagcarousel.error.MissingAuthTokenException;
-import com.dehidehidehi.twitchtagcarousel.error.TwitchTagUpdateException;
+import com.dehidehidehi.twitchtagcarousel.error.*;
 import com.dehidehidehi.twitchtagcarousel.service.twitch.TwitchApiService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Typed;
@@ -90,7 +87,8 @@ class TagCarouselServiceImpl implements TagCarouselService {
 	}
 
 	@Override
-	public void updateTags(final TwitchTagBatch tags) throws TwitchTagUpdateException, MissingAuthTokenException {
+	public void updateTags(final TwitchTagBatch tags)
+	throws TwitchTagUpdateException, MissingAuthTokenException, MissingUserProvidedTagsException {
 		twitchApiService.updateTags(tags);
 	}
 
