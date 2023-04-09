@@ -2,6 +2,7 @@ package com.dehidehidehi.twitchtagcarousel.swing.frame;
 import com.dehidehidehi.twitchtagcarousel.domain.TwitchTag;
 import com.dehidehidehi.twitchtagcarousel.error.TwitchTagValidationException;
 import com.dehidehidehi.twitchtagcarousel.service.TagCarouselService;
+import com.dehidehidehi.twitchtagcarousel.swing.panel.TagTextAreaEditorPanel;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,8 +18,7 @@ public class MandatoryTagsFrame extends JFrame {
     private static final Logger LOGGER = LoggerFactory.getLogger(MandatoryTagsFrame.class);
 
     private final TagCarouselService tagCarouselService;
-    private JPanel mandatoryTagsPanel;
-    private JTextArea tagsTextArea;
+    private TagTextAreaEditorPanel mandatoryTagsTextAreaEditorPanel;
     private JButton saveButton;
     private JButton cancelButton;
 
@@ -28,40 +28,28 @@ public class MandatoryTagsFrame extends JFrame {
         setSize(300, 600);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         popUpInCenterOfTheScreen(this);
-
-        mandatoryTagsPanel = new JPanel();
-        mandatoryTagsPanel.setLayout(new GridLayout(2, 1));
+        setLayout(new GridLayout(2, 1));
         
-        JLabel instructions = new JLabel("Provide a comma-separated list of tags.");
-        add(instructions);
-
-        JPanel tagsPanel = setUpTagsPanel();
-
-        JPanel buttonsPanel = new JPanel();
+        mandatoryTagsTextAreaEditorPanel = setUpMandatoryTagsEditorPanel();
+        add(mandatoryTagsTextAreaEditorPanel);
+        
+        // setup buttons panel
+        final JPanel buttonsPanel = new JPanel();
         saveButton = new JButton("Save");
         cancelButton = new JButton("Cancel");
         buttonsPanel.add(saveButton);
         buttonsPanel.add(cancelButton);
-
-        mandatoryTagsPanel.add(tagsPanel);
-        mandatoryTagsPanel.add(buttonsPanel);
-        add(mandatoryTagsPanel);
+        add(buttonsPanel);
 
         cancelButton.addActionListener(e -> this.dispose());
-
         saveButton.addActionListener(e -> setTags(getTextAreaTags()));
     }
 
     @NotNull
-    private JPanel setUpTagsPanel() {
-        JLabel tagsLabel = new JLabel("Mandatory Tags:");
-        tagsTextArea = new JTextArea(15, 20);
-        tagsTextArea.setText(getUserSavedTags());
-        JScrollPane scrollPane = new JScrollPane(tagsTextArea);
-        JPanel tagsPanel = new JPanel();
-        tagsPanel.add(tagsLabel);
-        tagsPanel.add(scrollPane);
-        return tagsPanel;
+    private TagTextAreaEditorPanel setUpMandatoryTagsEditorPanel() {
+        final TagTextAreaEditorPanel tagTextAreaEditorPanel = new TagTextAreaEditorPanel("Mandatory Tags:");
+        tagTextAreaEditorPanel.getTagsTextArea().setText(getUserSavedTags());    
+        return tagTextAreaEditorPanel;
     }
 
     private String getUserSavedTags() {
@@ -71,17 +59,17 @@ public class MandatoryTagsFrame extends JFrame {
                 .stream()
                 .map(TwitchTag::toString)
                 .sorted()
-                .collect(Collectors.joining(","));
+                .collect(Collectors.joining(",%n".formatted()));
         LOGGER.trace("User saved tags : {}", userSavedTags);
         return userSavedTags;
     }
 
     private String getTextAreaTags() {
-        return tagsTextArea.getText();
+        return mandatoryTagsTextAreaEditorPanel.getTagsTextArea().getText();
     }
 
     private void setTags(String tags) {
-        LOGGER.debug("{}: Attempting to update tags : {} ", mandatoryTagsPanel.getClass().getSimpleName(), tags);
+        LOGGER.debug("{}: Attempting to update tags : {} ", mandatoryTagsTextAreaEditorPanel.getClass().getSimpleName(), tags);
         try {
             final List<TwitchTag> twitchTags = Arrays
                     .stream(tags.split(","))
@@ -90,7 +78,7 @@ public class MandatoryTagsFrame extends JFrame {
                     .map(TwitchTag::new)
                     .collect(Collectors.toList());
             tagCarouselService.saveMandatoryTags(twitchTags);
-            tagsTextArea.setText(tags);
+            mandatoryTagsTextAreaEditorPanel.getTagsTextArea().setText(tags);
             this.dispose();
         } catch (TwitchTagValidationException e) {
             final String errorMessage = """
@@ -100,7 +88,7 @@ public class MandatoryTagsFrame extends JFrame {
                                         
                                         %s
                                         """.formatted(e.getMessage());
-            JOptionPane.showMessageDialog(mandatoryTagsPanel, errorMessage, "Tag validation error", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(mandatoryTagsTextAreaEditorPanel, errorMessage, "Tag validation error", JOptionPane.WARNING_MESSAGE);
         }
     }
 
