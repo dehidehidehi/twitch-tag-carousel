@@ -1,5 +1,4 @@
-package com.dehidehidehi.twitchtagcarousel.swing.frame;
-import com.dehidehidehi.twitchtagcarousel.swing.panel.TagTextAreaEditorPanel;
+package com.dehidehidehi.twitchtagcarousel.swing.tageditor;
 
 import javax.swing.*;
 import java.awt.*;
@@ -8,7 +7,7 @@ abstract class TagsFrame extends JFrame {
 
     private JButton saveButton;
     private JButton cancelButton;
-    private TagTextAreaEditorPanel tagTextAreaEditorPanel;
+    private TagEditorPanel tagEditorPanel;
 
     TagsFrame() {
         setSize(300, 300);
@@ -16,8 +15,8 @@ abstract class TagsFrame extends JFrame {
         popUpInCenterOfTheScreen(this);
         setLayout(new GridLayout(3, 1));
 
-        tagTextAreaEditorPanel = new TagTextAreaEditorPanel("[DEFAULT TEXT]");
-        add(tagTextAreaEditorPanel);
+        tagEditorPanel = new TagEditorPanel("[DEFAULT TEXT]");
+        add(tagEditorPanel);
 
         final JPanel buttonsPanel = new JPanel();
         saveButton = new JButton("Save");
@@ -31,8 +30,8 @@ abstract class TagsFrame extends JFrame {
         jFrame.setLocationRelativeTo(null);
     }
 
-    protected TagTextAreaEditorPanel getTagTextAreaEditorPanel() {
-        return tagTextAreaEditorPanel;
+    protected TagEditorPanel getTagTextAreaEditorPanel() {
+        return tagEditorPanel;
     }
 
     protected JButton getSaveButton() {

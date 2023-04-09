@@ -1,4 +1,4 @@
-package com.dehidehidehi.twitchtagcarousel.swing.panel.logging;
+package com.dehidehidehi.twitchtagcarousel.swing.logging;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;

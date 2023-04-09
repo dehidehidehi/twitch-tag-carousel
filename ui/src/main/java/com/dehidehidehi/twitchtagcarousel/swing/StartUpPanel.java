@@ -1,4 +1,4 @@
-package com.dehidehidehi.twitchtagcarousel.swing.panel;
+package com.dehidehidehi.twitchtagcarousel.swing;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

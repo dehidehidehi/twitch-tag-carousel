@@ -10,7 +10,7 @@
         </encoder>
     </appender>
     <appender name="LoggingTextAreaAppender"
-              class="com.dehidehidehi.twitchtagcarousel.swing.panel.logging.LoggingTextAreaAppender">
+              class="com.dehidehidehi.twitchtagcarousel.swing.logging.LoggingTextAreaAppender">
         <encoder>
             <pattern>%d{HH:mm:ss} %-5level %logger{36} - %msg%n</pattern>
         </encoder>

@@ -1,7 +1,7 @@
-package com.dehidehidehi.twitchtagcarousel.swing.button;
+package com.dehidehidehi.twitchtagcarousel.swing.oauth;
 import com.dehidehidehi.twitchtagcarousel.error.AuthTokenQueryException;
 import com.dehidehidehi.twitchtagcarousel.service.TagCarouselService;
-import com.dehidehidehi.twitchtagcarousel.swing.panel.CommandCenterPanel;
+import com.dehidehidehi.twitchtagcarousel.swing.CommandCenterPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

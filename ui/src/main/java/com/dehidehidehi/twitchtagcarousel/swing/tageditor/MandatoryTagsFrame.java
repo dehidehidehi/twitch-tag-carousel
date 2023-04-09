@@ -1,4 +1,4 @@
-package com.dehidehidehi.twitchtagcarousel.swing.frame;
+package com.dehidehidehi.twitchtagcarousel.swing.tageditor;
 import com.dehidehidehi.twitchtagcarousel.domain.TwitchTag;
 import com.dehidehidehi.twitchtagcarousel.error.TwitchTagValidationException;
 import com.dehidehidehi.twitchtagcarousel.service.TagCarouselService;

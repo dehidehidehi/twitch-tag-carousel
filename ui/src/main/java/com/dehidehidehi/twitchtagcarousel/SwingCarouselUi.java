@@ -1,15 +1,14 @@
-package com.dehidehidehi.twitchtagcarousel.swing;
+package com.dehidehidehi.twitchtagcarousel;
 
-import com.dehidehidehi.twitchtagcarousel.CarouselUi;
 import com.dehidehidehi.twitchtagcarousel.annotation.qualifier.ApplicationProperty;
 import com.dehidehidehi.twitchtagcarousel.error.AuthTokenQueryException;
 import com.dehidehidehi.twitchtagcarousel.error.MissingAuthTokenException;
 import com.dehidehidehi.twitchtagcarousel.service.TagCarouselService;
-import com.dehidehidehi.twitchtagcarousel.swing.label.TwitchTagTitleLabel;
-import com.dehidehidehi.twitchtagcarousel.swing.panel.AuthTokenValidationPanel;
-import com.dehidehidehi.twitchtagcarousel.swing.panel.CommandCenterPanel;
-import com.dehidehidehi.twitchtagcarousel.swing.panel.logging.LoggingPanel;
-import com.dehidehidehi.twitchtagcarousel.swing.panel.StartUpPanel;
+import com.dehidehidehi.twitchtagcarousel.swing.CommandCenterPanel;
+import com.dehidehidehi.twitchtagcarousel.swing.StartUpPanel;
+import com.dehidehidehi.twitchtagcarousel.swing.util.label.TwitchTagTitleLabel;
+import com.dehidehidehi.twitchtagcarousel.swing.oauth.AuthTokenValidationPanel;
+import com.dehidehidehi.twitchtagcarousel.swing.logging.LoggingPanel;
 import com.dehidehidehi.twitchtagcarousel.ui.BannerUi;
 import jakarta.inject.Inject;
 import org.slf4j.Logger;

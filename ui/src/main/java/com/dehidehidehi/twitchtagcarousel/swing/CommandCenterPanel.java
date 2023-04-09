@@ -1,7 +1,7 @@
-package com.dehidehidehi.twitchtagcarousel.swing.panel;
+package com.dehidehidehi.twitchtagcarousel.swing;
 import com.dehidehidehi.twitchtagcarousel.service.TagCarouselService;
-import com.dehidehidehi.twitchtagcarousel.swing.frame.MandatoryTagsFrame;
-import com.dehidehidehi.twitchtagcarousel.swing.frame.RotatingTagsFrame;
+import com.dehidehidehi.twitchtagcarousel.swing.tageditor.MandatoryTagsFrame;
+import com.dehidehidehi.twitchtagcarousel.swing.tageditor.RotatingTagsFrame;
 
 import javax.swing.*;
 import java.awt.*;

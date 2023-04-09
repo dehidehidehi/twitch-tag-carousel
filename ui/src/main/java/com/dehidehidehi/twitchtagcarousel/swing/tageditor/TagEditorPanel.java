@@ -1,15 +1,15 @@
-package com.dehidehidehi.twitchtagcarousel.swing.panel;
+package com.dehidehidehi.twitchtagcarousel.swing.tageditor;
 import javax.swing.*;
 
 /**
  * Common panel used for editing any sort of tags.
  */
-public class TagTextAreaEditorPanel extends JPanel {
+public class TagEditorPanel extends JPanel {
 
     private JTextArea tagsTextArea;
     private JLabel panelLabel;
 
-    public TagTextAreaEditorPanel(final String tagsLabelText) {
+    public TagEditorPanel(final String tagsLabelText) {
         super();
 
         panelLabel = new JLabel(tagsLabelText);

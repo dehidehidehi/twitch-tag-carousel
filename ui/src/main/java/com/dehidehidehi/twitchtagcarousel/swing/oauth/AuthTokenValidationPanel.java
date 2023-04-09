@@ -1,6 +1,6 @@
-package com.dehidehidehi.twitchtagcarousel.swing.panel;
+package com.dehidehidehi.twitchtagcarousel.swing.oauth;
 import com.dehidehidehi.twitchtagcarousel.service.TagCarouselService;
-import com.dehidehidehi.twitchtagcarousel.swing.button.OAuthRequestAccessTokenButton;
+import com.dehidehidehi.twitchtagcarousel.swing.CommandCenterPanel;
 
 import javax.swing.*;
 

@@ -1,4 +1,4 @@
-package com.dehidehidehi.twitchtagcarousel.swing.panel.logging;
+package com.dehidehidehi.twitchtagcarousel.swing.logging;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.AppenderBase;
