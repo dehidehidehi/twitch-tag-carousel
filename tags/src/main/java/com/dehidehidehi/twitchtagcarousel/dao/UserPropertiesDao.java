@@ -2,6 +2,7 @@ package com.dehidehidehi.twitchtagcarousel.dao;
 import com.dehidehidehi.twitchtagcarousel.domain.TwitchTag;
 import com.dehidehidehi.twitchtagcarousel.error.MissingAuthTokenException;
 import com.dehidehidehi.twitchtagcarousel.error.TwitchTagValidationException;
+import jakarta.enterprise.inject.Default;
 
 import java.util.List;
 

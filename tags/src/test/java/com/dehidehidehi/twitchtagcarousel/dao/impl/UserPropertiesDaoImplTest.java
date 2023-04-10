@@ -12,7 +12,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
@@ -34,7 +33,7 @@ class UserPropertiesDaoImplTest extends PropertiesDaoUtil {
     private final String defaultTwitchAccessTokenValue = "this_is_my_access_token!";
 
     @Inject
-    private UserPropertiesDaoImpl userPropertiesDao;
+    private UserPropertiesDao userPropertiesDao;
 
     @BeforeEach
     void setUp() throws IOException {

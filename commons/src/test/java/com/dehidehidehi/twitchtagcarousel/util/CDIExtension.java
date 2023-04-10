@@ -43,10 +43,8 @@ public class CDIExtension implements TestInstancePostProcessor {
 		List<Field> fields = new ArrayList<>();
 		if (!clazzInstance.getSuperclass().equals(Object.class)) {
 			fields.addAll(getFields(clazzInstance.getSuperclass()));
-		} else {
-			fields.addAll(Arrays.asList(clazzInstance.getDeclaredFields()));
 		}
+		fields.addAll(Arrays.asList(clazzInstance.getDeclaredFields()));
 		return fields;
 	}
-
 }
