@@ -6,11 +6,13 @@ import javax.swing.*;
 import java.awt.*;
 
 public abstract class BasicTagCarouselFrame extends JFrame {
+    
+    private static final LoggingPanel loggingPanelSingleton = new LoggingPanel();
 
     protected BasicTagCarouselFrame() {
         super();
 
-        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
         popUpInCenterOfTheScreen();
 
@@ -28,8 +30,7 @@ public abstract class BasicTagCarouselFrame extends JFrame {
         final TwitchTagTitleLabel twitchTagTitleLabel = new TwitchTagTitleLabel();
         centerTheTitleLabel(topPanel, twitchTagTitleLabel);
 
-        final LoggingPanel loggingPanel = new LoggingPanel();
-        topPanel.add(loggingPanel);
+        topPanel.add(loggingPanelSingleton);
 
         return topPanel;
     }

@@ -1,7 +1,7 @@
 package com.dehidehidehi.twitchtagcarousel.swing.auth;
 import com.dehidehidehi.twitchtagcarousel.error.AuthTokenQueryException;
 import com.dehidehidehi.twitchtagcarousel.service.TagCarouselService;
-import com.dehidehidehi.twitchtagcarousel.swing.CommandCenterPanel;
+import com.dehidehidehi.twitchtagcarousel.swing.CommandCenterFrame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,10 +20,10 @@ public class OAuthRequestAccessTokenButton extends JButton implements ActionList
     /**
      * When actionPerformed finishes without an exception, then display this panel.
      */
-    private final Supplier<CommandCenterPanel> onSuccessCommandCenterPanelSupplier;
+    private final Supplier<CommandCenterFrame> onSuccessCommandCenterPanelSupplier;
 
     public OAuthRequestAccessTokenButton(final TagCarouselService tagCarouselService, 
-                                         final Supplier<CommandCenterPanel> onSuccessCommandCenterPanelSupplier) {
+                                         final Supplier<CommandCenterFrame> onSuccessCommandCenterPanelSupplier) {
         super("Get Access Token");
         this.tagCarouselService = tagCarouselService;
         this.onSuccessCommandCenterPanelSupplier = onSuccessCommandCenterPanelSupplier;

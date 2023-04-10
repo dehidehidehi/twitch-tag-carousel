@@ -4,7 +4,7 @@ import com.dehidehidehi.twitchtagcarousel.error.MissingUserProvidedTagsException
 import com.dehidehidehi.twitchtagcarousel.error.TwitchTagUpdateException;
 import com.dehidehidehi.twitchtagcarousel.error.TwitchTagValidationException;
 import com.dehidehidehi.twitchtagcarousel.service.TagCarouselService;
-import com.dehidehidehi.twitchtagcarousel.swing.CommandCenterPanel;
+import com.dehidehidehi.twitchtagcarousel.swing.CommandCenterFrame;
 import com.dehidehidehi.twitchtagcarousel.swing.util.BasicTagCarouselFrame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -106,9 +106,12 @@ public class TagUpdaterTagCarouselFrame extends BasicTagCarouselFrame {
 
     private JButton setUpGoBackButton() {
         goBackButton = new JButton("Go back");
+        goBackButton.setEnabled(false);
         goBackButton.addActionListener(e -> {
-            getParent().remove(this);
-            getParent().add(new CommandCenterPanel(tagCarouselService));
+            Executors.newSingleThreadExecutor().execute(() -> {
+                new CommandCenterFrame(tagCarouselService);
+            });
+            dispose();
         });
         return goBackButton;
     }

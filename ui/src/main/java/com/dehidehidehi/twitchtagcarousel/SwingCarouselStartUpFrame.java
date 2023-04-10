@@ -4,7 +4,7 @@ import com.dehidehidehi.twitchtagcarousel.annotation.qualifier.ApplicationProper
 import com.dehidehidehi.twitchtagcarousel.error.AuthTokenQueryException;
 import com.dehidehidehi.twitchtagcarousel.error.MissingAuthTokenException;
 import com.dehidehidehi.twitchtagcarousel.service.TagCarouselService;
-import com.dehidehidehi.twitchtagcarousel.swing.CommandCenterPanel;
+import com.dehidehidehi.twitchtagcarousel.swing.CommandCenterFrame;
 import com.dehidehidehi.twitchtagcarousel.swing.auth.AuthTokenPanel;
 import com.dehidehidehi.twitchtagcarousel.swing.auth.AuthTokenValidationPanel;
 import com.dehidehidehi.twitchtagcarousel.swing.util.BasicTagCarouselFrame;
@@ -62,10 +62,11 @@ public final class SwingCarouselStartUpFrame extends BasicTagCarouselFrame imple
             add(authTokenValidationPanel);
             pack();
         } else {
-            LOGGER.debug("userAccessToken is valid: instantiating CommandCenterPanel");
-            CommandCenterPanel commandCenterPanel = new CommandCenterPanel(tagCarouselService);
-            add(commandCenterPanel);
-            pack();
+            LOGGER.debug("userAccessToken is valid: instantiating CommandCenterFrame");
+            Executors.newSingleThreadExecutor().execute(() -> {
+                new CommandCenterFrame(tagCarouselService);
+            });
+            dispose();
         }
         authTokenPanel.setVisible(false);
         LOGGER.debug("Startup pane: set as disabled");
