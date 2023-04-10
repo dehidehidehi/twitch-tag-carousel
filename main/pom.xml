@@ -31,6 +31,14 @@
         </dependency>
         <dependency>
             <groupId>com.dehidehidehi.twitchtagcarousel</groupId>
+            <artifactId>tags</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.dehidehidehi.twitchtagcarousel</groupId>
+            <artifactId>ui</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.dehidehidehi.twitchtagcarousel</groupId>
             <artifactId>auth</artifactId>
         </dependency>
         <dependency>
@@ -103,13 +111,33 @@
             <artifactId>mockito-inline</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>com.dehidehidehi.twitchtagcarousel</groupId>
-            <artifactId>tags</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.dehidehidehi.twitchtagcarousel</groupId>
-            <artifactId>ui</artifactId>
-        </dependency>
+
     </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <archive>
+                        <manifest>
+                            <mainClass>com.dehidehidehi.twitchtagcarousel.MainApplication</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>
