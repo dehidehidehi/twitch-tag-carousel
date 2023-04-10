@@ -1,10 +1,11 @@
 package com.dehidehidehi.twitchtagcarousel.dao.impl;
-import com.dehidehidehi.twitchtagcarousel.annotation.impl.ApplicationPropertyProducer;
 import com.dehidehidehi.twitchtagcarousel.dao.UserPropertiesDao;
 import com.dehidehidehi.twitchtagcarousel.domain.TwitchTag;
+import com.dehidehidehi.twitchtagcarousel.error.MissingAuthTokenException;
 import com.dehidehidehi.twitchtagcarousel.util.CDIExtension;
 import jakarta.inject.Inject;
 import lombok.SneakyThrows;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -26,16 +27,17 @@ import static org.assertj.core.api.Assertions.assertThatCode;
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ExtendWith(CDIExtension.class)
-class UserPropertiesDaoImplTest {
+class UserPropertiesDaoImplTest extends PropertiesDaoUtil {
 
     private final String defaultMandatoryTags = "vtuber,envtuber,cool";
     private final String defaultRotatingTags = "chatting,eating,relaxed";
+    private final String defaultTwitchAccessTokenValue = "this_is_my_access_token!";
 
     @Inject
-    private UserPropertiesDao userPropertiesDao;
+    private UserPropertiesDaoImpl userPropertiesDao;
 
     @BeforeEach
-    void setUp() throws URISyntaxException, IOException {
+    void setUp() throws IOException {
         setUpPropertiesFileWithDefaultValues();
     }
 
@@ -45,27 +47,24 @@ class UserPropertiesDaoImplTest {
         try (FileOutputStream fileOutputStream = new FileOutputStream(propertiesFile)) {
             final String mandatoryTags = "%s=%s".formatted(PROPERTY_MANDATORY_TAGS, defaultMandatoryTags);
             final String rotatingTags = "%s=%s".formatted(PROPERTY_ROTATING_TAGS, defaultRotatingTags);
-            final String properties = String.join(System.lineSeparator(), mandatoryTags, rotatingTags);
+            final String defaultContent = "%s=%s".formatted(PROPERTY_TWITCH_ACCESS_TOKEN, defaultTwitchAccessTokenValue);
+            final String properties = String.join(System.lineSeparator(), defaultContent, mandatoryTags, rotatingTags);
             fileOutputStream.write(properties.getBytes(StandardCharsets.UTF_8));
         }
     }
 
-    /**
-     * Convenience method for getting the absolute path of where the .jar file will be deployed.
-     */
-    private File getDirPathOfThisJar() {
-        final String jarLocation;
-        try {
-            jarLocation = new File(ApplicationPropertyProducer.class
-                                           .getProtectionDomain()
-                                           .getCodeSource()
-                                           .getLocation()
-                                           .toURI()
-                                           .getPath()).getParent();
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
-        return new File(jarLocation);
+    @Order(1)
+    @Test
+    void getUserAccessTokenShouldReturnAccessTokenFromPropertiesFile() throws MissingAuthTokenException {
+        assertThatCode(() -> userPropertiesDao.getUserAccessToken()).doesNotThrowAnyException();
+        assertThat(userPropertiesDao.getUserAccessToken()).isNotNull().isEqualTo(defaultTwitchAccessTokenValue);
+    }
+
+    @Test
+    void setUserAccessTokenShouldChangeAccessTokenInPropertiesFile() throws MissingAuthTokenException {
+        final String randomToken = RandomStringUtils.random(20);
+        assertThatCode(() -> userPropertiesDao.setUserAccessToken(randomToken)).doesNotThrowAnyException();
+        assertThat(userPropertiesDao.getUserAccessToken()).isEqualTo(randomToken);
     }
 
     @Order(1)
@@ -74,9 +73,7 @@ class UserPropertiesDaoImplTest {
         assertThatCode(() -> userPropertiesDao.getMandatoryTags()).doesNotThrowAnyException();
         final List<String> expected = Arrays.stream(defaultMandatoryTags.split(",")).toList();
         final List<String> result = userPropertiesDao.getMandatoryTags().stream().map(TwitchTag::toString).toList();
-        assertThat(result)
-                .isNotNull()
-                .containsAll(expected);
+        assertThat(result).isNotNull().containsAll(expected);
     }
 
     @Test
@@ -93,9 +90,7 @@ class UserPropertiesDaoImplTest {
         assertThatCode(() -> userPropertiesDao.getRotatingTags()).doesNotThrowAnyException();
         final List<String> expected = Arrays.stream(defaultRotatingTags.split(",")).toList();
         final List<String> result = userPropertiesDao.getRotatingTags().stream().map(TwitchTag::toString).toList();
-        assertThat(result)
-                .isNotNull()
-                .containsAll(expected);
+        assertThat(result).isNotNull().containsAll(expected);
     }
 
     @Test
@@ -109,11 +104,9 @@ class UserPropertiesDaoImplTest {
     @SneakyThrows
     @Test
     void setMandatoryTagsShouldOverwriteInPropertiesFile() {
-        final List<TwitchTag> newMandatoryTags = List.of(
-                new TwitchTag("english"),
-                new TwitchTag("uk"),
-                new TwitchTag("supercool")
-        );
+        final List<TwitchTag> newMandatoryTags = List.of(new TwitchTag("english"),
+                                                         new TwitchTag("uk"),
+                                                         new TwitchTag("supercool"));
         userPropertiesDao.saveMandatoryTags(newMandatoryTags);
         final String expected = newMandatoryTags.stream().map(TwitchTag::toString).collect(Collectors.joining(","));
         final String result = userPropertiesDao
@@ -127,11 +120,7 @@ class UserPropertiesDaoImplTest {
     @SneakyThrows
     @Test
     void setRotatingTagsShouldOverwriteInPropertiesFile() {
-        final List<TwitchTag> newRotatingTags = List.of(
-                new TwitchTag("italian"),
-                new TwitchTag("it"),
-                new TwitchTag("pizza")
-        );
+        final List<TwitchTag> newRotatingTags = List.of(new TwitchTag("italian"), new TwitchTag("it"), new TwitchTag("pizza"));
         userPropertiesDao.saveRotatingTags(newRotatingTags);
         final String expected = newRotatingTags.stream().map(TwitchTag::toString).collect(Collectors.joining(","));
         final String result = userPropertiesDao

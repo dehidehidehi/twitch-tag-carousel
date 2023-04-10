@@ -22,19 +22,9 @@
         <dependencies>
             <dependency>
                 <groupId>org.glassfish.jersey.core</groupId>
-                <artifactId>jersey-client</artifactId>
+                <artifactId>jersey-server</artifactId>
                 <version>3.1.1</version>
             </dependency>
-<!--            <dependency>-->
-<!--                <groupId>org.glassfish.jersey.containers</groupId>-->
-<!--                <artifactId>jersey-container-servlet-core</artifactId>-->
-<!--                <version>3.1.1</version>-->
-<!--            </dependency>-->
-<!--            <dependency>-->
-<!--                <groupId>org.glassfish.jersey.containers</groupId>-->
-<!--                <artifactId>jersey-container-servlet</artifactId>-->
-<!--                <version>3.1.1</version>-->
-<!--            </dependency>-->
             <dependency>
                 <groupId>org.glassfish.jersey.containers</groupId>
                 <artifactId>jersey-container-jdk-http</artifactId>
@@ -49,10 +39,9 @@
     </dependencyManagement>
 
     <dependencies>
-        <!-- Jakarta WS RS -->
         <dependency>
             <groupId>org.glassfish.jersey.core</groupId>
-            <artifactId>jersey-client</artifactId>
+            <artifactId>jersey-server</artifactId>
         </dependency>
         <dependency>
             <groupId>org.glassfish.jersey.containers</groupId>

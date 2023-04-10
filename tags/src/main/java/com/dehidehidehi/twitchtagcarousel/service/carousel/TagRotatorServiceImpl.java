@@ -61,12 +61,17 @@ public class TagRotatorServiceImpl implements TagRotatorService {
 
     @Override
     public void updateTags()
-    throws MissingUserProvidedTagsException, MissingAuthTokenException, TwitchTagUpdateException, TwitchTagValidationException {
+    throws MissingUserProvidedTagsException, MissingAuthTokenException, TwitchTagValidationException, TwitchTagUpdateException {
         LOGGER.debug("Entered in updating tags method.");
         final TwitchTagBatch tags = selectNewTags();
-        tagCarouselService.updateTags(tags);
-        LOGGER.info("Updated stream tags with: {}", tags.get().stream().sorted().toList());
-        LOGGER.info("Next update at {}", getNextExecutionTime());
+        try {
+            tagCarouselService.updateTags(tags);
+            LOGGER.info("Updated stream tags with: {}", tags.get().stream().sorted().toList());
+        } catch (TwitchTagUpdateException e) {
+            throw e;
+        } finally {
+            LOGGER.info("Next update at {}", getNextExecutionTime());
+        }
     }
 
     /**

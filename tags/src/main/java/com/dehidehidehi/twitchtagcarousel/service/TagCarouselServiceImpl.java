@@ -1,5 +1,4 @@
 package com.dehidehidehi.twitchtagcarousel.service;
-import com.dehidehidehi.twitchtagcarousel.dao.PrivateUserPropertiesDao;
 import com.dehidehidehi.twitchtagcarousel.dao.UserPropertiesDao;
 import com.dehidehidehi.twitchtagcarousel.domain.TwitchTag;
 import com.dehidehidehi.twitchtagcarousel.domain.TwitchTagBatch;
@@ -20,29 +19,26 @@ import java.util.List;
 class TagCarouselServiceImpl implements TagCarouselService {
 
 	private final UserPropertiesDao userPropertiesDao;
-	private final PrivateUserPropertiesDao privateUserPropertiesDao;
 	private final TwitchApiService twitchApiService;
 	private final TagRotatorService tagRotatorService;
 
 	@Inject
 	TagCarouselServiceImpl(final UserPropertiesDao userPropertiesDao,
-								  final PrivateUserPropertiesDao privateUserPropertiesDao,
 								  final TwitchApiService twitchApiService, 
 								  final TagRotatorService tagRotatorService) {
 		this.userPropertiesDao = userPropertiesDao;
-		this.privateUserPropertiesDao = privateUserPropertiesDao;
 		this.twitchApiService = twitchApiService;
 		this.tagRotatorService = tagRotatorService;
 	}
 
 	@Override
 	public String getUserAccessToken() throws MissingAuthTokenException {
-		return privateUserPropertiesDao.getUserAccessToken();
+		return userPropertiesDao.getUserAccessToken();
 	}
 
 	@Override
 	public void setUserAccessToken(final String userAccessToken) {
-		privateUserPropertiesDao.setUserAccessToken(userAccessToken);
+		userPropertiesDao.setUserAccessToken(userAccessToken);
 	}
 
 	@Override

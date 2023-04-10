@@ -11,6 +11,7 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.core.Application;
 import jakarta.ws.rs.core.UriBuilder;
 import jakarta.ws.rs.ext.RuntimeDelegate;
+import org.glassfish.jersey.internal.RuntimeDelegateImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

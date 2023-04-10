@@ -2,7 +2,6 @@ package com.dehidehidehi.twitchtagcarousel.swing.tags;
 import com.dehidehidehi.twitchtagcarousel.error.MissingAuthTokenException;
 import com.dehidehidehi.twitchtagcarousel.error.MissingUserProvidedTagsException;
 import com.dehidehidehi.twitchtagcarousel.error.TwitchTagUpdateException;
-import com.dehidehidehi.twitchtagcarousel.error.TwitchTagValidationException;
 import com.dehidehidehi.twitchtagcarousel.service.TagCarouselService;
 import com.dehidehidehi.twitchtagcarousel.swing.CommandCenterFrame;
 import com.dehidehidehi.twitchtagcarousel.swing.util.BasicTagCarouselFrame;
@@ -90,9 +89,10 @@ public class TagUpdaterTagCarouselFrame extends BasicTagCarouselFrame {
             try {
                 LOGGER.info("Starting auto-update tag service.");
                 tagCarouselService.updateTags();
-            } catch (MissingUserProvidedTagsException | MissingAuthTokenException | TwitchTagUpdateException |
-                     TwitchTagValidationException e) {
-                throw new RuntimeException(e);
+            } catch (MissingAuthTokenException | TwitchTagUpdateException | MissingUserProvidedTagsException e) {
+                JOptionPane.showMessageDialog(this, e.getMessage(), e.getClass().getSimpleName(), JOptionPane.ERROR_MESSAGE);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "An unhandled error occurred: %n %s".formatted(e.getMessage()), e.getClass().getSimpleName(), JOptionPane.ERROR_MESSAGE);
             }
         };
         executorService.scheduleAtFixedRate(startUpdatingTags, startDelaySeconds, tagRotationFrequencySeconds, TIME_UNIT);

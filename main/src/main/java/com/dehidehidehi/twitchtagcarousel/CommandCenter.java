@@ -60,8 +60,10 @@ class CommandCenter {
 		Runnable startUpdatingTags = () -> {
 			try {
 				tagRotatorServiceImpl.updateTags();
-			} catch (MissingUserProvidedTagsException | MissingAuthTokenException | TwitchTagUpdateException |
+			} catch (MissingUserProvidedTagsException | MissingAuthTokenException | 
 						TwitchTagValidationException e) {
+				throw new RuntimeException(e);
+			} catch (TwitchTagUpdateException e) {
 				throw new RuntimeException(e);
 			}
 		};

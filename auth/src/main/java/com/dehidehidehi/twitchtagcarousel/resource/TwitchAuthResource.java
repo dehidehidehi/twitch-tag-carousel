@@ -13,9 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.net.URI;
+import java.io.InputStream;
 import java.net.URISyntaxException;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -40,21 +39,23 @@ public class TwitchAuthResource extends Application {
     /**
      * Saves the access token locally then displays a `success` html page.
      */
+    @Produces(MediaType.TEXT_HTML)
     @Path("token")
     @GET
-    public Response handleAuthToken(@QueryParam("access_token") @Nullable final String accessToken) throws URISyntaxException {
+    public Response handleAuthToken(@QueryParam("access_token") @Nullable final String accessToken) {
         LOGGER.debug("Entrée dans la méthode TwitchAuthResource.handleAuthToken");
-        final String hiddenAccessToken = Optional.ofNullable(accessToken)
-                                  .map(s -> "%s****".formatted(s.substring(0, 5)))
-                                  .orElse("No access token received.");
+        final String hiddenAccessToken = Optional
+                .ofNullable(accessToken)
+                .map(s -> "%s****".formatted(s.substring(0, 5)))
+                .orElse("No access token received.");
         LOGGER.debug("accessToken={}", hiddenAccessToken);
         Optional
                 .ofNullable(accessToken)
                 .ifPresentOrElse(twitchAuthJakartaWebServerService::receiveAccessToken,
                                  () -> {throw new IllegalStateException("Received no access_token!");});
-        final URI page = Objects.requireNonNull(getClass().getResource("/WEB-INF/html/token_received.html")).toURI();
-        final File file = new File(page);
-        return Response.ok(file).build();
+        final InputStream resourceAsStream = getClass().getResourceAsStream("/WEB-INF/html/token_received.html".replace("/",
+                                                                                                                        File.separator));
+        return Response.ok(resourceAsStream).build();
     }
 
     /**
@@ -62,13 +63,14 @@ public class TwitchAuthResource extends Application {
      * a server cannot access the token value.<br>
      * However, redirecting the request to an HTML page with javascript, which CAN get that value, solves the issue.
      */
+    @Produces(MediaType.TEXT_HTML)
     @Path("token-redirect")
     @GET
-    public Response handleAuthTokenCallBack() throws URISyntaxException {
+    public Response handleAuthTokenCallBack() {
         LOGGER.debug("Serving static html page which captures URL fragments then redirects the user.");
-        final URI page = Objects.requireNonNull(getClass().getResource("/WEB-INF/html/token_redirect.html")).toURI();
-        final File file = new File(page);
-        return Response.ok(file).build();
+        final InputStream resourceAsStream = getClass().getResourceAsStream("/WEB-INF/html/token_redirect.html".replace("/",
+                                                                                                                        File.separator));
+        return Response.ok(resourceAsStream).build();
     }
 
     @Override
