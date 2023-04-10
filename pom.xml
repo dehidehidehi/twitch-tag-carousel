@@ -31,25 +31,21 @@
                 <groupId>com.dehidehidehi.twitchtagcarousel</groupId>
                 <artifactId>ui</artifactId>
                 <version>${twitch-tag-carousel.version}</version>
-                <scope>compile</scope>
             </dependency>
             <dependency>
                 <groupId>com.dehidehidehi.twitchtagcarousel</groupId>
                 <artifactId>tags</artifactId>
                 <version>${twitch-tag-carousel.version}</version>
-                <scope>compile</scope>
             </dependency>
             <dependency>
                 <groupId>com.dehidehidehi.twitch-tag-carousel</groupId>
                 <artifactId>core</artifactId>
                 <version>${twitch-tag-carousel.version}</version>
-                <scope>compile</scope>
             </dependency>
             <dependency>
                 <groupId>com.dehidehidehi.twitchtagcarousel</groupId>
                 <artifactId>commons</artifactId>
                 <version>${twitch-tag-carousel.version}</version>
-                <scope>compile</scope>
             </dependency>
             <dependency>
                 <groupId>com.dehidehidehi.twitchtagcarousel</groupId>
@@ -62,7 +58,6 @@
                 <groupId>com.dehidehidehi.twitchtagcarousel</groupId>
                 <artifactId>auth</artifactId>
                 <version>${twitch-tag-carousel.version}</version>
-                <scope>compile</scope>
             </dependency>
             <dependency>
                 <groupId>jakarta.annotation</groupId>
@@ -83,24 +78,6 @@
                 <groupId>jakarta.ws.rs</groupId>
                 <artifactId>jakarta.ws.rs-api</artifactId>
                 <version>3.1.0</version>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.jersey.core</groupId>
-                <artifactId>jersey-client</artifactId>
-                <version>3.1.1</version>
-                                <scope>runtime</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.jersey.containers</groupId>
-                <artifactId>jersey-container-jdk-http</artifactId>
-                <version>3.1.1</version>
-                                <scope>runtime</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.jersey.inject</groupId>
-                <artifactId>jersey-hk2</artifactId>
-                <version>3.1.1</version>
-                                <scope>runtime</scope>
             </dependency>
             <dependency>
                 <groupId>com.github.twitch4j</groupId>
@@ -198,7 +175,29 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <archive>
+                        <manifest>
+                            <mainClass>com.dehidehidehi.twitchtagcarousel.MainApplication</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
-
 </project>
