@@ -11,6 +11,13 @@
 
     <groupId>com.dehidehidehi.twitchtagcarousel</groupId>
     <artifactId>tags</artifactId>
+    
+    <properties>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+    
     <dependencies>
         <dependency>
             <groupId>com.dehidehidehi.twitchtagcarousel</groupId>
