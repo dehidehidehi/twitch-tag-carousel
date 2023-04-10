@@ -17,7 +17,7 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-    
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -25,6 +25,16 @@
                 <artifactId>jersey-client</artifactId>
                 <version>3.1.1</version>
             </dependency>
+<!--            <dependency>-->
+<!--                <groupId>org.glassfish.jersey.containers</groupId>-->
+<!--                <artifactId>jersey-container-servlet-core</artifactId>-->
+<!--                <version>3.1.1</version>-->
+<!--            </dependency>-->
+<!--            <dependency>-->
+<!--                <groupId>org.glassfish.jersey.containers</groupId>-->
+<!--                <artifactId>jersey-container-servlet</artifactId>-->
+<!--                <version>3.1.1</version>-->
+<!--            </dependency>-->
             <dependency>
                 <groupId>org.glassfish.jersey.containers</groupId>
                 <artifactId>jersey-container-jdk-http</artifactId>
@@ -39,18 +49,7 @@
     </dependencyManagement>
 
     <dependencies>
-        <dependency>
-            <groupId>com.dehidehidehi.twitchtagcarousel</groupId>
-            <artifactId>commons</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>jakarta.enterprise</groupId>
-            <artifactId>jakarta.enterprise.cdi-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>jakarta.ws.rs</groupId>
-            <artifactId>jakarta.ws.rs-api</artifactId>
-        </dependency>
+        <!-- Jakarta WS RS -->
         <dependency>
             <groupId>org.glassfish.jersey.core</groupId>
             <artifactId>jersey-client</artifactId>
@@ -63,6 +62,12 @@
             <groupId>org.glassfish.jersey.inject</groupId>
             <artifactId>jersey-hk2</artifactId>
         </dependency>
+        <!-- Modules -->
+        <dependency>
+            <groupId>com.dehidehidehi.twitchtagcarousel</groupId>
+            <artifactId>commons</artifactId>
+        </dependency>
+        <!-- Other -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
