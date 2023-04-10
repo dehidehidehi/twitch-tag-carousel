@@ -38,8 +38,8 @@ public class OAuthRequestAccessTokenButton extends JButton implements ActionList
                 tagCarouselService.queryUserAccessToken();
                 getParent().setEnabled(false);
                 getParent().setVisible(false);
-                getTopLevelAncestor().add(onSuccessCommandCenterPanelSupplier.get());
-                ((JFrame) getTopLevelAncestor()).pack();
+                ((JFrame) getTopLevelAncestor()).dispose();
+                onSuccessCommandCenterPanelSupplier.get();  // create new frame
             } catch (AuthTokenQueryException ex) {
                 LOGGER.error(ex.getMessage(), ex);
                 JOptionPane.showMessageDialog(this, "Error starting webserver for receiving access token.");
