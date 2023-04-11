@@ -1,54 +1,142 @@
-# What does the Tag Carrousel do?
+# What does the Tag Carousel do?
 
-Attention Twitch streamers! Introducing the Twitch Tag Carrousel - the tool that helps you reach a wider audience by using all the popular tags available.
+Introducing the Twitch Tag Carousel - the tool that helps you reach a wider audience by
+using all the popular tags available.
 
-Twitch channels can only have 10 tags at a time, but with our tool, you can easily specify a couple of tags that you 
-always want present on your stream, and let our system automatically rotate in popular tags at your preferred interval.  
-Maximize your viewership effortlessly with the Twitch Tag Carrousel.
+Did you know? Twitch channels can only have 10 tags at a time, but with this tool, you can rotate through as many
+tags as you'd like.  
+The application automatically rotates in popular tags at your preferred interval.  
+Maximize your viewership by getting exposure from as many tags as you'd like thanks to the Twitch Tag Carousel.
 
-![img](./static/img/tag-carrousel-screencap.png)
+# How to start the Twitch Tag Carousel
 
-# How to Set Up The Application
+1. Download the Java 20 Runtime environment:
+	- Windows: <https://download.oracle.com/java/20/latest/jdk-20_windows-x64_bin.msi>
+	- Linux: <https://www.oracle.com/java/technologies/downloads/#jdk20-linux>
+2. [Download the `twitch-tag-carousel` application](https://github.com/dehidehidehi/twitch-tag-Carousel/releases/download/v1.0.0/twitch-tag-carousel-jar-with-dependencies.jar).
+3. Start the application.
+4. That's it!
 
-Welcome to my application! This guide will help you set up the application and get started with using it for your Twitch channel.
+# What it looks like
+Don't make fun of my very advanced user interface ;)  
+![menu](/doc/img/menu.png)  
+![tag selection](/doc/img/tags.png)  
+![running](/doc/img/running.png)  
 
-## Step 1: Download the Application
 
-1. Download the Java 17 Runtime environment: <https://download.oracle.com/java/17/latest/jdk-17_windows-x64_bin.msi>
-2. Download the `twitch-tag-carrousel.jar` application: <https://github.com/dehidehidehi/twitch-tag-carrousel/releases/download/v1.0.0/twitch-tag-carousel-jar-with-dependencies.jar>
-2. Download the `user.properties` file: <https://github.com/dehidehidehi/twitch-tag-carrousel/releases/download/v1.0.0/user.properties>
-3. Make a copy of the `user.properties` file and place it next to where you placed the `twitch-tag-carrousel.jar`
+# Adding popular tags to the rotating tags section
 
-## Step 2: Specify Your Channel Name
+You can find the current 100 top tags here:  
+https://okayeg.com/stats  
 
-Open the `user.properties` file and locate the line that says `twitch-app.channel-name=YOUR_CHANNEL_NAME_HERE`. Replace `YOUR_CHANNEL_NAME_HERE` with the name of your Twitch channel.
+Then you can copy pasta comma separated list of all (or only those which interest you) into the app.  
 
-## Step 3: Set the Tag Rotation Frequency
+## Example of popular tags, comma separated
 
-In the `user.properties` file, locate the line that says `twitch-app.tag-rotation-frequency-seconds=300`. This specifies the frequency at which your tags will be updated in seconds. The default setting is 300 seconds (5 minutes), but you can change this to any value you prefer.
+> 18plus,
+action,
+adhd,
+ally,
+ama,
+anime,
+anxiety,
+apex,
+argentina,
+art,
+asian,
+asmr,
+australia,
+australian,
+battleroyale,
+black,
+callofduty,
+canada,
+casual,
+casualplaythrough,
+chat,
+chatting,
+chatty,
+chile,
+chill,
+chilled,
+cod,
+colombia,
+comedy,
+comfy,
+competitive,
+controller,
+cozy,
+depression,
+drops,
+dropsactivados,
+dropsenabled,
+envtuber,
+filipino,
+firstplaythrough,
+fortnite,
+fps,
+friendly,
+fun,
+funny,
+furry,
+gamer,
+gamergirl,
+gaming,
+girl,
+gta,
+horror,
+interactive,
+irl,
+justchatting,
+latam,
+latino,
+letsplay,
+lgbt,
+lgbtq,
+lgbtqia,
+lgbtqiaplus,
+lol,
+mentalhealth,
+mexico,
+minecraft,
+multiplayer,
+music,
+nobackseating,
+pc,
+playingwithviewers,
+playstation,
+pngtuber,
+ps5,
+pve,
+pvp,
+ranked,
+retro,
+roleplay,
+rp,
+rpg,
+safespace,
+shooter,
+solo,
+spanish,
+speedrun,
+survival,
+usa,
+valorant,
+variety,
+vibesber,
+warzone,
+woman,
+xbox
 
-## Step 4: Obtain Your User Access Token
+# Additional information
 
-To use this application, you will need to obtain a user access token from Twitch. Follow these steps to get your token:
+## Kudos
 
-1. Go to the following link: <https://id.twitch.tv/oauth2/authorize?client_id=6k3qz1pdf1wko4xec9cjbfh3fbla24&redirect_uri=http://localhost&response_type=token&scope=channel%3Amanage%3Abroadcast>
-2. Accept the authorization request.
-3. Copy the access token from the URL bar.
+[chatty/chatty](https://github.com/chatty/chatty) - for coming up with the clever idea on how to handle the twitch
+auth implicit grand flow using Swing.
 
-Once you have obtained your user access token, locate the line in the `user.properties` file that says `twitch-app.user-access-token=YOUR_USER_ACCESS_TOKEN_HERE`. Replace `YOUR_USER_ACCESS_TOKEN_HERE` with your user access token.
+## Some information on the libraries used:
 
-## Step 5: Set Your Tags
-
-In the `user.properties` file, you will see two sections for setting your tags: `tag-carousel.mandatory-tags` and `tag-carousel.tags`.
-
-### Mandatory Tags
-
-Under `tag-carousel.mandatory-tags`, set the tags that you always want to be included with your stream. Separate the tags by a comma. You cannot set more than 10 tags. Each tag cannot be longer than 25 characters and cannot include special characters or whitespaces.
-
-### Tag Carousel
-
-Under `tag-carousel.tags`, set the tags that you want to cycle through as you stream. The order is not important, as they will be shuffled at each start of the application. Separate the tags by a comma. Each tag cannot be longer than 25 characters and cannot include special characters or whitespaces.
-
-## Step 6: Run the Application
-
-You're all set! Save the changes to the `user.properties` file and run the application. Your Twitch tags will now be automatically updated according to the settings you specified. Enjoy streaming!
+- Jakarta EE 10 Core specifications, notably : CDI, WS RS, Annotation.
+- Swing for the GUI.
+- Twitch4J (Helix)

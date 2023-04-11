@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!-- APPENDER -->
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss} %highlight(%-5level) %ex{short} %msg%n</pattern>
+        </encoder>
+    </appender>
+    <appender name="LoggingTextAreaAppender"
+              class="com.dehidehidehi.twitchtagcarousel.swing.logging.LoggingTextAreaAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss} %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+    
+    <!-- LOGGER -->
+    <logger name="com.dehidehidehi.twitchtagcarousel" level="DEBUG" additivity="false">
+        <appender-ref ref="console"/>
+        <appender-ref ref="LoggingTextAreaAppender"/>
+    </logger>
+    <logger name="org.jboss.weld" level="ERROR"/>
+    <logger name="com.netflix" level="ERROR"/>
+    <logger name="io.github.xanthic" level="ERROR"/>
+    <root level="DEBUG">
+        <appender-ref ref="console"/>
+    </root>
+</configuration>
