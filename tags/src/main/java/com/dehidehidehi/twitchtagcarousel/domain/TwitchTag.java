@@ -5,8 +5,6 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Comparator;
-
 public final class TwitchTag implements Comparable<TwitchTag> {
 
 	private final String tag;
