@@ -13,7 +13,7 @@ Maximize your viewership by getting exposure from as many tags as you'd like tha
 1. Download the Java 20 Runtime environment:
 	- Windows: <https://download.oracle.com/java/20/latest/jdk-20_windows-x64_bin.msi>
 	- Linux: <https://www.oracle.com/java/technologies/downloads/#jdk20-linux>
-2. [Download the `twitch-tag-carousel` application](https://github.com/dehidehidehi/twitch-tag-Carousel/releases/download/v1.0.0/twitch-tag-carousel-jar-with-dependencies.jar).
+2. [Download the `twitch-tag-carousel` application](https://github.com/dehidehidehi/twitch-tag-carrousel/releases/download/v1.1.0/twitch-tag-carousel-1.1.0-SNAPSHOT.jar).
 3. Start the application.
 4. That's it!
 
