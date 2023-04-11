@@ -24,6 +24,7 @@ public class MandatoryTagsFrame extends TagsFrame {
         getTagTextAreaEditorPanel().getTagsTextArea().setText(getUserSavedMandatoryTags());
         getCancelButton().addActionListener(e -> this.dispose());
         getSaveButton().addActionListener(e -> setTags(getTagTextAreaEditorPanel().getTagsTextArea().getText()));
+        pack();
     }
 
     private String getUserSavedMandatoryTags() {

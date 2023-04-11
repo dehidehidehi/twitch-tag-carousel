@@ -10,20 +10,22 @@ abstract class TagsFrame extends JFrame {
     private TagEditorPanel tagEditorPanel;
 
     TagsFrame() {
-        setSize(300, 300);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         popUpInCenterOfTheScreen(this);
-        setLayout(new GridLayout(3, 1));
+        setLayout(new BorderLayout(50, 20));
+        setSize(250, 200);
 
         tagEditorPanel = new TagEditorPanel("[DEFAULT TEXT]");
-        add(tagEditorPanel);
+        add(tagEditorPanel, BorderLayout.CENTER);
 
         final JPanel buttonsPanel = new JPanel();
         saveButton = new JButton("Save");
         cancelButton = new JButton("Cancel");
         buttonsPanel.add(saveButton);
         buttonsPanel.add(cancelButton);
-        add(buttonsPanel);
+        add(buttonsPanel, BorderLayout.SOUTH);
+        
+        pack();
     }
 
     private void popUpInCenterOfTheScreen(final JFrame jFrame) {

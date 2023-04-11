@@ -1,5 +1,6 @@
 package com.dehidehidehi.twitchtagcarousel.swing.tags;
 import javax.swing.*;
+import java.awt.*;
 
 /**
  * Common panel used for editing any sort of tags.
@@ -11,16 +12,19 @@ public class TagEditorPanel extends JPanel {
 
     public TagEditorPanel(final String tagsLabelText) {
         super();
+        setLayout(new BorderLayout(50, 20));
 
         panelLabel = new JLabel(tagsLabelText);
-        add(panelLabel);
+        panelLabel.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 14));
+        add(panelLabel, BorderLayout.NORTH);
 
         tagsTextArea = new JTextArea(15, 20);
-        tagsTextArea.setSize(250, 350);
-        add(tagsTextArea);
-
+        tagsTextArea.setLineWrap(true);
+        tagsTextArea.setWrapStyleWord(true);
         JScrollPane scrollPane = new JScrollPane(tagsTextArea);
-        add(scrollPane);
+        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        add(scrollPane, BorderLayout.CENTER);
+
     }
 
     public JLabel getPanelLabel() {

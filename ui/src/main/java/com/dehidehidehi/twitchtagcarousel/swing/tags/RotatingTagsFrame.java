@@ -24,6 +24,7 @@ public class RotatingTagsFrame extends TagsFrame {
 		getTagTextAreaEditorPanel().getTagsTextArea().setText(getUserSavedRotatingTags());
 		getCancelButton().addActionListener(e -> this.dispose());
 		getSaveButton().addActionListener(e -> setTags(getTagTextAreaEditorPanel().getTagsTextArea().getText()));
+		pack();
 	}
 
 	private String getUserSavedRotatingTags() {

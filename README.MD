@@ -17,6 +17,13 @@ Maximize your viewership by getting exposure from as many tags as you'd like tha
 3. Start the application.
 4. That's it!
 
+# What it looks like
+Don't make fun of my very advanced user interface ;)  
+![menu](/doc/img/menu.png)  
+![tag selection](/doc/img/tags.png)  
+![running](/doc/img/running.png)  
+
+
 # Adding popular tags to the rotating tags section
 
 You can find the current 100 top tags here:  
